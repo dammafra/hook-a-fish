@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  @apply fixed inset-0 overflow-hidden;
+}
