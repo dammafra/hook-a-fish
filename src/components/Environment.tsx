@@ -28,13 +28,13 @@ export default function Environment() {
         label: 'directional intensity',
       },
       directionalLightPosition: {
-        value: [4, 4, 1],
+        value: [0, 4, 1],
         min: 0,
         max: 20,
         step: 0.01,
         label: 'directional position',
       },
-      backgroundColor: { value: 'ivory', label: 'background' },
+      backgroundColor: { value: '#212a3b', label: 'background' },
     },
     { collapsed: true },
   )
@@ -47,7 +47,7 @@ export default function Environment() {
         castShadow
         position={directionalLightPosition}
         intensity={directionalLightIntensity}
-        shadow-mapSize={[512, 512]}
+        shadow-mapSize={[1024, 1024]}
       >
         <orthographicCamera
           attach="shadow-camera"

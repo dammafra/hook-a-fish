@@ -50,7 +50,7 @@ export default function Rope({
   return (
     <mesh castShadow>
       <tubeGeometry args={[curve, 6, 0.01, 3, false]} />
-      <meshStandardMaterial color="red" flatShading />
+      <meshStandardMaterial color="white" flatShading />
     </mesh>
   )
 }

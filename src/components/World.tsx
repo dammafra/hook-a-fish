@@ -8,12 +8,14 @@ export default function World() {
 
   return (
     <>
-      <FishingRod />
+      <FishingRod position={0} color="red" />
+      <FishingRod position={120} color="orange" />
+      <FishingRod position={240} color="limegreen" />
 
-      <RigidBody type="fixed">
-        <mesh receiveShadow scale={[5, 0.1, 5]}>
-          <boxGeometry />
-          <meshStandardMaterial color="limegreen" />
+      <RigidBody type="fixed" colliders="hull" mass={100}>
+        <mesh receiveShadow scale={[2, 0.1, 2]}>
+          <cylinderGeometry />
+          <meshStandardMaterial color="dodgerblue" />
         </mesh>
       </RigidBody>
     </>
