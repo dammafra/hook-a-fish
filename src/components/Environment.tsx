@@ -1,4 +1,4 @@
-import { Helper } from '@react-three/drei'
+import { Helper, SoftShadows } from '@react-three/drei'
 import { useControls } from 'leva'
 import { CameraHelper } from 'three'
 
@@ -63,6 +63,8 @@ export default function Environment() {
       </directionalLight>
 
       <ambientLight intensity={ambientLightIntensity} />
+
+      <SoftShadows size={25} samples={10} focus={0.1} />
     </>
   )
 }

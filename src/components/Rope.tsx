@@ -1,6 +1,7 @@
+import { QuadraticBezierLine, type QuadraticBezierLineRef } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
-import { useState, type RefObject } from 'react'
+import { useRef, useState, type RefObject } from 'react'
 import { QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
 
 interface RopeProps {
@@ -9,6 +10,7 @@ interface RopeProps {
   startAnchor?: [number, number, number]
   endAnchor?: [number, number, number]
   length?: number
+  type?: 'line' | 'tube'
 }
 
 // TODO: find a way to implement collisions, using instanced meshes along the curve might be an idea
@@ -18,8 +20,10 @@ export default function Rope({
   startAnchor = [0, 0, 0],
   endAnchor = [0, 0, 0],
   length = 1,
+  type = 'line',
 }: RopeProps) {
-  const [curve, setCurve] = useState(() => new QuadraticBezierCurve3())
+  const line = useRef<QuadraticBezierLineRef>(null!)
+  const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
 
   useRopeJoint(start, end, [
     new Vector3().fromArray(startAnchor),
@@ -44,12 +48,17 @@ export default function Rope({
     const sagging = 0.3
     controlPoint.addScaledVector(gravity, sagging * length)
 
-    setCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
+    type === 'line'
+      ? line.current.setPoints(startPoint, endPoint, controlPoint)
+      : setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
   })
 
-  return (
+  return type === 'line' ? (
+    // @ts-ignore
+    <QuadraticBezierLine ref={line} lineWidth={3} color="white" />
+  ) : (
     <mesh castShadow>
-      <tubeGeometry args={[curve, 6, 0.01, 3, false]} />
+      <tubeGeometry args={[tubeCurve, 6, 0.01, 3, false]} />
       <meshStandardMaterial color="white" flatShading />
     </mesh>
   )

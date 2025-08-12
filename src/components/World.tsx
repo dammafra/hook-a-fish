@@ -1,3 +1,4 @@
+import { MeshDistortMaterial } from '@react-three/drei'
 import { RigidBody, useRapier } from '@react-three/rapier'
 import { button, useControls } from 'leva'
 import FishingRod from './FishingRod'
@@ -15,7 +16,7 @@ export default function World() {
       <RigidBody type="fixed" colliders="hull" mass={100}>
         <mesh receiveShadow scale={[2, 0.1, 2]}>
           <cylinderGeometry />
-          <meshStandardMaterial color="dodgerblue" />
+          <MeshDistortMaterial color="dodgerblue" />
         </mesh>
       </RigidBody>
     </>
