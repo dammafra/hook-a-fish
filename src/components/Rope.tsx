@@ -1,45 +1,56 @@
-import { QuadraticBezierLine, type QuadraticBezierLineRef } from '@react-three/drei'
-import { extend, useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
-import { useRef, useState, type RefObject } from 'react'
-import { Vector3 } from 'three'
-
-extend({ MeshLineGeometry, MeshLineMaterial })
+import { useState, type RefObject } from 'react'
+import { QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
 
 interface RopeProps {
-  from: RefObject<RapierRigidBody>
-  to: RefObject<RapierRigidBody>
-  fromAnchor?: [number, number, number]
-  toAnchor?: [number, number, number]
+  start: RefObject<RapierRigidBody>
+  end: RefObject<RapierRigidBody>
+  startAnchor?: [number, number, number]
+  endAnchor?: [number, number, number]
   length?: number
-  segments?: number
 }
 
-export default function Rope({ from, to, fromAnchor, toAnchor, length = 1 }: RopeProps) {
-  const [_fromAnchor] = useState(() =>
-    fromAnchor ? new Vector3(fromAnchor[0], fromAnchor[1], fromAnchor[2]) : new Vector3(),
-  )
+// TODO: find a way to implement collisions, using instanced meshes along the curve might be an idea
+export default function Rope({
+  start,
+  end,
+  startAnchor = [0, 0, 0],
+  endAnchor = [0, 0, 0],
+  length = 1,
+}: RopeProps) {
+  const [curve, setCurve] = useState(() => new QuadraticBezierCurve3())
 
-  const [_toAnchor] = useState(() =>
-    toAnchor ? new Vector3(toAnchor[0], toAnchor[1], toAnchor[2]) : new Vector3(),
-  )
-
-  useRopeJoint(from, to, [_fromAnchor, _toAnchor, length])
-
-  const ref = useRef<QuadraticBezierLineRef>(null!)
+  useRopeJoint(start, end, [
+    new Vector3().fromArray(startAnchor),
+    new Vector3().fromArray(endAnchor),
+    length,
+  ])
 
   useFrame(() => {
-    const { x: fx, y: fy, z: fz } = from.current.translation()
-    const fromPosition = new Vector3(fx, fy, fz).add(_fromAnchor)
+    const startPoint = new Vector3()
+      .fromArray(startAnchor)
+      .applyQuaternion(start.current.rotation() as Quaternion)
+      .add(start.current.translation() as Vector3)
 
-    const { x: tx, y: ty, z: tz } = to.current.translation()
-    const endPosition = new Vector3(tx, ty, tz).add(_toAnchor)
+    const endPoint = new Vector3()
+      .fromArray(endAnchor)
+      .applyQuaternion(end.current.rotation() as Quaternion)
+      .add(end.current.translation() as Vector3)
 
-    ref.current.setPoints(fromPosition, endPosition, endPosition)
+    const controlPoint = new Vector3().addVectors(startPoint, endPoint).multiplyScalar(0.5)
+    const gravity = new Vector3(0, -1, 0)
+    const length = startPoint.distanceTo(endPoint)
+    const sagging = 0.3
+    controlPoint.addScaledVector(gravity, sagging * length)
+
+    setCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
   })
 
   return (
-    <QuadraticBezierLine ref={ref} start={[0, 0, 0]} end={[0, 0, 0]} lineWidth={3} color="red" />
+    <mesh castShadow>
+      <tubeGeometry args={[curve, 6, 0.01, 3, false]} />
+      <meshStandardMaterial color="red" flatShading />
+    </mesh>
   )
 }
