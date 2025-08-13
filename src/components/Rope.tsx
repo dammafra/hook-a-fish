@@ -1,8 +1,8 @@
 import { QuadraticBezierLine, type QuadraticBezierLineRef } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
-import { useRef, useState, type RefObject } from 'react'
-import { QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
+import { useEffect, useRef, useState, type RefObject } from 'react'
+import { Object3D, QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
 
 interface RopeProps {
   start: RefObject<RapierRigidBody>
@@ -11,6 +11,18 @@ interface RopeProps {
   endAnchor?: [number, number, number]
   length?: number
   type?: 'line' | 'tube'
+}
+
+const getWorldPositionOffset = (object: Object3D) => {
+  const offset = new Vector3()
+
+  let parent = object.parent
+  while (parent) {
+    offset.sub(parent.position)
+    parent = parent.parent
+  }
+
+  return offset
 }
 
 // TODO: find a way to implement collisions, using instanced meshes along the curve might be an idea
@@ -22,8 +34,14 @@ export default function Rope({
   length = 1,
   type = 'line',
 }: RopeProps) {
+  const [offset, setOffset] = useState<[number, number, number]>([0, 0, 0])
   const line = useRef<QuadraticBezierLineRef>(null!)
   const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
+
+  useEffect(() => {
+    const offset = getWorldPositionOffset(line.current)
+    setOffset(offset.toArray())
+  }, [])
 
   useRopeJoint(start, end, [
     new Vector3().fromArray(startAnchor),
@@ -51,14 +69,16 @@ export default function Rope({
     type === 'line'
       ? line.current.setPoints(startPoint, endPoint, controlPoint)
       : setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
+
+    line.current.geometry.translate(...offset)
   })
 
   return type === 'line' ? (
     // @ts-ignore
     <QuadraticBezierLine ref={line} lineWidth={3} color="white" />
   ) : (
-    <mesh castShadow>
-      <tubeGeometry args={[tubeCurve, 6, 0.01, 3, false]} />
+    <mesh ref={line} castShadow>
+      <tubeGeometry args={[tubeCurve, 6, 0.02, 3, false]} />
       <meshStandardMaterial color="white" flatShading />
     </mesh>
   )
