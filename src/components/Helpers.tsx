@@ -18,14 +18,16 @@ export default function Helpers() {
 
   return (
     <>
-      <gridHelper visible={grid} args={[10, 10, 'red', 'gray']} />
-      <axesHelper visible={axes} args={[20]} position-y={0.001} />
+      {grid && <gridHelper args={[10, 10, 'red', 'gray']} />}
+      {axes && <axesHelper args={[20]} position-y={0.001} />}
 
-      <GizmoHelper>
-        <GizmoViewport visible={gizmo} labelColor="white" />
-      </GizmoHelper>
+      {gizmo && (
+        <GizmoHelper>
+          <GizmoViewport labelColor="white" />
+        </GizmoHelper>
+      )}
 
-      <Perf className={perf ? '' : 'hidden'} showGraph={false} position="top-left" />
+      {perf && <Perf showGraph={false} position="top-left" />}
     </>
   )
 }
