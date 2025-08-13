@@ -2515,6 +2515,13 @@ v8n@^1.3.3:
   resolved "https://registry.yarnpkg.com/v8n/-/v8n-1.5.1.tgz#aecfeb9d298a8ce8be443cd7ad0d46e30203165a"
   integrity sha512-LdabyT4OffkyXFCe9UT+uMkxNBs5rcTVuZClvxQr08D5TUgo1OFKkoT65qYRCsiKBl/usHjpXvP4hHMzzDRj3A==
 
+vite-plugin-restart@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-restart/-/vite-plugin-restart-1.0.0.tgz#922ff027f9406e95cd8be27147c92b2a0c70a293"
+  integrity sha512-t2ktkTOa+DQX05TEZm/3FE0DyrYEyFXdhG5gLcta5p71zOpg9yG3DeRcHWJVLJgWNoaVtOr4fUlr1kKu+WfXyQ==
+  dependencies:
+    micromatch "^4.0.8"
+
 vite@^7.1.0:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/vite/-/vite-7.1.1.tgz#a2c25f31742fd9f8b223d809df1ce3026e813fcf"
