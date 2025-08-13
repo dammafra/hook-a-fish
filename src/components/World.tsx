@@ -3,7 +3,7 @@ import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
 import { useRef, useState } from 'react'
-import { Group, Vector3 } from 'three'
+import { Mesh, Vector3 } from 'three'
 import Fish from './Fish'
 import FishingRod from './FishingRod'
 import Tutorial from './Tutorial'
@@ -29,7 +29,7 @@ export default function World() {
   })
 
   // TODO improve
-  const game = useRef<Group>(null!)
+  const game = useRef<Mesh>(null!)
   const { controls } = useThree()
 
   const start = () => {
@@ -44,17 +44,15 @@ export default function World() {
 
   return (
     <>
-      <group ref={game}>
-        <FishingRod position={getPosition(0)} color="red" />
-        <FishingRod position={getPosition(120)} color="orange" type="billboard" />
-        {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
+      <FishingRod position={getPosition(0)} color="red" />
+      <FishingRod position={getPosition(120)} color="orange" type="billboard" />
+      {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
 
-        {fishes.map(id => (
-          <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
-        ))}
+      {fishes.map(id => (
+        <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
+      ))}
 
-        <Water radius={3} />
-      </group>
+      <Water ref={game} radius={3} />
 
       <Tutorial onStart={start} />
     </>
