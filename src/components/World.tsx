@@ -1,9 +1,10 @@
-import { CameraControls, MeshDistortMaterial } from '@react-three/drei'
+import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { RigidBody, useRapier } from '@react-three/rapier'
+import { useRapier } from '@react-three/rapier'
 import { button, useControls } from 'leva'
 import { useEffect } from 'react'
 import FishingRod from './FishingRod'
+import Water from './Water'
 
 export default function World() {
   const { step } = useRapier()
@@ -26,12 +27,7 @@ export default function World() {
       <FishingRod position={120} color="orange" />
       <FishingRod position={240} color="limegreen" />
 
-      <RigidBody type="fixed" colliders="hull" mass={100}>
-        <mesh receiveShadow scale={[3, 0.1, 3]}>
-          <cylinderGeometry />
-          <MeshDistortMaterial color="dodgerblue" />
-        </mesh>
-      </RigidBody>
+      <Water radius={3} />
     </>
   )
 }
