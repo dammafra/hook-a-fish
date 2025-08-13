@@ -10,6 +10,7 @@ interface RopeProps {
   startAnchor?: [number, number, number]
   endAnchor?: [number, number, number]
   length?: number
+  radius?: number
   type?: 'line' | 'tube'
 }
 
@@ -32,6 +33,7 @@ export default function Rope({
   startAnchor = [0, 0, 0],
   endAnchor = [0, 0, 0],
   length = 1,
+  radius = 0.01,
   type = 'line',
 }: RopeProps) {
   const [offset, setOffset] = useState<[number, number, number]>([0, 0, 0])
@@ -75,11 +77,11 @@ export default function Rope({
 
   return type === 'line' ? (
     // @ts-ignore
-    <QuadraticBezierLine ref={line} lineWidth={3} color="white" />
+    <QuadraticBezierLine ref={line} lineWidth={radius * 300} color="white" />
   ) : (
     <mesh ref={line} castShadow>
-      <tubeGeometry args={[tubeCurve, 6, 0.02, 3, false]} />
-      <meshStandardMaterial color="white" flatShading />
+      <tubeGeometry args={[tubeCurve, 6, radius, 3, false]} />
+      <meshBasicMaterial color="white" />
     </mesh>
   )
 }
