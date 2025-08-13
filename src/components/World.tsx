@@ -2,9 +2,9 @@ import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Mesh, Vector3 } from 'three'
-import Fish from './Fish'
+import Fishes from './Fishes'
 import FishingRod from './FishingRod'
 import Tutorial from './Tutorial'
 import Water from './Water'
@@ -39,19 +39,13 @@ export default function World() {
     cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
   }
 
-  const [fishes, setFishes] = useState(Array.from({ length: 20 }, (_, i) => i))
-  const onRemove = (id: number) => setFishes(fishes => fishes.filter(fid => fid !== id))
-
   return (
     <>
       <FishingRod position={getPosition(0)} color="red" />
       <FishingRod position={getPosition(120)} color="orange" type="billboard" />
       {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
 
-      {fishes.map(id => (
-        <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
-      ))}
-
+      <Fishes />
       <Water ref={game} radius={3} />
 
       <Tutorial onStart={start} />
