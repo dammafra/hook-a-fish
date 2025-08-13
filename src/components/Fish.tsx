@@ -36,7 +36,7 @@ export default function Fish({ id, onRemove }: FishProps) {
     if (bait) {
       const { x, y, z } = bait.translation()
       const position = new Vector3(x, y - 0.35, z)
-      if (position.y > 1.5) onRemove?.(id)
+      if (position.y > 2) onRemove?.(id)
       body.current.setTranslation(position, true)
     } else {
       const time = clock.getElapsedTime()
