@@ -1,10 +1,10 @@
 import { GizmoHelper, GizmoViewport } from '@react-three/drei'
 import { useControls } from 'leva'
 import { Perf } from 'r3f-perf'
-import useDebug from '../stores/use-debug'
+import { useDebug } from '../hooks/use-debug'
 
 export default function Helpers() {
-  const debug = useDebug(state => state.debug)
+  const debug = useDebug()
   const { grid, axes, gizmo, perf } = useControls(
     'helpers',
     {

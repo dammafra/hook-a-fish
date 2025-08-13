@@ -1,10 +1,10 @@
 import { Leva } from 'leva'
 import { StrictMode } from 'react'
 import Experience from './components/Experience'
-import useDebug from './stores/use-debug'
+import { useDebug } from './hooks/use-debug'
 
 export default function App() {
-  const debug = useDebug(state => state.debug)
+  const debug = useDebug()
 
   return (
     <>
