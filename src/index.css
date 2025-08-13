@@ -3,7 +3,7 @@
 html,
 body,
 #root {
-  @apply fixed inset-0 overflow-hidden;
+  @apply fixed inset-0 overflow-hidden bg-slate-800;
 }
 
 .drag {

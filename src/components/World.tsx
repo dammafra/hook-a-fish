@@ -2,10 +2,11 @@ import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
-import { useEffect, useState } from 'react'
-import { Vector3 } from 'three'
+import { useRef, useState } from 'react'
+import { Group, Vector3 } from 'three'
 import Fish from './Fish'
 import FishingRod from './FishingRod'
+import Tutorial from './Tutorial'
 import Water from './Water'
 
 const positionY = 2
@@ -28,29 +29,34 @@ export default function World() {
   })
 
   // TODO improve
-  const { controls, viewport } = useThree()
-  useEffect(() => {
-    if (!controls) return
+  const game = useRef<Group>(null!)
+  const { controls } = useThree()
 
+  const start = () => {
     const cameraControls = controls as CameraControls
-    cameraControls.truck(0, viewport.aspect < 1 ? -1 : -0.5, true)
-    cameraControls.dollyTo(10, true)
-  }, [controls])
+    cameraControls.fitToBox(game.current, true)
+    cameraControls.rotatePolarTo(Math.PI * 0.25, true)
+    cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
+  }
 
   const [fishes, setFishes] = useState(Array.from({ length: 20 }, (_, i) => i))
   const onRemove = (id: number) => setFishes(fishes => fishes.filter(fid => fid !== id))
 
   return (
     <>
-      <FishingRod position={getPosition(0)} color="red" />
-      <FishingRod position={getPosition(120)} color="orange" type="billboard" />
-      {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
+      <group ref={game}>
+        <FishingRod position={getPosition(0)} color="red" />
+        <FishingRod position={getPosition(120)} color="orange" type="billboard" />
+        {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
 
-      {fishes.map(id => (
-        <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
-      ))}
+        {fishes.map(id => (
+          <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
+        ))}
 
-      <Water radius={3} />
+        <Water radius={3} />
+      </group>
+
+      <Tutorial onStart={start} />
     </>
   )
 }

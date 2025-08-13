@@ -34,7 +34,7 @@ export default function Environment() {
         step: 0.01,
         label: 'directional position',
       },
-      backgroundColor: { value: '#212a3b', label: 'background' },
+      backgroundColor: { value: '#1d293d', label: 'background' },
     },
     { collapsed: true },
   )
