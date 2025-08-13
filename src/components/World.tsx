@@ -1,9 +1,10 @@
 import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
-import { button, useControls } from 'leva'
-import { useEffect } from 'react'
+import { button, monitor, useControls } from 'leva'
+import { useEffect, useState } from 'react'
 import { Vector3 } from 'three'
+import Fish from './Fish'
 import FishingRod from './FishingRod'
 import Water from './Water'
 
@@ -18,12 +19,16 @@ const getPosition = (degrees: number) => {
 }
 
 export default function World() {
-  const { step } = useRapier()
-  const { controls, viewport } = useThree()
-
-  useControls('physics', { step: button(() => step(1 / 60)) })
+  const { step, world } = useRapier()
+  useControls('physics', {
+    step: button(() => step(1 / 60)),
+    bodies: monitor(() => world.bodies.len()),
+    colliders: monitor(() => world.colliders.len()),
+    joints: monitor(() => world.impulseJoints.len()),
+  })
 
   // TODO improve
+  const { controls, viewport } = useThree()
   useEffect(() => {
     if (!controls) return
 
@@ -32,11 +37,18 @@ export default function World() {
     cameraControls.dollyTo(10, true)
   }, [controls])
 
+  const [fishes, setFishes] = useState(Array.from({ length: 20 }, (_, i) => i))
+  const onRemove = (id: number) => setFishes(fishes => fishes.filter(fid => fid !== id))
+
   return (
     <>
       <FishingRod position={getPosition(0)} color="red" />
       <FishingRod position={getPosition(120)} color="orange" type="billboard" />
       {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
+
+      {fishes.map(id => (
+        <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />
+      ))}
 
       <Water radius={3} />
     </>
