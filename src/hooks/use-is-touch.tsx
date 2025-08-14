@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export function useIsTouch() {
-  const [isTouch, setIsTouch] = useState(false)
-  useEffect(() => {
-    const check = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-    setIsTouch(check)
-  }, [])
+  const [isTouch] = useState('ontouchstart' in window || navigator.maxTouchPoints > 0)
   return isTouch
 }

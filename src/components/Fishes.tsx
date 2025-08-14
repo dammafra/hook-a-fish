@@ -7,6 +7,7 @@ import {
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
 import { Vector3 } from 'three'
+import useGame from '../stores/use-game'
 
 interface FishProps {
   id: number
@@ -14,6 +15,9 @@ interface FishProps {
 }
 
 export function Fish({ id, onRemove }: FishProps) {
+  const hooked = useGame(state => state.hooked)
+  const hook = useGame(state => state.hook)
+
   const radius = 0.25
   const targetRadius = 0.075
   const color = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
@@ -29,7 +33,10 @@ export function Fish({ id, onRemove }: FishProps) {
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
     // @ts-ignore
-    if (other.rigidBody?.userData.name === 'bait') setBait(other.rigidBody)
+    if (other.rigidBody?.userData.name === 'bait') {
+      setBait(other.rigidBody)
+      hook()
+    }
   }
 
   useFrame(({ clock }) => {
@@ -38,7 +45,10 @@ export function Fish({ id, onRemove }: FishProps) {
       const position = new Vector3(x, y - 0.35, z)
       body.current.setTranslation(position, true)
       // TODO improve
-      if (position.y > 2 || Math.abs(position.x) > 3 || Math.abs(position.z) > 3) onRemove?.(id)
+      if (position.distanceTo(new Vector3()) > 3.5) {
+        onRemove?.(id)
+        hook()
+      }
     } else {
       const time = clock.getElapsedTime()
       const angle = time * speed
@@ -51,7 +61,7 @@ export function Fish({ id, onRemove }: FishProps) {
   })
 
   return (
-    <RigidBody ref={body} type="kinematicPosition" colliders={false} gravityScale={bait ? 1 : 0}>
+    <RigidBody ref={body} type="kinematicPosition" colliders={false} position-x={id}>
       <mesh>
         <icosahedronGeometry args={[radius, 1]} />
         <meshStandardMaterial flatShading color={color} />
@@ -60,7 +70,7 @@ export function Fish({ id, onRemove }: FishProps) {
         <icosahedronGeometry args={[targetRadius, 1]} />
         <meshStandardMaterial flatShading color="red" />
       </mesh>
-      {!bait && (
+      {!hooked && (
         <BallCollider
           args={[targetRadius]}
           position={[0, radius, 0]}

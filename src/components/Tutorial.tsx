@@ -3,34 +3,33 @@ import { useThree } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import type { Mesh } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
+import useGame from '../stores/use-game'
 
-interface TutorialProps {
-  onStart?: () => void
-}
-
-export default function Tutorial({ onStart }: TutorialProps) {
+export default function Tutorial() {
   const isTouch = useIsTouch()
-  const { controls, viewport } = useThree()
+  const { controls, size } = useThree()
+  const start = useGame(state => state.start)
+
   const tutorial = useRef<Mesh>(null!)
   const [visible, setVisible] = useState(true)
 
-  // TODO improve
-  useEffect(() => {
+  const cameraAnimation = () => {
     if (!controls || !tutorial) return
 
     const cameraControls = controls as CameraControls
     cameraControls.fitToBox(tutorial.current, false)
-    viewport.aspect < 1 && cameraControls.dollyTo(30, true)
-  }, [controls, tutorial.current])
+  }
+
+  useEffect(cameraAnimation, [size, controls])
 
   return (
     <group position={[-25, 0, 0]}>
       <mesh ref={tutorial} visible={false}>
-        <planeGeometry args={[15, 15]} />
+        <planeGeometry args={[10, 10]} />
       </mesh>
-      <Html className="z-10!" wrapperClass="z-10" transform center>
+      <Html transform center>
         <div
-          className={`${visible ? 'opacity-100' : 'opacity-0'} duration-1000 transition-opacity bg-slate-900 text-white border border-white p-10 rounded-xl font-mono w-100 md:w-150 flex flex-col gap-4`}
+          className={`${visible ? 'opacity-100' : 'opacity-0'} duration-1000 transition-opacity bg-slate-900 text-white border border-white p-10 rounded-xl font-mono w-80 flex flex-col gap-4`}
         >
           <p>
             🎣 Control the fishing rod by <b>moving your {isTouch ? 'finger' : 'mouse'}</b>
@@ -44,7 +43,7 @@ export default function Tutorial({ onStart }: TutorialProps) {
             className="w-fit bg-green-400 px-5 py-2 rounded-md text-slate-800 font-bold cursor-pointer active:bg-green-300 hover:bg-green-300 self-center"
             onClick={() => {
               setVisible(false)
-              onStart?.()
+              start()
             }}
           >
             START

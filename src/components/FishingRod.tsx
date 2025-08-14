@@ -80,7 +80,7 @@ export default function FishingRod({
       />
 
       {/* TODO improve lockPositionYAt value */}
-      <PointerControls targetRef={stickMesh} lockPositionYAt={1.5} onMove={onMove} />
+      <PointerControls hideCursor targetRef={stickMesh} lockPositionYAt={1.4} onMove={onMove} />
     </>
   )
 }

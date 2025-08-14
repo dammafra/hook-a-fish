@@ -9,7 +9,7 @@ export default function Helpers() {
     'helpers',
     {
       grid: debug,
-      axes: false,
+      axes: debug,
       gizmo: debug,
       perf: debug,
     },

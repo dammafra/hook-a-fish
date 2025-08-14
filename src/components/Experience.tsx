@@ -28,6 +28,7 @@ export default function Experience() {
 
       <Environment />
       <CameraControls
+        enabled={false}
         makeDefault
         touches={{
           one: CameraControlsImpl.ACTION.NONE,

@@ -2,10 +2,12 @@ import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
-import { useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Mesh, Vector3 } from 'three'
+import useGame from '../stores/use-game'
 import Fishes from './Fishes'
 import FishingRod from './FishingRod'
+import Interface from './Interface'
 import Tutorial from './Tutorial'
 import Water from './Water'
 
@@ -30,25 +32,35 @@ export default function World() {
 
   // TODO improve
   const game = useRef<Mesh>(null!)
-  const [started, setStarted] = useState(false)
-  const { controls } = useThree()
+  const started = useGame(state => state.started)
+  const { controls, size } = useThree()
 
-  const start = () => {
+  const cameraAnimation = () => {
+    if (!started || !controls) return
+
     const cameraControls = controls as CameraControls
     cameraControls.fitToBox(game.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
     cameraControls.enabled = false
-    setStarted(true)
   }
+
+  useEffect(cameraAnimation, [started, size, controls])
+
+  useEffect(() => {
+    const unsubscribeStart = useGame.subscribe(state => state.started, cameraAnimation)
+    return unsubscribeStart
+  }, [controls])
 
   return (
     <>
+      <Tutorial />
+
       <Water ref={game} radius={3} />
       <Fishes />
-      {started && <FishingRod position={getPosition(0)} color="red" />}
 
-      <Tutorial onStart={start} />
+      {started && <FishingRod position={getPosition(60)} color="red" />}
+      {started && <Interface />}
     </>
   )
 }
