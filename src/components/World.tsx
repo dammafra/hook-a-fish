@@ -2,7 +2,7 @@ import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Mesh, Vector3 } from 'three'
 import Fishes from './Fishes'
 import FishingRod from './FishingRod'
@@ -30,6 +30,7 @@ export default function World() {
 
   // TODO improve
   const game = useRef<Mesh>(null!)
+  const [started, setStarted] = useState(false)
   const { controls } = useThree()
 
   const start = () => {
@@ -37,16 +38,15 @@ export default function World() {
     cameraControls.fitToBox(game.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
+    cameraControls.enabled = false
+    setStarted(true)
   }
 
   return (
     <>
-      <FishingRod position={getPosition(0)} color="red" />
-      <FishingRod position={getPosition(120)} color="orange" type="billboard" />
-      {/* <FishingRod position={getPosition(240)} color="limegreen" /> */}
-
-      <Fishes />
       <Water ref={game} radius={3} />
+      <Fishes />
+      {started && <FishingRod position={getPosition(0)} color="red" />}
 
       <Tutorial onStart={start} />
     </>

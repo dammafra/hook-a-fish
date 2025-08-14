@@ -5,11 +5,3 @@ body,
 #root {
   @apply fixed inset-0 overflow-hidden bg-slate-800;
 }
-
-.drag {
-  @apply cursor-grab;
-}
-
-.dragging {
-  @apply cursor-grabbing;
-}

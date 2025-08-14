@@ -36,14 +36,15 @@ export function Fish({ id, onRemove }: FishProps) {
     if (bait) {
       const { x, y, z } = bait.translation()
       const position = new Vector3(x, y - 0.35, z)
-      if (position.y > 2) onRemove?.(id)
       body.current.setTranslation(position, true)
+      // TODO improve
+      if (position.y > 2 || Math.abs(position.x) > 3 || Math.abs(position.z) > 3) onRemove?.(id)
     } else {
       const time = clock.getElapsedTime()
       const angle = time * speed
       const x = Math.cos(angle) * distance
       const z = Math.sin(angle) * distance
-      const y = Math.sin(angle * 6) * 0.1
+      const y = Math.sin(angle * 6) * 0.1 // TODO improve
       const position = new Vector3(x, y, z)
       body.current.setNextKinematicTranslation(position)
     }
