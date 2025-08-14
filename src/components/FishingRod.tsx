@@ -1,6 +1,7 @@
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 import { useRef } from 'react'
 import { Object3D, Quaternion, type ColorRepresentation } from 'three'
+import { useIsTouch } from '../hooks/use-is-touch'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import PointerControls from './PointerControls'
@@ -18,7 +19,7 @@ interface FishingRodProps {
 }
 
 export default function FishingRod({
-  position = [0, 0, 0],
+  position = 0,
   rotation = [0, 0, Math.PI * 0.35],
   color = `hsl(${Math.random() * 360}, 100%, 50%)`,
   stickLength = 2,
@@ -27,6 +28,7 @@ export default function FishingRod({
   ropeRadius = 0.01,
   baitRadius = 0.05,
 }: FishingRodProps) {
+  const isTouch = useIsTouch()
   const _position = parsePosition(position)
   const _rotation = parseRotation(rotation)
 
@@ -80,7 +82,13 @@ export default function FishingRod({
       />
 
       {/* TODO improve lockPositionYAt value */}
-      <PointerControls hideCursor targetRef={stickMesh} lockPositionYAt={1.4} onMove={onMove} />
+      <PointerControls
+        hideCursor
+        targetRef={stickMesh}
+        lockPositionYAt={1.4}
+        onMove={onMove}
+        offset={isTouch ? [-1, 0, -1] : 0}
+      />
     </>
   )
 }

@@ -3,12 +3,13 @@ import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Object3D, QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
+import { parsePosition, type Position } from '../utils/position'
 
 interface RopeProps {
   start: RefObject<RapierRigidBody>
   end: RefObject<RapierRigidBody>
-  startAnchor?: [number, number, number]
-  endAnchor?: [number, number, number]
+  startAnchor?: Position
+  endAnchor?: Position
   length?: number
   radius?: number
   type?: 'line' | 'tube'
@@ -30,8 +31,8 @@ const getWorldPositionOffset = (object: Object3D) => {
 export default function Rope({
   start,
   end,
-  startAnchor = [0, 0, 0],
-  endAnchor = [0, 0, 0],
+  startAnchor = 0,
+  endAnchor = 0,
   length = 1,
   radius = 0.01,
   type = 'line',
@@ -40,25 +41,26 @@ export default function Rope({
   const line = useRef<QuadraticBezierLineRef>(null!)
   const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
 
+  const _startAnchor = parsePosition(startAnchor)
+  console.log(_startAnchor)
+  const _endAnchor = parsePosition(endAnchor)
+  console.log(_endAnchor)
+
   useEffect(() => {
     const offset = getWorldPositionOffset(line.current)
     setOffset(offset.toArray())
   }, [])
 
-  useRopeJoint(start, end, [
-    new Vector3().fromArray(startAnchor),
-    new Vector3().fromArray(endAnchor),
-    length,
-  ])
+  useRopeJoint(start, end, [_startAnchor, _endAnchor, length])
 
   useFrame(() => {
-    const startPoint = new Vector3()
-      .fromArray(startAnchor)
+    const startPoint = _startAnchor
+      .clone()
       .applyQuaternion(start.current.rotation() as Quaternion)
       .add(start.current.translation() as Vector3)
 
-    const endPoint = new Vector3()
-      .fromArray(endAnchor)
+    const endPoint = _endAnchor
+      .clone()
       .applyQuaternion(end.current.rotation() as Quaternion)
       .add(end.current.translation() as Vector3)
 
