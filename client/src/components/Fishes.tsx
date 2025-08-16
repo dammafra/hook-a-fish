@@ -32,7 +32,7 @@ export function Fish({ id, onRemove }: FishProps) {
   const [bait, setBait] = useState<RapierRigidBody>()
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
-    // @ts-ignore
+    // @ts-expect-error `userData` is of type `Record<string, any>`
     if (other.rigidBody?.userData.name === 'bait') {
       setBait(other.rigidBody)
       hook()

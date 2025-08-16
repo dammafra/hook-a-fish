@@ -2,7 +2,7 @@ import { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Mesh, Vector3 } from 'three'
 import useGame from '../stores/use-game'
 import Fishes from './Fishes'
@@ -35,26 +35,25 @@ export default function World() {
   const started = useGame(state => state.started)
   const { controls, size } = useThree()
 
-  const cameraAnimation = () => {
+  const cameraAnimation = useCallback(() => {
     if (!started || !controls) return
 
     const cameraControls = controls as CameraControls
     cameraControls.fitToBox(game.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
-    cameraControls.enabled = false
-  }
+  }, [controls, started])
 
-  useEffect(cameraAnimation, [started, size, controls])
+  useEffect(cameraAnimation, [cameraAnimation, size])
 
   useEffect(() => {
     const unsubscribeStart = useGame.subscribe(state => state.started, cameraAnimation)
     return unsubscribeStart
-  }, [controls])
+  }, [cameraAnimation])
 
   return (
     <>
-      <Tutorial />
+      {!started && <Tutorial />}
 
       <Water ref={game} radius={3} />
       <Fishes />

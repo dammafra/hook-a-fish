@@ -17,13 +17,13 @@ Currently, two official plugins are available:
 
 ```bash
 # Install dependencies (only the first time)
-yarn
+npm install
 
 # Run the local server at localhost:5173
-yarn dev
+npm run dev --workspace=client
 
 # Build for production in the dist/ directory
-yarn build
+npm run build --workspace=client
 ```
 
 ## Expanding the ESLint configuration

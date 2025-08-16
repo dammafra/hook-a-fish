@@ -1,5 +1,5 @@
 import { useThree } from '@react-three/fiber'
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useMemo, type RefObject } from 'react'
 import { Object3D, Plane, Vector2, Vector3 } from 'three'
 import { parsePosition, type Position } from '../utils/position'
 
@@ -25,11 +25,12 @@ export default function PointerControls({
   onMove,
 }: PointerControlsProps) {
   const { camera, gl, raycaster } = useThree()
-  const _target = parsePosition(target)
-  const _offset = parsePosition(offset)
 
-  const mouse = new Vector2()
-  const plane = new Plane(new Vector3(0, 1, 0), -lockPositionYAt)
+  const _target = useMemo(() => parsePosition(target), [target])
+  const _offset = useMemo(() => parsePosition(offset), [offset])
+
+  const mouse = useMemo(() => new Vector2(), [])
+  const plane = useMemo(() => new Plane(new Vector3(0, 1, 0), -lockPositionYAt), [lockPositionYAt])
 
   useEffect(() => {
     const handleMove = (e: PointerEvent) => {
@@ -57,13 +58,27 @@ export default function PointerControls({
     }
 
     gl.domElement.addEventListener('pointermove', handleMove)
-    hideCursor && gl.domElement.classList.add('cursor-none')
+    if (hideCursor) gl.domElement.classList.add('cursor-none')
 
     return () => {
       gl.domElement.removeEventListener('pointermove', handleMove)
       gl.domElement.classList.remove('cursor-none')
     }
-  }, [camera, gl, raycaster, targetRef, lockPositionYAt])
+  }, [
+    _offset,
+    _target,
+    camera,
+    enabled,
+    gl,
+    hideCursor,
+    lockPositionYAt,
+    mouse,
+    onMove,
+    plane,
+    raycaster,
+    targetRef,
+    type,
+  ])
 
   return null
 }

@@ -42,9 +42,7 @@ export default function Rope({
   const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
 
   const _startAnchor = parsePosition(startAnchor)
-  console.log(_startAnchor)
   const _endAnchor = parsePosition(endAnchor)
-  console.log(_endAnchor)
 
   useEffect(() => {
     const offset = getWorldPositionOffset(line.current)
@@ -70,15 +68,14 @@ export default function Rope({
     const sagging = 0.3
     controlPoint.addScaledVector(gravity, sagging * length)
 
-    type === 'line'
-      ? line.current.setPoints(startPoint, endPoint, controlPoint)
-      : setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
+    if (type === 'line') line.current.setPoints(startPoint, endPoint, controlPoint)
+    else setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
 
     line.current.geometry.translate(...offset)
   })
 
   return type === 'line' ? (
-    // @ts-ignore
+    // @ts-expect-error don't need to specify `start` and `end` props since will be set in `useFrame`
     <QuadraticBezierLine ref={line} lineWidth={radius * 300} color="white" />
   ) : (
     <mesh ref={line} castShadow>

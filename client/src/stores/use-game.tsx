@@ -11,7 +11,7 @@ type GameStore = {
   hook: () => void
 }
 
-export default create<GameStore>()(
+const useGame = create<GameStore>()(
   subscribeWithSelector(set => ({
     started: false,
     start: () => set(() => ({ started: true })),
@@ -27,3 +27,5 @@ export default create<GameStore>()(
     },
   })),
 )
+
+export default useGame
