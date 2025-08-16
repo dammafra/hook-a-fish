@@ -16,6 +16,9 @@ Currently, two official plugins are available:
 ## Setup
 
 ```bash
+# Create client and server .env files
+cp client/.env.example client/.env && cp server/.env.example server/.env
+
 # Install dependencies (only the first time)
 npm install
 

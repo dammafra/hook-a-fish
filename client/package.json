@@ -16,6 +16,7 @@
     "@react-three/rapier": "^2.1.0",
     "@tailwindcss/vite": "^4.1.12",
     "@types/three": "^0.179.0",
+    "colyseus.js": "^0.16.19",
     "leva": "^0.10.0",
     "r3f-perf": "^7.2.3",
     "react": "^19.1.1",
