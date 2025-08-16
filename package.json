@@ -4,14 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ],
   "scripts": {
+    "dev": "concurrently --names \"client,server\" --prefix \"name\" --prefix-colors \"blue,green\" \"npm run client:dev\" \"npm run server:dev\"",
+    "client:dev": "npm run dev --workspace=client",
+    "server:dev": "npm run dev --workspace=server",
+    "build": "npm run client:build && npm run server:build",
+    "client:build": "npm run build --workspace=client",
+    "server:build": "npm run build --workspace=server",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "concurrently": "^9.2.0",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

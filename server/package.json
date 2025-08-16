@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.4"
+  },
+  "dependencies": {
+    "@colyseus/monitor": "^0.16.7",
+    "@colyseus/playground": "^0.16.4",
+    "@colyseus/tools": "^0.16.13",
+    "colyseus": "^0.16.4",
+    "express": "^5.1.0"
+  }
+}

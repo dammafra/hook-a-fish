@@ -19,11 +19,11 @@ Currently, two official plugins are available:
 # Install dependencies (only the first time)
 npm install
 
-# Run the local server at localhost:5173
-npm run dev --workspace=client
+# Run the local server at localhost:5173 and localhost:2567 for client and server respectively
+npm run dev
 
-# Build for production in the dist/ directory
-npm run build --workspace=client
+# Build for production in the client/dist and server/dist directories
+npm run build
 ```
 
 ## Expanding the ESLint configuration
