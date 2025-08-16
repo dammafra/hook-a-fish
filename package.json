@@ -14,6 +14,9 @@
     "build": "npm run client:build && npm run server:build",
     "client:build": "npm run build --workspace=client",
     "server:build": "npm run build --workspace=server",
+    "preview": "concurrently --names \"client,server\" --prefix \"name\" --prefix-colors \"blue,green\" \"npm run client:preview\" \"npm run server:preview\"",
+    "client:preview": "npm run preview --workspace=client",
+    "server:preview": "npm run preview --workspace=server",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
