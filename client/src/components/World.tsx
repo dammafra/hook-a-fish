@@ -4,7 +4,6 @@ import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
 import { useCallback, useEffect, useRef } from 'react'
 import { Mesh, Vector3 } from 'three'
-import useColyseus from '../stores/use-colyseus'
 import useGame from '../stores/use-game'
 import Fishes from './Fishes'
 import FishingRod from './FishingRod'
@@ -23,8 +22,6 @@ const getPosition = (degrees: number) => {
 }
 
 export default function World() {
-  useColyseus()
-
   const { step, world } = useRapier()
   useControls('physics', {
     step: button(() => step(1 / 60)),
@@ -61,7 +58,7 @@ export default function World() {
       <Water ref={game} radius={3} />
       <Fishes />
 
-      {started && <FishingRod position={getPosition(60)} color="red" />}
+      {started && <FishingRod position={getPosition(60)} />}
       {started && <Interface />}
     </>
   )

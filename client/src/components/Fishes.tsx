@@ -16,7 +16,7 @@ interface FishProps {
 
 export function Fish({ id, onRemove }: FishProps) {
   const hooked = useGame(state => state.hooked)
-  const hook = useGame(state => state.hook)
+  const toggleHook = useGame(state => state.toggleHook)
 
   const radius = 0.25
   const targetRadius = 0.075
@@ -29,25 +29,25 @@ export function Fish({ id, onRemove }: FishProps) {
   const distance = useMemo(() => Math.random() * (2.5 - 0.5) + 0.5, [])
 
   const body = useRef<RapierRigidBody>(null!)
-  const [bait, setBait] = useState<RapierRigidBody>()
+  const [hook, setHook] = useState<RapierRigidBody>()
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
     // @ts-expect-error `userData` is of type `Record<string, any>`
-    if (other.rigidBody?.userData.name === 'bait') {
-      setBait(other.rigidBody)
-      hook()
+    if (other.rigidBody?.userData.name === 'hook') {
+      setHook(other.rigidBody)
+      toggleHook()
     }
   }
 
   useFrame(({ clock }) => {
-    if (bait) {
-      const { x, y, z } = bait.translation()
+    if (hook) {
+      const { x, y, z } = hook.translation()
       const position = new Vector3(x, y - 0.35, z)
       body.current.setTranslation(position, true)
       // TODO improve
       if (position.distanceTo(new Vector3()) > 3.5) {
         onRemove?.(id)
-        hook()
+        toggleHook()
       }
     } else {
       const time = clock.getElapsedTime()
@@ -62,7 +62,7 @@ export function Fish({ id, onRemove }: FishProps) {
 
   return (
     <RigidBody ref={body} type="kinematicPosition" colliders={false} position-x={id}>
-      <mesh>
+      <mesh castShadow>
         <icosahedronGeometry args={[radius, 1]} />
         <meshStandardMaterial flatShading color={color} />
       </mesh>

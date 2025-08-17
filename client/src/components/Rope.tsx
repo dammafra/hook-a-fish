@@ -63,10 +63,10 @@ export default function Rope({
       .add(end.current.translation() as Vector3)
 
     const controlPoint = new Vector3().addVectors(startPoint, endPoint).multiplyScalar(0.5)
-    const gravity = new Vector3(0, -1, 0)
+    const direction = new Vector3(0, -1, 0)
     const length = startPoint.distanceTo(endPoint)
     const sagging = 0.3
-    controlPoint.addScaledVector(gravity, sagging * length)
+    controlPoint.addScaledVector(direction, sagging * length)
 
     if (type === 'line') line.current.setPoints(startPoint, endPoint, controlPoint)
     else setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))

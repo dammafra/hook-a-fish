@@ -47,7 +47,7 @@ export default function Environment() {
         castShadow
         position={directionalLightPosition}
         intensity={directionalLightIntensity}
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[512, 512]}
       >
         <orthographicCamera
           attach="shadow-camera"
@@ -64,7 +64,7 @@ export default function Environment() {
 
       <ambientLight intensity={ambientLightIntensity} />
 
-      <SoftShadows size={25} samples={10} focus={0.1} />
+      <SoftShadows size={25} samples={20} focus={0.2} />
     </>
   )
 }

@@ -8,7 +8,7 @@ type GameStore = {
   count: number
 
   hooked: boolean
-  hook: () => void
+  toggleHook: () => void
 }
 
 const useGame = create<GameStore>()(
@@ -19,7 +19,7 @@ const useGame = create<GameStore>()(
     count: 0,
 
     hooked: false,
-    hook: () => {
+    toggleHook: () => {
       return set(state => ({
         hooked: !state.hooked,
         count: state.hooked ? state.count + 1 : state.count,

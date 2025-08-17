@@ -1,7 +1,10 @@
+import { Center } from '@react-three/drei'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 import { useRef } from 'react'
-import { Object3D, Quaternion, type ColorRepresentation } from 'three'
+import { Object3D, Quaternion } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
+import FishingHook from '../models/FishingHook'
+import FishingPole from '../models/FishingPole'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import PointerControls from './PointerControls'
@@ -10,56 +13,48 @@ import Rope from './Rope'
 interface FishingRodProps {
   position?: Position
   rotation?: Rotation
-  color?: ColorRepresentation
-  stickLength?: number
-  stickRadius?: number
   ropeLength?: number
   ropeRadius?: number
-  baitRadius?: number
 }
 
 export default function FishingRod({
   position = 0,
   rotation = [0, 0, Math.PI * 0.35],
-  color = `hsl(${Math.random() * 360}, 100%, 50%)`,
-  stickLength = 2,
-  stickRadius = 0.05,
   ropeLength = 1.5,
-  ropeRadius = 0.01,
-  baitRadius = 0.05,
+  ropeRadius = 0.005,
 }: FishingRodProps) {
   const isTouch = useIsTouch()
   const _position = parsePosition(position)
   const _rotation = parseRotation(rotation)
 
-  const stickBody = useRef<RapierRigidBody>(null!)
-  const baitBody = useRef<RapierRigidBody>(null!)
+  const poleBody = useRef<RapierRigidBody>(null!)
+  const hookBody = useRef<RapierRigidBody>(null!)
 
-  const stickMesh = useRef<Object3D>(null!)
+  const poleMesh = useRef<Object3D>(null!)
+  const hookMesh = useRef<Object3D>(null!)
 
   const onMove = () => {
-    const { position, rotation } = stickMesh.current
-    stickBody.current.setNextKinematicTranslation(position)
-    stickBody.current.setNextKinematicRotation(new Quaternion().setFromEuler(rotation))
+    const { position, rotation } = poleMesh.current
+    poleBody.current.setNextKinematicTranslation(position)
+    poleBody.current.setNextKinematicRotation(new Quaternion().setFromEuler(rotation))
   }
 
   return (
     <>
-      <group ref={stickMesh} position={_position} rotation={_rotation}>
-        <RigidBody ref={stickBody} type="kinematicPosition" />
-        <mesh castShadow>
-          <cylinderGeometry args={[stickRadius, stickRadius * 1.5, stickLength]} />
-          <meshStandardMaterial color={color} />
-        </mesh>
-        <mesh scale={[2.5, 1.1, 2.5]} visible={false}>
-          <cylinderGeometry args={[stickRadius, stickRadius * 1.5, stickLength]} />
-          <meshBasicMaterial wireframe />
-        </mesh>
+      <group ref={poleMesh} position={_position} rotation={_rotation}>
+        <RigidBody ref={poleBody} type="kinematicPosition" />
+        <Center
+          scale={0.01}
+          position={[0, -0.06, -0.05]}
+          rotation={[-Math.PI * 0.5, Math.PI * 0.094, 0]}
+        >
+          <FishingPole />
+        </Center>
       </group>
 
       <RigidBody
-        userData={{ name: 'bait' }}
-        ref={baitBody}
+        userData={{ name: 'hook' }}
+        ref={hookBody}
         colliders="ball"
         position={_position}
         gravityScale={5}
@@ -67,16 +62,16 @@ export default function FishingRod({
         angularDamping={8}
         canSleep={false}
       >
-        <mesh castShadow>
-          <icosahedronGeometry args={[baitRadius, 1]} />
-          <meshStandardMaterial color="gray" metalness={0.8} roughness={0.2} />
-        </mesh>
+        <Center scale={0.001} position={[0.003, 0, -0.001]}>
+          <FishingHook ref={hookMesh} />
+        </Center>
       </RigidBody>
 
       <Rope
-        start={stickBody}
-        end={baitBody}
-        startAnchor={[0, 0.95, 0]}
+        start={poleBody}
+        end={hookBody}
+        startAnchor={[0, 1, 0]}
+        endAnchor={[0, 0.1, 0]}
         length={ropeLength}
         radius={ropeRadius}
       />
@@ -84,8 +79,8 @@ export default function FishingRod({
       {/* TODO improve lockPositionYAt value */}
       <PointerControls
         hideCursor
-        targetRef={stickMesh}
-        lockPositionYAt={1.4}
+        targetRef={poleMesh}
+        lockPositionYAt={1.62}
         onMove={onMove}
         offset={isTouch ? [-1, 0, -1] : 0}
       />
