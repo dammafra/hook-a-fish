@@ -62,13 +62,13 @@ export function Fish({ id, onRemove }: FishProps) {
 
   return (
     <RigidBody ref={body} type="kinematicPosition" colliders={false} position-x={id}>
-      <mesh castShadow>
+      <mesh>
         <icosahedronGeometry args={[radius, 1]} />
-        <meshStandardMaterial flatShading color={color} />
+        <meshStandardMaterial color={color} />
       </mesh>
       <mesh position-y={radius}>
         <icosahedronGeometry args={[targetRadius, 1]} />
-        <meshStandardMaterial flatShading color="red" />
+        <meshStandardMaterial color="red" />
       </mesh>
       {!hooked && (
         <BallCollider

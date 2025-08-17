@@ -8,25 +8,25 @@
 import { useGLTF } from '@react-three/drei'
 import type { ObjectMap } from '@react-three/fiber'
 import { useEffect, type JSX } from 'react'
-import * as THREE from 'three'
-import { type GLTF } from 'three-stdlib'
+import type { Mesh, MeshStandardMaterial } from 'three'
+import type { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF &
   ObjectMap & {
     nodes: {
-      ['Group#7-Entity38822']: THREE.Mesh
-      ['Group#6-Entity38823']: THREE.Mesh
-      ['Group#7-Entity38824']: THREE.Mesh
-      ['Group#5-Entity38825']: THREE.Mesh
-      ['Group#3-Entity17613']: THREE.Mesh
-      ['Group#2-Entity17614']: THREE.Mesh
-      ['Group#1-Entity17615']: THREE.Mesh
-      ['Group#7-Entity38826']: THREE.Mesh
-      ['Group#7-Entity38827']: THREE.Mesh
+      ['Group#7-Entity38822']: Mesh
+      ['Group#6-Entity38823']: Mesh
+      ['Group#7-Entity38824']: Mesh
+      ['Group#5-Entity38825']: Mesh
+      ['Group#3-Entity17613']: Mesh
+      ['Group#2-Entity17614']: Mesh
+      ['Group#1-Entity17615']: Mesh
+      ['Group#7-Entity38826']: Mesh
+      ['Group#7-Entity38827']: Mesh
     }
     materials: {
-      FrontColor: THREE.MeshStandardMaterial
-      ['[0038_Orange]']: THREE.MeshStandardMaterial
+      FrontColor: MeshStandardMaterial
+      ['[0038_Orange]']: MeshStandardMaterial
     }
   }
 
