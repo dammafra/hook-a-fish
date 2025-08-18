@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import useGame from '../stores/use-game'
 import { getPositionOnCirlce } from '../utils/position'
 import Bucket from './Bucket'
@@ -8,17 +9,18 @@ import Tutorial from './Tutorial'
 import Water from './Water'
 
 export default function World() {
-  const started = useGame(state => state.started)
+  const phase = useGame(state => state.phase)
+  const fishingRodPosition = useMemo(() => getPositionOnCirlce(2, 0, 2), [])
 
   return (
     <>
-      {!started && <Tutorial />}
-
-      {started && (
+      {phase === 'ready' ? (
+        <Tutorial />
+      ) : (
         <>
+          <FishingRod position={fishingRodPosition} />
           <Fishes />
           <Water />
-          <FishingRod position={getPositionOnCirlce(2, 0, 2)} />
           <Bucket />
           <Grass />
         </>

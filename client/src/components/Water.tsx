@@ -13,25 +13,25 @@ export default function Water() {
 
   const radius = useGame(state => state.radius)
   const bucketPosition = useGame(state => state.bucketPosition)
-  const started = useGame(state => state.started)
-
-  const [boundsGeometry] = useState(() => new CylinderGeometry(radius - 1, radius - 1, 0.5, 32, 1, true)) //prettier-ignore
 
   const ref = useRef<Mesh>(null!)
-  const cameraAnimation = useCallback(() => {
-    if (!started || !controls) return
+  const [boundsGeometry] = useState(() => new CylinderGeometry(radius - 1, radius - 1, 0.5, 32, 1, true)) //prettier-ignore
 
+  const cameraAnimation = useCallback(() => {
     const cameraControls = controls as CameraControls
     cameraControls.fitToBox(ref.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(0, true)
-  }, [controls, started])
+  }, [controls])
 
   useEffect(cameraAnimation, [cameraAnimation, size])
 
   useEffect(() => {
-    const unsubscribeStart = useGame.subscribe(state => state.started, cameraAnimation)
-    return unsubscribeStart
+    const unsubscribePhase = useGame.subscribe(
+      state => state.phase,
+      phase => phase === 'ready' && cameraAnimation(),
+    )
+    return unsubscribePhase
   }, [cameraAnimation])
 
   return (

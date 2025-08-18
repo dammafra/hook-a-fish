@@ -6,46 +6,20 @@ import {
   RigidBody,
   type CollisionEnterPayload,
 } from '@react-three/rapier'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { DoubleSide, Mesh, Vector3 } from 'three'
-import { useSound } from '../hooks/use-sound'
+import { useMemo, useRef, useState } from 'react'
+import { Vector3 } from 'three'
 import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 
 interface FishProps {
   id: number
-  onRemove?: (id: number) => void
 }
 
-export function Fish2() {
-  const mouth = useRef<Mesh>(null!)
-
-  useFrame(({ clock }) => {
-    mouth.current.rotation.x = Math.sin(clock.elapsedTime)
-  })
-
-  return (
-    <group scale={[0.75, 1.2, 0.75]}>
-      <mesh rotation-x={Math.PI}>
-        <sphereGeometry args={[1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
-        <meshStandardMaterial color="red" side={DoubleSide} />
-      </mesh>
-      <mesh ref={mouth} scale={1.05}>
-        <sphereGeometry args={[1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
-        <meshStandardMaterial color="orange" side={DoubleSide} />
-      </mesh>
-    </group>
-  )
-}
-
-export function Fish({ id, onRemove }: FishProps) {
-  const hooked = useGame(state => state.hooked)
-  const toggleHook = useGame(state => state.toggleHook)
+export function Fish({ id }: FishProps) {
+  const phase = useGame(state => state.phase)
+  const hook = useGame(state => state.hook)
+  const unhook = useGame(state => state.unhook)
   const bucketPosition = useGame(state => state.bucketPosition)
-  const jumpSound = useSound('./sounds/jump.mp3')
-  const reelSound = useSound('./sounds/reel.mp3', { loop: true, volume: 0.3 })
-  const bucketSound = useSound('./sounds/bucket.mp3')
-  const collectSound = useSound('./sounds/collect.mp3')
 
   const radius = 0.25
   const targetRadius = 0.075
@@ -62,35 +36,27 @@ export function Fish({ id, onRemove }: FishProps) {
   const lastMove = useRef(0)
 
   const body = useRef<RapierRigidBody>(null!)
-  const [hook, setHook] = useState<RapierRigidBody>()
+  const [hookBody, setHookBody] = useState<RapierRigidBody>()
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
     // @ts-expect-error `userData` is of type `Record<string, any>`
-    if (!hooked && other.rigidBody?.userData.name === 'hook') {
-      setHook(other.rigidBody)
-      toggleHook()
-      jumpSound.play()
-      reelSound.play()
+    if (phase !== 'hooked' && other.rigidBody?.userData.name === 'hook') {
+      setHookBody(other.rigidBody)
+      hook(id)
     }
   }
 
   useFrame(({ clock }) => {
-    if (hook) {
+    if (hookBody) {
       body.current.setBodyType(2, false)
       body.current.setLinvel(new Vector3(), false)
       body.current.setAngvel(new Vector3(), false)
 
-      const { x, y, z } = hook.translation()
+      const { x, y, z } = hookBody.translation()
       const position = new Vector3(x, y - 0.25, z)
       body.current.setTranslation(position, true)
 
-      if (position.distanceTo(bucketPosition) < 0.8) {
-        onRemove?.(id)
-        toggleHook()
-        reelSound.stop()
-        bucketSound.play()
-        collectSound.play()
-      }
+      if (position.distanceTo(bucketPosition) < 0.8) unhook(id)
     } else {
       const impulse = new Vector3()
       const now = clock.elapsedTime
@@ -122,7 +88,7 @@ export function Fish({ id, onRemove }: FishProps) {
         <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
         </Center>
-        {!hook && (
+        {!hookBody && (
           <>
             <BallCollider args={[radius]} />
             <BallCollider
@@ -138,20 +104,7 @@ export function Fish({ id, onRemove }: FishProps) {
 }
 
 export default function Fishes() {
-  const [fishes, setFishes] = useState(Array.from({ length: 20 }, (_, i) => i))
-  const onRemove = (id: number) => setFishes(fishes => fishes.filter(fid => fid !== id))
-  const fishesSound = useSound('./sounds/fishes.mp3', { loop: true, volume: 0.5 })
-  const loopSound = useSound('./sounds/loop.mp3', { loop: true, volume: 0.1 })
+  const fishes = useGame(state => state.fishes)
 
-  useEffect(() => {
-    loopSound.play()
-    fishesSound.play()
-
-    return () => {
-      loopSound.stop()
-      fishesSound.stop()
-    }
-  }, [])
-
-  return fishes.map(id => <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />)
+  return fishes.map(id => <Fish key={`fish-${id}`} id={id} />)
 }

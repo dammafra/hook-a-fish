@@ -1,6 +1,6 @@
 import { Center } from '@react-three/drei'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Object3D, Quaternion } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import FishingHook from '../models/FishingHook'
@@ -24,8 +24,8 @@ export default function FishingRod({
   ropeRadius = 0.005,
 }: FishingRodProps) {
   const isTouch = useIsTouch()
-  const _position = parsePosition(position)
-  const _rotation = parseRotation(rotation)
+  const [_position] = useState(() => parsePosition(position))
+  const [_rotation] = useState(() => parseRotation(rotation))
 
   const poleBody = useRef<RapierRigidBody>(null!)
   const hookBody = useRef<RapierRigidBody>(null!)

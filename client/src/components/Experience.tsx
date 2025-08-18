@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
+import SoundBooard from './SoundBoard'
 import World from './World'
 
 export default function Experience() {
@@ -41,6 +42,8 @@ export default function Experience() {
           <Helpers />
         </Physics>
       </Suspense>
+
+      <SoundBooard />
     </Canvas>
   )
 }

@@ -8,7 +8,7 @@ export default function Grass() {
 
   const grassInstances: GrassInstanceProps[] = useMemo(
     () =>
-      Array.from({ length: 50 }).map(_ => {
+      Array.from({ length: 50 }).map(() => {
         const r = radius + 0.5 + Math.random() * 2
         const angle = Math.random() * Math.PI * 2
         const position = new Vector3(r * Math.cos(angle), 0.17, r * Math.sin(angle))

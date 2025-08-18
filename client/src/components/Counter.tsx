@@ -2,7 +2,7 @@ import { Html } from '@react-three/drei'
 import useGame from '../stores/use-game'
 
 export default function Counter() {
-  const count = useGame(state => state.count)
+  const count = useGame(state => state.counter)
 
   return (
     <Html transform position={[0, 1, -1]} rotation-x={-Math.PI * 0.1} wrapperClass="counter">

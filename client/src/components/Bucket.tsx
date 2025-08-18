@@ -7,7 +7,7 @@ import Counter from './Counter'
 
 export default function Bucket() {
   const { viewport } = useThree()
-  const hooked = useGame(state => state.hooked)
+  const phase = useGame(state => state.phase)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
 
@@ -19,7 +19,7 @@ export default function Bucket() {
   return (
     <group position={bucketPosition}>
       <Counter />
-      <Float speed={50} enabled={hooked} floatingRange={[0.1, 0.2]}>
+      <Float speed={50} enabled={phase === 'hooked'} floatingRange={[0.1, 0.2]}>
         <BucketModel scale={2} rotation-y={Math.PI * 0.25} />
       </Float>
     </group>
