@@ -74,9 +74,15 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
         <meshStandardMaterial transparent opacity={0.5} color="limegreen" />
       </mesh>
 
-      <mesh ref={ref} receiveShadow scale={[radius, 0.15, radius]}>
+      <mesh ref={ref} scale={[radius, 0.15, radius]}>
         <cylinderGeometry args={[0.8, 1, 1]} />
-        <MeshDistortMaterial color="dodgerblue" transmission={0.8} roughness={0.3} />
+        <MeshDistortMaterial
+          color="dodgerblue"
+          transmission={0.8}
+          roughness={0.3}
+          thickness={0.1}
+          ior={2}
+        />
       </mesh>
     </>
   )

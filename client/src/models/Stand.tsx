@@ -24,7 +24,12 @@ export default function Stand(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('./models/stand.glb') as GLTFResult
   return (
     <group {...props} dispose={null}>
-      <mesh castShadow geometry={nodes.fishingStand.geometry} material={materials.wood} />
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.fishingStand.geometry}
+        material={materials.wood}
+      />
     </group>
   )
 }

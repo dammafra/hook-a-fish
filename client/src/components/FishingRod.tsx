@@ -81,7 +81,7 @@ export default function FishingRod({
         type="billboard"
         hideCursor
         targetRef={poleMesh}
-        lockPositionYAt={1.62}
+        lockPositionYAt={1.61}
         onMove={onMove}
         offset={isTouch ? [0, 0, -2] : 0}
       />

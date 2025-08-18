@@ -35,9 +35,24 @@ export default function Bucket(props: JSX.IntrinsicElements['group']) {
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={100}>
-        <mesh castShadow geometry={nodes.Bucket_1.geometry} material={materials.Wood} />
-        <mesh castShadow geometry={nodes.Bucket_2.geometry} material={materials.DarkMetal} />
-        <mesh castShadow geometry={nodes.Bucket_3.geometry} material={materials.Metal} />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Bucket_1.geometry}
+          material={materials.Wood}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Bucket_2.geometry}
+          material={materials.DarkMetal}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Bucket_3.geometry}
+          material={materials.Metal}
+        />
       </group>
     </group>
   )
