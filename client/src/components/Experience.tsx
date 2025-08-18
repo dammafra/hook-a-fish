@@ -1,6 +1,7 @@
 import { CameraControls, CameraControlsImpl } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
+import { Suspense } from 'react'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
@@ -22,9 +23,11 @@ export default function Experience() {
         far: 200,
       }}
     >
-      <Physics {...physicsControls}>
-        <World />
-      </Physics>
+      <Suspense>
+        <Physics {...physicsControls}>
+          <World />
+        </Physics>
+      </Suspense>
 
       <Environment />
       <CameraControls
