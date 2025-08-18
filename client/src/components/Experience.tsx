@@ -23,13 +23,8 @@ export default function Experience() {
         far: 200,
       }}
     >
-      <Suspense>
-        <Physics {...physicsControls}>
-          <World />
-        </Physics>
-      </Suspense>
-
       <Environment />
+
       <CameraControls
         enabled={false}
         makeDefault
@@ -40,7 +35,12 @@ export default function Experience() {
         }}
       />
 
-      <Helpers />
+      <Suspense>
+        <Physics {...physicsControls}>
+          <World />
+          <Helpers />
+        </Physics>
+      </Suspense>
     </Canvas>
   )
 }

@@ -3,6 +3,8 @@ import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
 type GameStore = {
+  radius: number
+
   started: boolean
   start: () => void
 
@@ -17,6 +19,8 @@ type GameStore = {
 
 const useGame = create<GameStore>()(
   subscribeWithSelector(set => ({
+    radius: 3.5,
+
     started: false,
     start: () => set(() => ({ started: true })),
 

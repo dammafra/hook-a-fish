@@ -1,10 +1,12 @@
 import { GizmoHelper, GizmoViewport } from '@react-three/drei'
-import { useControls } from 'leva'
+import { useRapier } from '@react-three/rapier'
+import { button, monitor, useControls } from 'leva'
 import { Perf } from 'r3f-perf'
 import { useDebug } from '../hooks/use-debug'
 
 export default function Helpers() {
   const debug = useDebug()
+
   const { grid, axes, gizmo, perf } = useControls(
     'helpers',
     {
@@ -15,6 +17,14 @@ export default function Helpers() {
     },
     { collapsed: true },
   )
+
+  const { step, world } = useRapier()
+  useControls('physics', {
+    step: button(() => step(1 / 60)),
+    bodies: monitor(() => world.bodies.len()),
+    colliders: monitor(() => world.colliders.len()),
+    joints: monitor(() => world.impulseJoints.len()),
+  })
 
   return (
     <>
