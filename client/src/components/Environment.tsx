@@ -1,4 +1,4 @@
-import { Helper } from '@react-three/drei'
+import { Helper, SoftShadows } from '@react-three/drei'
 import { useControls } from 'leva'
 import { CameraHelper } from 'three'
 
@@ -39,7 +39,7 @@ export default function Environment() {
         castShadow
         position={directionalLightPosition}
         intensity={directionalLightIntensity}
-        shadow-mapSize={[512, 512]}
+        shadow-mapSize={[1025, 1025]}
       >
         <orthographicCamera
           attach="shadow-camera"
@@ -55,6 +55,8 @@ export default function Environment() {
       </directionalLight>
 
       <ambientLight intensity={ambientLightIntensity} />
+
+      <SoftShadows focus={0.2} />
     </>
   )
 }

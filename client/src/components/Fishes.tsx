@@ -6,8 +6,9 @@ import {
   RigidBody,
   type CollisionEnterPayload,
 } from '@react-three/rapier'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { DoubleSide, Mesh, Vector3 } from 'three'
+import { useSound } from '../hooks/use-sound'
 import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 
@@ -41,6 +42,10 @@ export function Fish({ id, onRemove }: FishProps) {
   const hooked = useGame(state => state.hooked)
   const toggleHook = useGame(state => state.toggleHook)
   const bucketPosition = useGame(state => state.bucketPosition)
+  const jumpSound = useSound('./sounds/jump.mp3')
+  const reelSound = useSound('./sounds/reel.mp3', { loop: true, volume: 0.3 })
+  const bucketSound = useSound('./sounds/bucket.mp3')
+  const collectSound = useSound('./sounds/collect.mp3')
 
   const radius = 0.25
   const targetRadius = 0.075
@@ -64,6 +69,8 @@ export function Fish({ id, onRemove }: FishProps) {
     if (!hooked && other.rigidBody?.userData.name === 'hook') {
       setHook(other.rigidBody)
       toggleHook()
+      jumpSound.play()
+      reelSound.play()
     }
   }
 
@@ -74,12 +81,15 @@ export function Fish({ id, onRemove }: FishProps) {
       body.current.setAngvel(new Vector3(), false)
 
       const { x, y, z } = hook.translation()
-      const position = new Vector3(x, y - 0.35, z)
+      const position = new Vector3(x, y - 0.25, z)
       body.current.setTranslation(position, true)
 
       if (position.distanceTo(bucketPosition) < 0.8) {
         onRemove?.(id)
         toggleHook()
+        reelSound.stop()
+        bucketSound.play()
+        collectSound.play()
       }
     } else {
       const impulse = new Vector3()
@@ -130,6 +140,18 @@ export function Fish({ id, onRemove }: FishProps) {
 export default function Fishes() {
   const [fishes, setFishes] = useState(Array.from({ length: 20 }, (_, i) => i))
   const onRemove = (id: number) => setFishes(fishes => fishes.filter(fid => fid !== id))
+  const fishesSound = useSound('./sounds/fishes.mp3', { loop: true, volume: 0.5 })
+  const loopSound = useSound('./sounds/loop.mp3', { loop: true, volume: 0.1 })
+
+  useEffect(() => {
+    loopSound.play()
+    fishesSound.play()
+
+    return () => {
+      loopSound.stop()
+      fishesSound.stop()
+    }
+  }, [])
 
   return fishes.map(id => <Fish key={`fish-${id}`} id={id} onRemove={onRemove} />)
 }

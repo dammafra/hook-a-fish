@@ -8,7 +8,7 @@
 */
 import { useGLTF } from '@react-three/drei'
 import type { ObjectMap } from '@react-three/fiber'
-import { type JSX } from 'react'
+import { useEffect, type JSX } from 'react'
 import type { ColorRepresentation, Mesh, MeshStandardMaterial } from 'three'
 import type { GLTF } from 'three-stdlib'
 
@@ -45,13 +45,17 @@ export default function Fish({
 }: FishProps) {
   const { nodes, materials } = useGLTF('./models/fish.glb') as GLTFResult
 
+  useEffect(() => {
+    materials.Color.metalness = 0.2
+    materials.Color.roughness = 0.8
+  }, [materials])
+
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={0.001}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Sphere_Color_0.geometry}
             position={[0, 231.474, 6.24]}
             rotation={[-Math.PI / 2, 0, 0]}
@@ -61,7 +65,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Mouth_Color_0.geometry}
             material={materials.Color}
             position={[0, 193.086, 149.114]}
@@ -70,7 +73,6 @@ export default function Fish({
           />
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Eyes_Color_0.geometry}
             material={materials.Color}
             position={[0, 240.885, 135.691]}
@@ -79,7 +81,6 @@ export default function Fish({
           />
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Iris_Color_0.geometry}
             material={materials.Color}
             position={[0, 240.885, 158.506]}
@@ -88,7 +89,6 @@ export default function Fish({
           />
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Fin_Color_0.geometry}
             position={[0, 311.063, 5.449]}
             rotation={[-Math.PI / 2, Math.PI / 2, 0]}
@@ -98,7 +98,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Tail_Color_0.geometry}
             position={[0, 238.314, -111.059]}
             rotation={[-Math.PI / 2, Math.PI / 2, 0]}
@@ -108,7 +107,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.FinLeft_Color_0.geometry}
             position={[0.744, 232.616, 28.922]}
             rotation={[0, 0, -Math.PI / 2]}
@@ -118,7 +116,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Sphere001_Color_0.geometry}
             position={[0, 231.474, 6.24]}
             rotation={[-1.149, 0.616, 0.197]}
@@ -128,7 +125,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Sphere002_Color_0.geometry}
             position={[0, 231.474, 6.24]}
             rotation={[-0.478, -0.674, 1.824]}
@@ -138,7 +134,6 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            receiveShadow
             geometry={nodes.Sphere003_Color_0.geometry}
             position={[0, 231.474, 6.24]}
             rotation={[-1.436, -0.619, 0.373]}

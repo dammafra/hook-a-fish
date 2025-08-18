@@ -6,7 +6,7 @@ export default function Counter() {
 
   return (
     <Html transform position={[0, 1, -1]} rotation-x={-Math.PI * 0.1} wrapperClass="counter">
-      <span className="font-mono select-none px-3 py-2.5 rounded-lg text-lg bg-white/20 border border-white text-white">
+      <span className="font-mono select-none px-2 py-1.5 rounded-lg text-lg bg-white/20 border border-white text-white">
         {count}
       </span>
     </Html>
