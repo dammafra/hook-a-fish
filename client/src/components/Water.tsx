@@ -1,9 +1,10 @@
 import { Center, Float, MeshDistortMaterial } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, type Ref } from 'react'
-import type { Mesh } from 'three'
+import { Vector3, type Mesh } from 'three'
 import Bucket from '../models/Bucket'
 import Grass from '../models/Grass'
+import Stand from '../models/Stand'
 import Tree from '../models/Tree'
 import useGame from '../stores/use-game'
 import Counter from './Counter'
@@ -54,11 +55,17 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
       <Tree scale={0.5} position={[3, 0, -3]} rotation-y={-Math.PI * 0.25} />
 
       <group position={bucketPosition}>
-        <Counter position={[-0.4, 0, -1.5]} rotation={[-Math.PI * 0.1, 0, 0]} />
+        <Counter />
         <Float speed={50} enabled={hooked}>
           <Bucket scale={2} rotation-y={Math.PI * 0.25} />
         </Float>
       </group>
+
+      <Stand
+        scale={3}
+        position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}
+        rotation-y={Math.PI * 0.1}
+      />
 
       {grass}
 
