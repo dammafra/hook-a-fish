@@ -7,7 +7,7 @@ import {
   type CollisionEnterPayload,
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
-import { Vector3 } from 'three'
+import { Quaternion, Vector3 } from 'three'
 import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 
@@ -19,13 +19,15 @@ export function Fish({ id }: FishProps) {
   const phase = useGame(state => state.phase)
   const hook = useGame(state => state.hook)
   const unhook = useGame(state => state.unhook)
+  const lastHooked = useGame(state => state.lastHooked)
   const bucketPosition = useGame(state => state.bucketPosition)
 
   const radius = 0.25
   const targetRadius = 0.075
-  const colorA = useMemo(() => `hsl(${Math.random() * 360}, 40%, 60%)`, [])
-  const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
-  const colorC = useMemo(() => `hsl(${Math.random() * 360}, 40%, 70%)`, [])
+  const targetOffsetZ = 0.1
+  const colorA = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
+  const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
+  const colorC = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
 
   const position = useMemo(() => new Vector3(Math.random(), 0, Math.random()), [])
 
@@ -47,33 +49,46 @@ export function Fish({ id }: FishProps) {
   }
 
   useFrame(({ clock }) => {
+    // Stay in bucket
+    if (id === lastHooked) {
+      const position = bucketPosition.clone()
+      position.y = 0.5
+      body.current.setTranslation(position, false)
+      body.current.setRotation(new Quaternion(), false)
+      return
+    }
+
+    // Follow hook
     if (hookBody) {
       body.current.setBodyType(2, false)
       body.current.setLinvel(new Vector3(), false)
       body.current.setAngvel(new Vector3(), false)
 
       const { x, y, z } = hookBody.translation()
-      const position = new Vector3(x, y - 0.25, z)
-      body.current.setTranslation(position, true)
+      const position = new Vector3(x, y - targetRadius, z - targetOffsetZ)
+      body.current.setTranslation(position, false)
+      body.current.setRotation(new Quaternion(), false)
 
       if (position.distanceTo(bucketPosition) < 0.8) unhook(id)
-    } else {
-      const impulse = new Vector3()
-      const now = clock.elapsedTime
-
-      if (now - lastFloat.current >= floatFrequency) {
-        impulse.y = 0.1
-        lastFloat.current = now
-      }
-
-      if (now - lastMove.current >= moveFrequency) {
-        impulse.x = (Math.random() - 0.5) * 0.25
-        impulse.z = (Math.random() - 0.5) * 0.25
-        lastMove.current = now
-      }
-
-      body.current.applyImpulse(impulse, true)
+      return
     }
+
+    // Move
+    const impulse = new Vector3()
+    const now = clock.elapsedTime
+
+    if (now - lastFloat.current >= floatFrequency) {
+      impulse.y = 0.1
+      lastFloat.current = now
+    }
+
+    if (now - lastMove.current >= moveFrequency) {
+      impulse.x = (Math.random() - 0.5) * 0.25
+      impulse.z = (Math.random() - 0.5) * 0.25
+      lastMove.current = now
+    }
+
+    body.current.applyImpulse(impulse, true)
   })
 
   return (
@@ -93,7 +108,7 @@ export function Fish({ id }: FishProps) {
             <BallCollider args={[radius]} />
             <BallCollider
               args={[targetRadius]}
-              position={[0, radius, 0]}
+              position={[0, radius, targetOffsetZ]}
               onCollisionEnter={onCollisionEnter}
             />
           </>

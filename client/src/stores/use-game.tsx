@@ -11,6 +11,7 @@ type GameStore = {
   total: number
   counter: number
   fishes: number[]
+  lastHooked?: number
 
   startTime: number
   endTime: number
@@ -55,7 +56,11 @@ const useGame = create<GameStore>()(
     hook: () => {
       set(state => {
         if (state.phase === 'started' || state.phase === 'unhooked') {
-          return { phase: 'hooked' }
+          return {
+            phase: 'hooked',
+            lastHooked: undefined,
+            fishes: state.fishes.filter(id => id !== state.lastHooked),
+          }
         }
 
         return {}
@@ -67,7 +72,7 @@ const useGame = create<GameStore>()(
         if (state.phase === 'hooked') {
           return {
             phase: 'unhooked',
-            fishes: state.fishes.filter(id => id !== fish),
+            lastHooked: fish,
             counter: state.counter + 1,
           }
         }

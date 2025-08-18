@@ -9,6 +9,7 @@ import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import PointerControls from './PointerControls'
 import Rope from './Rope'
+import { BOUNDS_COLLISION_GROUP } from './Water'
 
 interface FishingRodProps {
   position?: Position
@@ -61,6 +62,7 @@ export default function FishingRod({
         linearDamping={2}
         angularDamping={8}
         canSleep={false}
+        collisionGroups={BOUNDS_COLLISION_GROUP}
       >
         <Center scale={0.001} position={[0.003, 0, -0.001]}>
           <FishingHook ref={hookMesh} />

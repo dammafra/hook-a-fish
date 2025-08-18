@@ -2,20 +2,31 @@ import { CameraControls, MeshDistortMaterial } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { CuboidCollider, TrimeshCollider } from '@react-three/rapier'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CylinderGeometry, Vector3, type Mesh } from 'three'
-import Stand from '../models/Stand'
-import Tree from '../models/Tree'
+import { CylinderGeometry, type Mesh } from 'three'
 import useGame from '../stores/use-game'
+
+const GROUP = 0x0001 // category bit 1
+const MASK = 0xffff ^ GROUP // collide with everything except itself
+export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 
 export default function Water() {
   const { gl, controls, size } = useThree()
   gl.transmissionResolutionScale = 0.5
 
   const radius = useGame(state => state.radius)
-  const bucketPosition = useGame(state => state.bucketPosition)
 
   const ref = useRef<Mesh>(null!)
-  const [boundsGeometry] = useState(() => new CylinderGeometry(radius - 1, radius - 1, 0.5, 32, 1, true)) //prettier-ignore
+  const [boundsGeometry] = useState(
+    () =>
+      new CylinderGeometry(
+        radius - 1, // radius top
+        radius - 1, // radius top
+        5, // height
+        16, // radial segments
+        1, // heightsegments
+        true, // open ended
+      ),
+  )
 
   const cameraAnimation = useCallback(() => {
     const cameraControls = controls as CameraControls
@@ -36,14 +47,6 @@ export default function Water() {
 
   return (
     <>
-      <Tree scale={0.5} position={[3, 0, -3]} rotation-y={-Math.PI * 0.25} />
-
-      <Stand
-        scale={3}
-        position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}
-        rotation-y={Math.PI * 0.1}
-      />
-
       <mesh ref={ref} scale={[radius, 0.15, radius]}>
         <cylinderGeometry args={[0.8, 1, 1]} />
         <MeshDistortMaterial
@@ -59,6 +62,7 @@ export default function Water() {
         args={[boundsGeometry.attributes.position.array, boundsGeometry.index!.array]}
         friction={0}
         restitution={1}
+        collisionGroups={BOUNDS_COLLISION_GROUP}
       />
       <CuboidCollider position={[0, -0.5, 0]} args={[radius, 0.1, radius]} friction={0} />
     </>

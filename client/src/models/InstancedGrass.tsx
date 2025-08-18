@@ -39,7 +39,13 @@ export default function InstancedGrass({ count = 10, instances }: InstancedGrass
   }, [scene])
 
   return (
-    <Instances geometry={geometry} material={materials._crayfishdiffuse} limit={count}>
+    <Instances
+      castShadow
+      receiveShadow
+      geometry={geometry}
+      material={materials._crayfishdiffuse}
+      limit={count}
+    >
       {instances.map((props, i) => (
         // @ts-expect-error Quaternion is a valid rotation type
         <Instance key={`grass-${i}`} {...props} />

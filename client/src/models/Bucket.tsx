@@ -47,12 +47,12 @@ export default function Bucket(props: JSX.IntrinsicElements['group']) {
           geometry={nodes.Bucket_2.geometry}
           material={materials.DarkMetal}
         />
-        <mesh
+        {/* <mesh
           castShadow
           receiveShadow
           geometry={nodes.Bucket_3.geometry}
           material={materials.Metal}
-        />
+        /> */}
       </group>
     </group>
   )

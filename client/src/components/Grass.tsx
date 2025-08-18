@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
 import { Euler, Vector3 } from 'three'
 import InstancedGrass, { type GrassInstanceProps } from '../models/InstancedGrass'
+import Stand from '../models/Stand'
+import Tree from '../models/Tree'
 import useGame from '../stores/use-game'
 
 export default function Grass() {
   const radius = useGame(state => state.radius)
+  const bucketPosition = useGame(state => state.bucketPosition)
 
   const grassInstances: GrassInstanceProps[] = useMemo(
     () =>
@@ -28,6 +31,14 @@ export default function Grass() {
         <circleGeometry args={[radius + 3]} />
         <meshStandardMaterial transparent opacity={0.5} color="limegreen" />
       </mesh>
+
+      <Tree scale={0.5} position={[3, 0, -3]} rotation-y={-Math.PI * 0.25} />
+
+      <Stand
+        scale={3}
+        position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}
+        rotation-y={Math.PI * 0.1}
+      />
     </>
   )
 }
