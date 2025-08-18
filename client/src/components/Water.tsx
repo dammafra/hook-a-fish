@@ -1,7 +1,8 @@
 import { Center, Float, MeshDistortMaterial } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect, useMemo, type Ref } from 'react'
-import { Vector3, type Mesh } from 'three'
+import { CuboidCollider, TrimeshCollider } from '@react-three/rapier'
+import { useEffect, useMemo, useState, type Ref } from 'react'
+import { CylinderGeometry, Vector3, type Mesh } from 'three'
 import Bucket from '../models/Bucket'
 import Grass from '../models/Grass'
 import Stand from '../models/Stand'
@@ -21,6 +22,10 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
   const hooked = useGame(state => state.hooked)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
+
+  const [boundsGeometry] = useState(
+    () => new CylinderGeometry(radius - 1, radius - 1, 0.5, 32, 1, true),
+  )
 
   const grass = useMemo(
     () =>
@@ -46,8 +51,8 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
   )
 
   useEffect(() => {
-    if (viewport.aspect < 1) setBucketPosition(-2.5, 0.1, 4.5)
-    else setBucketPosition(-3.5, 0.1, 3)
+    if (viewport.aspect < 1) setBucketPosition(-2.5, 0, 4.5)
+    else setBucketPosition(-3.5, 0, 3)
   }, [setBucketPosition, viewport.aspect])
 
   return (
@@ -56,7 +61,7 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
 
       <group position={bucketPosition}>
         <Counter />
-        <Float speed={50} enabled={hooked}>
+        <Float speed={50} enabled={hooked} floatingRange={[0.1, 0.2]}>
           <Bucket scale={2} rotation-y={Math.PI * 0.25} />
         </Float>
       </group>
@@ -84,6 +89,13 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
           ior={2}
         />
       </mesh>
+
+      <TrimeshCollider
+        args={[boundsGeometry.attributes.position.array, boundsGeometry.index!.array]}
+        friction={0}
+        restitution={1}
+      />
+      <CuboidCollider position={[0, -0.5, 0]} args={[radius, 0.1, radius]} friction={0} />
     </>
   )
 }

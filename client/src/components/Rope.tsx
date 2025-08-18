@@ -41,8 +41,8 @@ export default function Rope({
   const line = useRef<QuadraticBezierLineRef>(null!)
   const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
 
-  const _startAnchor = parsePosition(startAnchor)
-  const _endAnchor = parsePosition(endAnchor)
+  const [_startAnchor] = useState(() => parsePosition(startAnchor))
+  const [_endAnchor] = useState(() => parsePosition(endAnchor))
 
   useEffect(() => {
     const offset = getWorldPositionOffset(line.current)

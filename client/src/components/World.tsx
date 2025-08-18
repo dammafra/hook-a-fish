@@ -54,10 +54,13 @@ export default function World() {
     <>
       {!started && <Tutorial />}
 
-      <Water ref={game} radius={3.5} />
-      <Fishes />
-
-      {started && <FishingRod position={getPosition(60)} />}
+      {started && (
+        <>
+          <Fishes />
+          <Water ref={game} radius={3.5} />
+          <FishingRod position={getPosition(0)} />
+        </>
+      )}
     </>
   )
 }
