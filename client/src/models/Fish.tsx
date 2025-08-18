@@ -16,15 +16,9 @@ type GLTFResult = GLTF &
   ObjectMap & {
     nodes: {
       Sphere_Color_0: Mesh
-      Mouth_Color_0: Mesh
-      Eyes_Color_0: Mesh
       Iris_Color_0: Mesh
-      Fin_Color_0: Mesh
       Tail_Color_0: Mesh
-      FinLeft_Color_0: Mesh
-      Sphere001_Color_0: Mesh
       Sphere002_Color_0: Mesh
-      Sphere003_Color_0: Mesh
     }
     materials: {
       Color: MeshStandardMaterial
@@ -65,63 +59,12 @@ export default function Fish({
           </mesh>
           <mesh
             castShadow
-            geometry={nodes.Mouth_Color_0.geometry}
-            material={materials.Color}
-            position={[0, 193.086, 149.114]}
-            rotation={[-2.857, 0, -Math.PI]}
-            scale={[-4.96, 4.96, 6.644]}
-          />
-          <mesh
-            castShadow
-            geometry={nodes.Eyes_Color_0.geometry}
-            material={materials.Color}
-            position={[0, 240.885, 135.691]}
-            rotation={[-1.679, 0, 0]}
-            scale={[40.677, 24.659, 49.608]}
-          />
-          <mesh
-            castShadow
-            geometry={nodes.Iris_Color_0.geometry}
-            material={materials.Color}
-            position={[0, 240.885, 158.506]}
-            rotation={[-1.679, 0, 0]}
-            scale={[12.905, 7.823, 15.739]}
-          />
-          <mesh
-            castShadow
-            geometry={nodes.Fin_Color_0.geometry}
-            position={[0, 311.063, 5.449]}
-            rotation={[-Math.PI / 2, Math.PI / 2, 0]}
-            scale={100}
-          >
-            <meshStandardMaterial {...materials.Color} color={colorB} />
-          </mesh>
-          <mesh
-            castShadow
             geometry={nodes.Tail_Color_0.geometry}
             position={[0, 238.314, -111.059]}
-            rotation={[-Math.PI / 2, Math.PI / 2, 0]}
+            rotation={[-Math.PI / 2, 1.571, 0]}
             scale={100}
           >
-            <meshStandardMaterial {...materials.Color} color={colorB} />
-          </mesh>
-          <mesh
-            castShadow
-            geometry={nodes.FinLeft_Color_0.geometry}
-            position={[0.744, 232.616, 28.922]}
-            rotation={[0, 0, -Math.PI / 2]}
-            scale={100}
-          >
-            <meshStandardMaterial {...materials.Color} color={colorB} />
-          </mesh>
-          <mesh
-            castShadow
-            geometry={nodes.Sphere001_Color_0.geometry}
-            position={[0, 231.474, 6.24]}
-            rotation={[-1.149, 0.616, 0.197]}
-            scale={140.754}
-          >
-            <meshStandardMaterial {...materials.Color} color={colorC} />
+            <meshStandardMaterial {...materials.Color} map={undefined} color={colorB} />
           </mesh>
           <mesh
             castShadow
@@ -130,17 +73,16 @@ export default function Fish({
             rotation={[-0.478, -0.674, 1.824]}
             scale={140.754}
           >
-            <meshStandardMaterial {...materials.Color} color={colorC} />
+            <meshStandardMaterial {...materials.Color} map={undefined} color={colorC} />
           </mesh>
           <mesh
             castShadow
-            geometry={nodes.Sphere003_Color_0.geometry}
-            position={[0, 231.474, 6.24]}
-            rotation={[-1.436, -0.619, 0.373]}
-            scale={140.754}
-          >
-            <meshStandardMaterial {...materials.Color} color={colorC} />
-          </mesh>
+            geometry={nodes.Iris_Color_0.geometry}
+            material={materials.Color}
+            position={[0, 240.885, 158.506]}
+            rotation={[-1.679, 0, 0]}
+            scale={[12.905, 7.823, 15.739]}
+          />
         </group>
       </group>
     </group>
