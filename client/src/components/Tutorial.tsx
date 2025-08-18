@@ -27,13 +27,13 @@ export default function Tutorial() {
         <planeGeometry args={[10, 10]} />
       </mesh>
       <Html transform center>
-        <animated.div className="bg-slate-900 text-white border border-white p-10 rounded-xl font-mono w-80 flex flex-col gap-4">
+        <animated.div className="bg-white/50 border border-white p-10 rounded-xl font-mono w-80 flex flex-col gap-4">
           <p>
             🎣 Control the fishing rod by <b>moving your {isTouch ? 'finger' : 'mouse'}</b>
           </p>
 
           <p>
-            🐠 After you <b>Hook-A-Fish</b>, pull it out of the water to catch another one!
+            🪣 After you <b>Hook-A-Fish</b>, put it inside your bucket and catch another one!
           </p>
 
           <button

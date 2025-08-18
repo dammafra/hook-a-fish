@@ -7,7 +7,6 @@ import { Mesh, Vector3 } from 'three'
 import useGame from '../stores/use-game'
 import Fishes from './Fishes'
 import FishingRod from './FishingRod'
-import Interface from './Interface'
 import Tutorial from './Tutorial'
 import Water from './Water'
 
@@ -41,7 +40,7 @@ export default function World() {
     const cameraControls = controls as CameraControls
     cameraControls.fitToBox(game.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
-    cameraControls.rotateAzimuthTo(Math.PI * 0.25, true)
+    cameraControls.rotateAzimuthTo(0, true)
   }, [controls, started])
 
   useEffect(cameraAnimation, [cameraAnimation, size])
@@ -59,7 +58,6 @@ export default function World() {
       <Fishes />
 
       {started && <FishingRod position={getPosition(60)} />}
-      {started && <Interface />}
     </>
   )
 }

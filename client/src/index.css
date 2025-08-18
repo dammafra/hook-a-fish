@@ -5,3 +5,7 @@ body,
 #root {
   @apply fixed inset-0 overflow-hidden bg-radial to-lime-700 from-lime-200;
 }
+
+.counter div {
+  @apply pointer-events-none! cursor-none!;
+}

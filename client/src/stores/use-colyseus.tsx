@@ -4,7 +4,7 @@ import { subscribeWithSelector } from 'zustand/middleware'
 
 const colyseusSDK = new Client(import.meta.env.VITE_COLYSEUS_URL)
 
-type ColyseusStore = {}
+type ColyseusStore = object
 
 const useColyseus = create<ColyseusStore>()(
   subscribeWithSelector(() => {

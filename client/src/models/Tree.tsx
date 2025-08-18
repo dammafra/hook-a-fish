@@ -27,8 +27,8 @@ export default function Tree(props: JSX.IntrinsicElements['group']) {
     materials.Tree_Green.roughness = 1
 
     materials.Tree_Wood.metalness = 0
-    materials.Tree_Wood.roughness = 0
-  }, [])
+    materials.Tree_Wood.roughness = 1
+  }, [materials])
 
   return (
     <group {...props} dispose={null}>

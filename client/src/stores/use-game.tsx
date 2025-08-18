@@ -1,3 +1,4 @@
+import { Vector3 } from 'three'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
@@ -9,6 +10,9 @@ type GameStore = {
 
   hooked: boolean
   toggleHook: () => void
+
+  bucketPosition: Vector3
+  setBucketPosition: (x: number, y: number, z: number) => void
 }
 
 const useGame = create<GameStore>()(
@@ -25,6 +29,9 @@ const useGame = create<GameStore>()(
         count: state.hooked ? state.count + 1 : state.count,
       }))
     },
+
+    bucketPosition: new Vector3(0, 0, 0),
+    setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
   })),
 )
 

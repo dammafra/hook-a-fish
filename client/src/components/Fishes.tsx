@@ -17,6 +17,7 @@ interface FishProps {
 export function Fish({ id, onRemove }: FishProps) {
   const hooked = useGame(state => state.hooked)
   const toggleHook = useGame(state => state.toggleHook)
+  const bucketPosition = useGame(state => state.bucketPosition)
 
   const radius = 0.25
   const targetRadius = 0.075
@@ -44,8 +45,8 @@ export function Fish({ id, onRemove }: FishProps) {
       const { x, y, z } = hook.translation()
       const position = new Vector3(x, y - 0.35, z)
       body.current.setTranslation(position, true)
-      // TODO improve
-      if (position.distanceTo(new Vector3()) > 3.5) {
+
+      if (position.distanceTo(bucketPosition) < 0.5) {
         onRemove?.(id)
         toggleHook()
       }
@@ -64,7 +65,7 @@ export function Fish({ id, onRemove }: FishProps) {
     <RigidBody ref={body} type="kinematicPosition" colliders={false} position-x={id}>
       <mesh>
         <icosahedronGeometry args={[radius, 1]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={color} flatShading />
       </mesh>
       <mesh position-y={radius}>
         <icosahedronGeometry args={[targetRadius, 1]} />

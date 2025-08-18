@@ -78,11 +78,12 @@ export default function FishingRod({
 
       {/* TODO improve lockPositionYAt value */}
       <PointerControls
+        type="billboard"
         hideCursor
         targetRef={poleMesh}
         lockPositionYAt={1.62}
         onMove={onMove}
-        offset={isTouch ? [-1, 0, -1] : 0}
+        offset={isTouch ? [0, 0, -2] : 0}
       />
     </>
   )

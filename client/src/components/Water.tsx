@@ -1,8 +1,12 @@
-import { Center, MeshDistortMaterial } from '@react-three/drei'
-import type { Ref } from 'react'
+import { Center, Float, MeshDistortMaterial } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
+import { useEffect, useMemo, type Ref } from 'react'
 import type { Mesh } from 'three'
+import Bucket from '../models/Bucket'
 import Grass from '../models/Grass'
 import Tree from '../models/Tree'
+import useGame from '../stores/use-game'
+import Counter from './Counter'
 
 interface WaterProps {
   ref?: Ref<Mesh>
@@ -10,11 +14,16 @@ interface WaterProps {
 }
 
 export default function Water({ ref, radius = 1 }: WaterProps) {
-  return (
-    <>
-      <Tree scale={0.5} position={[1, 0, -4]} />
+  const { gl, viewport } = useThree()
+  gl.transmissionResolutionScale = 0.5
 
-      {Array.from({ length: 50 }).map((_, index) => {
+  const hooked = useGame(state => state.hooked)
+  const bucketPosition = useGame(state => state.bucketPosition)
+  const setBucketPosition = useGame(state => state.setBucketPosition)
+
+  const grass = useMemo(
+    () =>
+      Array.from({ length: 50 }).map((_, index) => {
         const r = radius + 0.5 + Math.random() * 2
         const angle = Math.random() * Math.PI * 2
         const x = r * Math.cos(angle)
@@ -22,17 +31,43 @@ export default function Water({ ref, radius = 1 }: WaterProps) {
         const rotationY = Math.random() * Math.PI * 2
 
         return (
-          <Center key={`grass-${index}`} scale={0.001} position={[x, 0.17, z]} rotation-y={rotationY}>
+          <Center
+            key={`grass-${index}`}
+            scale={0.001}
+            position={[x, 0.17, z]}
+            rotation-y={rotationY}
+          >
             <Grass />
           </Center>
         )
-      })}
+      }),
+    [radius],
+  )
+
+  useEffect(() => {
+    if (viewport.aspect < 1) setBucketPosition(-2.5, 0.1, 4.5)
+    else setBucketPosition(-3.5, 0.1, 3)
+  }, [setBucketPosition, viewport.aspect])
+
+  return (
+    <>
+      <Tree scale={0.5} position={[3, 0, -3]} rotation-y={-Math.PI * 0.25} />
+
+      <group position={bucketPosition}>
+        <Counter position={[-0.4, 0, -1.5]} rotation={[-Math.PI * 0.1, 0, 0]} />
+        <Float speed={50} enabled={hooked}>
+          <Bucket scale={2} rotation-y={Math.PI * 0.25} />
+        </Float>
+      </group>
+
+      {grass}
 
       <mesh receiveShadow rotation-x={-Math.PI * 0.5}>
         <circleGeometry args={[radius + 3]} />
         <meshStandardMaterial transparent opacity={0.5} color="limegreen" />
       </mesh>
-      <mesh ref={ref} receiveShadow scale={[radius, 0.1, radius]}>
+
+      <mesh ref={ref} receiveShadow scale={[radius, 0.15, radius]}>
         <cylinderGeometry args={[0.8, 1, 1]} />
         <MeshDistortMaterial color="dodgerblue" transmission={0.8} roughness={0.3} />
       </mesh>
