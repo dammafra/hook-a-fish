@@ -1,3 +1,4 @@
+import { Center } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import {
   BallCollider,
@@ -6,12 +7,34 @@ import {
   type CollisionEnterPayload,
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
-import { Vector3 } from 'three'
+import { DoubleSide, Mesh, Vector3 } from 'three'
+import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 
 interface FishProps {
   id: number
   onRemove?: (id: number) => void
+}
+
+export function Fish2() {
+  const mouth = useRef<Mesh>(null!)
+
+  useFrame(({ clock }) => {
+    mouth.current.rotation.x = Math.sin(clock.elapsedTime)
+  })
+
+  return (
+    <group scale={[0.75, 1.2, 0.75]}>
+      <mesh rotation-x={Math.PI}>
+        <sphereGeometry args={[1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
+        <meshStandardMaterial color="red" side={DoubleSide} />
+      </mesh>
+      <mesh ref={mouth} scale={1.05}>
+        <sphereGeometry args={[1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
+        <meshStandardMaterial color="orange" side={DoubleSide} />
+      </mesh>
+    </group>
+  )
 }
 
 export function Fish({ id, onRemove }: FishProps) {
@@ -21,7 +44,9 @@ export function Fish({ id, onRemove }: FishProps) {
 
   const radius = 0.25
   const targetRadius = 0.075
-  const color = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
+  const colorA = useMemo(() => `hsl(${Math.random() * 360}, 40%, 60%)`, [])
+  const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
+  const colorC = useMemo(() => `hsl(${Math.random() * 360}, 40%, 70%)`, [])
 
   const position = useMemo(() => new Vector3(Math.random(), 0, Math.random()), [])
 
@@ -84,14 +109,9 @@ export function Fish({ id, onRemove }: FishProps) {
         enabledRotations={[false, true, false]}
         gravityScale={0.5}
       >
-        <mesh>
-          <icosahedronGeometry args={[radius, 1]} />
-          <meshStandardMaterial color={color} flatShading />
-        </mesh>
-        <mesh position-y={radius}>
-          <icosahedronGeometry args={[targetRadius, 1]} />
-          <meshStandardMaterial color="red" />
-        </mesh>
+        <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
+          <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
+        </Center>
         {!hook && (
           <>
             <BallCollider args={[radius]} />
