@@ -1,8 +1,7 @@
-import { CameraControls, CameraControlsImpl } from '@react-three/drei'
+import { CameraControls } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { Suspense } from 'react'
-import { useDebug } from '../hooks/use-debug'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
@@ -10,7 +9,7 @@ import SoundBooard from './SoundBoard'
 import World from './World'
 
 export default function Experience() {
-  const debug = useDebug()
+  // const debug = useDebug()
   const physicsControls = useControls(
     'physics',
     { debug: false, paused: false },
@@ -29,23 +28,25 @@ export default function Experience() {
     >
       <Environment />
 
+      {/* TODO dolly only when started, with a limit */}
       <CameraControls
+        enabled={false}
         makeDefault
-        mouseButtons={
-          debug
-            ? undefined
-            : {
-                left: CameraControlsImpl.ACTION.NONE,
-                right: CameraControlsImpl.ACTION.NONE,
-                middle: CameraControlsImpl.ACTION.DOLLY,
-                wheel: CameraControlsImpl.ACTION.DOLLY,
-              }
-        }
-        touches={{
-          one: CameraControlsImpl.ACTION.NONE,
-          two: CameraControlsImpl.ACTION.TOUCH_DOLLY,
-          three: CameraControlsImpl.ACTION.NONE,
-        }}
+        // mouseButtons={
+        //   debug
+        //     ? undefined
+        //     : {
+        //         left: CameraControlsImpl.ACTION.NONE,
+        //         right: CameraControlsImpl.ACTION.NONE,
+        //         middle: CameraControlsImpl.ACTION.DOLLY,
+        //         wheel: CameraControlsImpl.ACTION.DOLLY,
+        //       }
+        // }
+        // touches={{
+        //   one: CameraControlsImpl.ACTION.NONE,
+        //   two: CameraControlsImpl.ACTION.TOUCH_DOLLY,
+        //   three: CameraControlsImpl.ACTION.NONE,
+        // }}
       />
 
       <Suspense>

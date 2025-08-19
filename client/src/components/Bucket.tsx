@@ -19,8 +19,19 @@ export default function Bucket() {
   return (
     <group position={bucketPosition}>
       {phase !== 'ready' && <Counter />}
-      <Float speed={50} enabled={phase === 'hooked'} floatingRange={[0.1, 0.2]}>
-        <BucketModel scale={2} rotation-y={Math.PI * 0.25} />
+      <Float
+        key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
+        speed={50}
+        enabled={phase === 'hooked'}
+        floatingRange={[0, 0.1]}
+        floatIntensity={0.1}
+        scale={2}
+      >
+        <BucketModel />
+        <mesh scale={0.15} position-y={0.25} rotation={[-Math.PI * 0.5, 0, Math.PI * 0.14]}>
+          <circleGeometry args={[1, 8]} />
+          <meshStandardMaterial color="dodgerblue" />
+        </mesh>
       </Float>
     </group>
   )

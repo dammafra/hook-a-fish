@@ -8,7 +8,7 @@ import {
   type RigidBodyTypeString,
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
-import { Quaternion, Vector3 } from 'three'
+import { Euler, Quaternion, Vector3 } from 'three'
 import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 
@@ -31,15 +31,8 @@ export function Fish({ id }: FishProps) {
   const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
   const colorC = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
 
-  const position = useMemo(
-    () =>
-      new Vector3(
-        (Math.random() - 0.5) * radius,
-        Math.random() * (-0.5 + 1) - 1,
-        (Math.random() - 0.5) * radius,
-      ),
-    [],
-  )
+  const position = useMemo(() => new Vector3((Math.random() - 0.5) * radius, Math.random() * (-0.5 + 1) - 1, (Math.random() - 0.5) * radius), [radius]) //prettier-ignore
+  const rotation = useMemo(() => new Euler(0, Math.random() * 2 * Math.PI, 0), [])
 
   const floatFrequency = useMemo(() => Math.random() * (3 - 1) + 1, [])
   const lastFloat = useRef(0)
@@ -121,9 +114,11 @@ export function Fish({ id }: FishProps) {
         type={bodyType}
         ref={body}
         position={position}
+        rotation={rotation}
         colliders={false}
         enabledRotations={[false, true, false]}
         gravityScale={0.5}
+        angularDamping={0.5}
       >
         <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />

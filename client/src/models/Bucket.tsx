@@ -34,7 +34,7 @@ export default function Bucket(props: JSX.IntrinsicElements['group']) {
 
   return (
     <group {...props} dispose={null}>
-      <group rotation={[-Math.PI / 2, 0, 0]} scale={100}>
+      <group rotation={[-Math.PI / 2, 0, -Math.PI / 8]} scale={100}>
         <mesh
           castShadow
           receiveShadow

@@ -5,7 +5,7 @@ import Bucket from './Bucket'
 import Fishes from './Fishes'
 import FishingRod from './FishingRod'
 import Grass from './Grass'
-import Tutorial from './Tutorial'
+import Menu from './Menu'
 import Water from './Water'
 
 export default function World() {
@@ -14,7 +14,7 @@ export default function World() {
 
   return (
     <>
-      {phase === 'ready' && <Tutorial />}
+      {phase === 'ready' && <Menu />}
       {phase !== 'ready' && <FishingRod position={fishingRodPosition} />}
       {phase !== 'ready' && <Fishes />}
       <Water />

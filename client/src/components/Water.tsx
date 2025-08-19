@@ -17,7 +17,7 @@ export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 export default function Water() {
   const { gl, controls, size } = useThree()
   gl.transmissionResolutionScale = 0.8
-
+  const phase = useGame(state => state.phase)
   const radius = useGame(state => state.radius)
 
   const ref = useRef<Mesh>(null!)
@@ -38,14 +38,21 @@ export default function Water() {
     cameraControls.fitToBox(ref.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(0, true)
+
+    const colorPrimary = getComputedStyle(document.documentElement).getPropertyValue('--color-primary') //prettier-ignore
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colorPrimary)
   }, [controls])
 
-  useEffect(cameraAnimation, [cameraAnimation, size])
+  useEffect(() => {
+    if (phase === 'ready') return
+    cameraAnimation()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cameraAnimation, size])
 
   useEffect(() => {
     const unsubscribePhase = useGame.subscribe(
       state => state.phase,
-      phase => phase === 'ready' && cameraAnimation(),
+      phase => phase === 'started' && setTimeout(cameraAnimation, 500),
     )
     return unsubscribePhase
   }, [cameraAnimation])
