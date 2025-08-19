@@ -1,9 +1,13 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-primary: #7cad33;
+}
+
 html,
 body,
 #root {
-  @apply fixed inset-0 overflow-hidden bg-radial to-lime-700 from-lime-200;
+  @apply fixed inset-0 overflow-hidden bg-radial bg-primary;
 }
 
 .counter div {
