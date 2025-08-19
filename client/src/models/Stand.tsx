@@ -22,6 +22,7 @@ type GLTFResult = GLTF &
 
 export default function Stand(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('./models/stand.glb') as GLTFResult
+
   return (
     <mesh
       {...props}

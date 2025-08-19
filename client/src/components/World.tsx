@@ -14,17 +14,12 @@ export default function World() {
 
   return (
     <>
-      {phase === 'ready' ? (
-        <Tutorial />
-      ) : (
-        <>
-          <FishingRod position={fishingRodPosition} />
-          <Fishes />
-          <Water />
-          <Bucket />
-          <Grass />
-        </>
-      )}
+      {phase === 'ready' && <Tutorial />}
+      {phase !== 'ready' && <FishingRod position={fishingRodPosition} />}
+      {phase !== 'ready' && <Fishes />}
+      <Water />
+      <Bucket />
+      <Grass />
     </>
   )
 }

@@ -18,7 +18,7 @@ export default function Bucket() {
 
   return (
     <group position={bucketPosition}>
-      <Counter />
+      {phase !== 'ready' && <Counter />}
       <Float speed={50} enabled={phase === 'hooked'} floatingRange={[0.1, 0.2]}>
         <BucketModel scale={2} rotation-y={Math.PI * 0.25} />
       </Float>

@@ -5,6 +5,7 @@ import { Object3D, Quaternion } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import FishingHook from '../models/FishingHook'
 import FishingPole from '../models/FishingPole'
+import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import PointerControls from './PointerControls'
@@ -24,6 +25,8 @@ export default function FishingRod({
   ropeLength = 1.5,
   ropeRadius = 0.005,
 }: FishingRodProps) {
+  const phase = useGame(state => state.phase)
+
   const isTouch = useIsTouch()
   const [_position] = useState(() => parsePosition(position))
   const [_rotation] = useState(() => parseRotation(rotation))
@@ -80,7 +83,7 @@ export default function FishingRod({
 
       {/* TODO improve lockPositionYAt value */}
       <PointerControls
-        type="billboard"
+        type={phase === 'hooked' ? 'billboard' : 'target'}
         hideCursor
         targetRef={poleMesh}
         lockPositionYAt={1.5}

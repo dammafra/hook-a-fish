@@ -14,14 +14,7 @@ import type { GLTF } from 'three-stdlib'
 type GLTFResult = GLTF &
   ObjectMap & {
     nodes: {
-      ['Group#7-Entity38822']: Mesh
-      ['Group#6-Entity38823']: Mesh
-      ['Group#7-Entity38824']: Mesh
       ['Group#5-Entity38825']: Mesh
-      ['Group#3-Entity17613']: Mesh
-      ['Group#2-Entity17614']: Mesh
-      ['Group#1-Entity17615']: Mesh
-      ['Group#7-Entity38826']: Mesh
       ['Group#7-Entity38827']: Mesh
     }
     materials: {
@@ -34,8 +27,11 @@ export default function FishingPole(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('./models/fishing-pole.glb') as GLTFResult
 
   useEffect(() => {
-    materials.FrontColor.color.set('orange')
-    materials['[0038_Orange]'].color.set('brown')
+    materials.FrontColor.color.set('goldenrod')
+    materials.FrontColor.metalness = 0.8
+    materials.FrontColor.roughness = 0.5
+
+    materials['[0038_Orange]'].color.set('sienna')
   }, [materials])
 
   return (
@@ -43,50 +39,8 @@ export default function FishingPole(props: JSX.IntrinsicElements['group']) {
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes['Group#7-Entity38822'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#6-Entity38823'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#7-Entity38824'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
         geometry={nodes['Group#5-Entity38825'].geometry}
         material={materials['[0038_Orange]']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#3-Entity17613'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#2-Entity17614'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#1-Entity17615'].geometry}
-        material={materials.FrontColor}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes['Group#7-Entity38826'].geometry}
-        material={materials.FrontColor}
       />
       <mesh
         castShadow

@@ -2,6 +2,7 @@ import { CameraControls, CameraControlsImpl } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { Suspense } from 'react'
+import { useDebug } from '../hooks/use-debug'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
@@ -9,6 +10,7 @@ import SoundBooard from './SoundBoard'
 import World from './World'
 
 export default function Experience() {
+  const debug = useDebug()
   const physicsControls = useControls(
     'physics',
     { debug: false, paused: false },
@@ -21,13 +23,14 @@ export default function Experience() {
       camera={{
         fov: 45,
         near: 0.1,
-        far: 200,
+        far: 100,
+        position: [0, 10, 10],
       }}
     >
       <Environment />
 
       <CameraControls
-        enabled={false}
+        enabled={debug}
         makeDefault
         touches={{
           one: CameraControlsImpl.ACTION.NONE,

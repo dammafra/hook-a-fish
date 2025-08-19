@@ -11,7 +11,7 @@ export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 
 export default function Water() {
   const { gl, controls, size } = useThree()
-  gl.transmissionResolutionScale = 0.5
+  gl.transmissionResolutionScale = 0.8
 
   const radius = useGame(state => state.radius)
 
@@ -51,6 +51,8 @@ export default function Water() {
         <cylinderGeometry args={[0.8, 1, 1]} />
         <MeshDistortMaterial
           color="dodgerblue"
+          transparent
+          opacity={0.9}
           transmission={0.8}
           roughness={0.3}
           thickness={0.1}

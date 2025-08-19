@@ -8,8 +8,8 @@
 */
 import { useGLTF } from '@react-three/drei'
 import type { ObjectMap } from '@react-three/fiber'
-import { useEffect, type JSX } from 'react'
-import type { ColorRepresentation, Mesh, MeshStandardMaterial } from 'three'
+import { useEffect, useState, type JSX } from 'react'
+import type { ColorRepresentation, Material, Mesh, MeshStandardMaterial } from 'three'
 import type { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF &
@@ -39,10 +39,28 @@ export default function Fish({
 }: FishProps) {
   const { nodes, materials } = useGLTF('./models/fish.glb') as GLTFResult
 
+  const [materialA, setMaterialA] = useState<Material>()
+  const [materialB, setMaterialB] = useState<Material>()
+  const [materialC, setMaterialC] = useState<Material>()
+
   useEffect(() => {
-    materials.Color.metalness = 0.2
-    materials.Color.roughness = 0.8
-  }, [materials])
+    const baseMaterial = materials.Color.clone()
+    baseMaterial.map = null
+    baseMaterial.metalness = 0.5
+    baseMaterial.roughness = 0.8
+
+    const materialA = baseMaterial.clone()
+    const materialB = baseMaterial.clone()
+    const materialC = baseMaterial.clone()
+
+    materialA.color.set(colorA)
+    materialB.color.set(colorB)
+    materialC.color.set(colorC)
+
+    setMaterialA(materialA)
+    setMaterialB(materialB)
+    setMaterialC(materialC)
+  }, [materials, colorA, colorB, colorC])
 
   return (
     <group {...props} dispose={null}>
@@ -51,30 +69,27 @@ export default function Fish({
           <mesh
             castShadow
             geometry={nodes.Sphere_Color_0.geometry}
+            material={materialA}
             position={[0, 231.474, 6.24]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={140.754}
-          >
-            <meshStandardMaterial {...materials.Color} map={undefined} color={colorA} />
-          </mesh>
+          />
           <mesh
             castShadow
             geometry={nodes.Tail_Color_0.geometry}
+            material={materialB}
             position={[0, 238.314, -111.059]}
             rotation={[-Math.PI / 2, 1.571, 0]}
             scale={100}
-          >
-            <meshStandardMaterial {...materials.Color} map={undefined} color={colorB} />
-          </mesh>
+          />
           <mesh
             castShadow
             geometry={nodes.Sphere002_Color_0.geometry}
+            material={materialC}
             position={[0, 231.474, 6.24]}
             rotation={[-0.478, -0.674, 1.824]}
             scale={140.754}
-          >
-            <meshStandardMaterial {...materials.Color} map={undefined} color={colorC} />
-          </mesh>
+          />
           <mesh
             castShadow
             geometry={nodes.Iris_Color_0.geometry}
