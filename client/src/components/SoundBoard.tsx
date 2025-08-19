@@ -50,6 +50,7 @@ export default function SoundBooard() {
           case 'started':
             sounds.loop.play()
             sounds.fishes.play()
+            sounds.jump.play()
             return
 
           case 'hooked':

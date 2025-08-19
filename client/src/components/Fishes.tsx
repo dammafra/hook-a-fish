@@ -5,6 +5,7 @@ import {
   RapierRigidBody,
   RigidBody,
   type CollisionEnterPayload,
+  type RigidBodyTypeString,
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
 import { Quaternion, Vector3 } from 'three'
@@ -16,20 +17,29 @@ interface FishProps {
 }
 
 export function Fish({ id }: FishProps) {
+  const radius = useGame(state => state.radius)
   const phase = useGame(state => state.phase)
   const hook = useGame(state => state.hook)
   const unhook = useGame(state => state.unhook)
   const lastHooked = useGame(state => state.lastHooked)
   const bucketPosition = useGame(state => state.bucketPosition)
 
-  const radius = 0.25
+  const bodyRadius = 0.25
   const targetRadius = 0.075
   const targetOffsetZ = 0.1
   const colorA = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
   const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
   const colorC = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
 
-  const position = useMemo(() => new Vector3(Math.random(), 0, Math.random()), [])
+  const position = useMemo(
+    () =>
+      new Vector3(
+        (Math.random() - 0.5) * radius,
+        Math.random() * (-0.5 + 1) - 1,
+        (Math.random() - 0.5) * radius,
+      ),
+    [],
+  )
 
   const floatFrequency = useMemo(() => Math.random() * (3 - 1) + 1, [])
   const lastFloat = useRef(0)
@@ -38,6 +48,7 @@ export function Fish({ id }: FishProps) {
   const lastMove = useRef(0)
 
   const body = useRef<RapierRigidBody>(null!)
+  const [bodyType, setBodyType] = useState<RigidBodyTypeString>('kinematicPosition')
   const [hookBody, setHookBody] = useState<RapierRigidBody>()
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
@@ -48,7 +59,20 @@ export function Fish({ id }: FishProps) {
     }
   }
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
+    // Emerge on start
+    if (bodyType === 'kinematicPosition') {
+      const position = body.current.translation()
+      if (position.y >= 0) {
+        setBodyType('dynamic')
+        return
+      }
+
+      position.y += delta
+      body.current.setTranslation(position, false)
+      return
+    }
+
     // Stay in bucket
     if (id === lastHooked) {
       const position = bucketPosition.clone()
@@ -94,6 +118,7 @@ export function Fish({ id }: FishProps) {
   return (
     <>
       <RigidBody
+        type={bodyType}
         ref={body}
         position={position}
         colliders={false}
@@ -105,10 +130,10 @@ export function Fish({ id }: FishProps) {
         </Center>
         {!hookBody && (
           <>
-            <BallCollider args={[radius]} />
+            <BallCollider args={[bodyRadius]} />
             <BallCollider
               args={[targetRadius]}
-              position={[0, radius, targetOffsetZ]}
+              position={[0, bodyRadius, targetOffsetZ]}
               onCollisionEnter={onCollisionEnter}
             />
           </>

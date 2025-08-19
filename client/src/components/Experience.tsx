@@ -30,11 +30,20 @@ export default function Experience() {
       <Environment />
 
       <CameraControls
-        enabled={debug}
         makeDefault
+        mouseButtons={
+          debug
+            ? undefined
+            : {
+                left: CameraControlsImpl.ACTION.NONE,
+                right: CameraControlsImpl.ACTION.NONE,
+                middle: CameraControlsImpl.ACTION.DOLLY,
+                wheel: CameraControlsImpl.ACTION.DOLLY,
+              }
+        }
         touches={{
           one: CameraControlsImpl.ACTION.NONE,
-          two: CameraControlsImpl.ACTION.TOUCH_DOLLY_ROTATE,
+          two: CameraControlsImpl.ACTION.TOUCH_DOLLY,
           three: CameraControlsImpl.ACTION.NONE,
         }}
       />

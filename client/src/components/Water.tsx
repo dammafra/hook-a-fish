@@ -1,8 +1,13 @@
-import { CameraControls, MeshDistortMaterial } from '@react-three/drei'
+import {
+  CameraControls,
+  GradientTexture,
+  GradientType,
+  MeshDistortMaterial,
+} from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { CuboidCollider, TrimeshCollider } from '@react-three/rapier'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CylinderGeometry, type Mesh } from 'three'
+import { BackSide, CylinderGeometry, type Mesh } from 'three'
 import useGame from '../stores/use-game'
 
 const GROUP = 0x0001 // category bit 1
@@ -19,9 +24,9 @@ export default function Water() {
   const [boundsGeometry] = useState(
     () =>
       new CylinderGeometry(
-        radius - 1, // radius top
-        radius - 1, // radius top
-        5, // height
+        radius - 0.5, // radius top
+        radius - 0.5, // radius top
+        20, // height
         16, // radial segments
         1, // heightsegments
         true, // open ended
@@ -47,17 +52,34 @@ export default function Water() {
 
   return (
     <>
-      <mesh ref={ref} scale={[radius, 0.15, radius]}>
-        <cylinderGeometry args={[0.8, 1, 1]} />
-        <MeshDistortMaterial
-          color="dodgerblue"
-          transparent
-          opacity={0.9}
-          transmission={0.8}
-          roughness={0.3}
-          thickness={0.1}
-          ior={2}
-        />
+      <mesh ref={ref} position-y={0.01} rotation-x={-Math.PI * 0.5} scale={radius * 1.05}>
+        <circleGeometry />
+        <MeshDistortMaterial transmission={0.8} roughness={0.3} thickness={0.01} ior={2}>
+          <GradientTexture
+            stops={[0, 1]}
+            colors={['dodgerblue', 'aquamarine']}
+            size={512}
+            width={512}
+            type={GradientType.Radial}
+            innerCircleRadius={200}
+            outerCircleRadius={250}
+          />
+        </MeshDistortMaterial>
+      </mesh>
+
+      <mesh scale={radius} position={-0.1} rotation-x={Math.PI * 0.5}>
+        <sphereGeometry args={[1, 32, 16, 0, Math.PI]} />
+        <meshStandardMaterial side={BackSide}>
+          <GradientTexture
+            stops={[0, 1]}
+            colors={['brown', 'limegreen']}
+            size={512}
+            width={512}
+            type={GradientType.Radial}
+            innerCircleRadius={10}
+            outerCircleRadius={200}
+          />
+        </meshStandardMaterial>
       </mesh>
 
       <TrimeshCollider

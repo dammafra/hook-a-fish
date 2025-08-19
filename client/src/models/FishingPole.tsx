@@ -38,13 +38,11 @@ export default function FishingPole(props: JSX.IntrinsicElements['group']) {
     <group {...props} dispose={null}>
       <mesh
         castShadow
-        receiveShadow
         geometry={nodes['Group#5-Entity38825'].geometry}
         material={materials['[0038_Orange]']}
       />
       <mesh
         castShadow
-        receiveShadow
         geometry={nodes['Group#7-Entity38827'].geometry}
         material={materials.FrontColor}
       />

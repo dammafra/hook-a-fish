@@ -31,7 +31,7 @@ const useGame = create<GameStore>()(
     bucketPosition: new Vector3(0, 0, 0),
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
-    total: 20,
+    total: 25,
     counter: 0,
     fishes: [],
     startTime: 0,

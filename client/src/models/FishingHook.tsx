@@ -35,7 +35,6 @@ export default function FishingHook(props: JSX.IntrinsicElements['group']) {
       {...props}
       dispose={null}
       castShadow
-      receiveShadow
       geometry={nodes.Hook.geometry}
       material={materials['default']}
     />

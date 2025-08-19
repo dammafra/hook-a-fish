@@ -16,7 +16,7 @@ export default function Environment() {
           label: 'ambient intensity',
         },
         directionalLightIntensity: {
-          value: 4.5,
+          value: 3.5,
           min: 0,
           max: 20,
           step: 0.01,
@@ -39,7 +39,7 @@ export default function Environment() {
         castShadow
         position={directionalLightPosition}
         intensity={directionalLightIntensity}
-        shadow-mapSize={[1025, 1025]}
+        shadow-mapSize={[1024, 1024]}
       >
         <orthographicCamera
           attach="shadow-camera"
@@ -56,7 +56,7 @@ export default function Environment() {
 
       <ambientLight intensity={ambientLightIntensity} />
 
-      <SoftShadows focus={0.2} />
+      <SoftShadows focus={0.1} size={10} />
     </>
   )
 }
