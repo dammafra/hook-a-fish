@@ -9,6 +9,7 @@ type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
 type GameStore = {
   countdownSeconds: number
   startedAt: number
+  bonusTime: number
   radius: number
 
   lastPhoto?: string
@@ -37,6 +38,7 @@ const useGame = create<GameStore>()(
   subscribeWithSelector(set => ({
     countdownSeconds: 61, // start with 1 bonus second for the starting animation
     startedAt: 0,
+    bonusTime: 0,
     radius: 3.5,
 
     setLastPhoto: lastPhoto => set(() => ({ lastPhoto })),
@@ -99,6 +101,7 @@ const useGame = create<GameStore>()(
             phase: 'unhooked',
             lastHooked: fish,
             score: state.score + 1,
+            bonusTime: state.bonusTime + 3,
           }
         }
 
@@ -111,6 +114,7 @@ const useGame = create<GameStore>()(
         if (state.phase !== 'hooked' && state.phase !== 'ended') {
           return {
             countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
+            bonusTime: 0,
             phase: 'ended',
             menu: 'end',
           }

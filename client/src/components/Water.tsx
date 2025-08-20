@@ -16,7 +16,7 @@ export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 
 export default function Water() {
   const { gl, controls, size } = useThree()
-  gl.transmissionResolutionScale = 0.8
+  gl.transmissionResolutionScale = 0.7
   const phase = useGame(state => state.phase)
   const radius = useGame(state => state.radius)
 

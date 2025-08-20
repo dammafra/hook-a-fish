@@ -145,8 +145,9 @@ const End = animated(props => {
       {canShare ? (
         <animated.div className="relative" style={imgProps}>
           <img src={lastPhoto} className="w-80 border-20 border-b-80 border-white" />
-          <p className="absolute top-82 w-full font-title text-center text-3xl text-black">
-            Score: {score}
+          <p className="absolute top-80 w-full font-title text-center text-2xl leading-6 text-black">
+            Here's the last <br />
+            fish you caught!
           </p>
         </animated.div>
       ) : (

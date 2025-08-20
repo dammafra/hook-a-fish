@@ -21,7 +21,7 @@ export default function Countdown() {
 
       const now = Date.now()
       const elapsed = Math.round((now - state.startedAt) / 1000)
-      const countdown = state.countdownSeconds - elapsed
+      const countdown = state.countdownSeconds - elapsed + state.bonusTime
 
       setAlarm(countdown <= 10)
       if (countdown <= 0) state.end()

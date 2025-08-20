@@ -3,22 +3,25 @@ import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import BucketModel from '../models/Bucket'
 import useGame from '../stores/use-game'
+import BonusTime from './BonusTime'
 import Score from './Score'
 
 export default function Bucket() {
   const { viewport } = useThree()
   const phase = useGame(state => state.phase)
+  const bonusTime = useGame(state => state.bonusTime)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
 
   useEffect(() => {
-    if (viewport.aspect < 1) setBucketPosition(-2.5, 0, 4.5)
+    if (viewport.aspect < 1) setBucketPosition(-2, 0, 5)
     else setBucketPosition(-3.5, 0, 3)
   }, [setBucketPosition, viewport.aspect])
 
   return (
     <group position={bucketPosition}>
       {phase !== 'ended' && <Score />}
+      {phase !== 'ended' && !!bonusTime && <BonusTime key={bonusTime} />}
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}

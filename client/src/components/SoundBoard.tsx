@@ -34,7 +34,7 @@ export default function SoundBooard() {
     reel: parse(useSound('./sounds/reel.mp3', { loop: true, volume: 0.3, onload })),
     bucket: parse(useSound('./sounds/bucket.mp3', { onload })),
     collect: parse(useSound('./sounds/collect.mp3', { onload })),
-    whistle: parse(useSound('./sounds/whistle.mp3', { onload })),
+    whistle: parse(useSound('./sounds/whistle.mp3', { onload, volume: 0.5 })),
   }
 
   const toLoad = Object.keys(sounds).length
