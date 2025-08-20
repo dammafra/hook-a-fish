@@ -67,7 +67,7 @@ const MainMenu = animated(props => {
         <span>Credits</span>
       </button>
 
-      <footer className="absolute bottom-10 inline-flex items-center justify-center gap-1 text-2xl">
+      <footer className="absolute bottom-15 inline-flex items-center justify-center gap-1 text-2xl">
         Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
         <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
           @dammafra
