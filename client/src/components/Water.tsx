@@ -1,13 +1,8 @@
-import {
-  CameraControls,
-  GradientTexture,
-  GradientType,
-  MeshDistortMaterial,
-} from '@react-three/drei'
+import { GradientTexture, GradientType, MeshDistortMaterial } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { CuboidCollider, TrimeshCollider } from '@react-three/rapier'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { BackSide, CylinderGeometry, type Mesh } from 'three'
+import { useState } from 'react'
+import { BackSide, CylinderGeometry } from 'three'
 import useGame from '../stores/use-game'
 
 const GROUP = 0x0001 // category bit 1
@@ -15,12 +10,10 @@ const MASK = 0xffff ^ GROUP // collide with everything except itself
 export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 
 export default function Water() {
-  const { gl, controls, size } = useThree()
+  const { gl } = useThree()
   gl.transmissionResolutionScale = 0.7
-  const phase = useGame(state => state.phase)
   const radius = useGame(state => state.radius)
 
-  const ref = useRef<Mesh>(null!)
   const [boundsGeometry] = useState(
     () =>
       new CylinderGeometry(
@@ -33,30 +26,14 @@ export default function Water() {
       ),
   )
 
-  const cameraAnimation = useCallback(() => {
-    const cameraControls = controls as CameraControls
-    cameraControls.fitToBox(ref.current, true)
-    cameraControls.rotatePolarTo(Math.PI * 0.25, true)
-    cameraControls.rotateAzimuthTo(0, true)
-  }, [controls])
-
-  useEffect(() => {
-    if (phase === 'ready') return
-    cameraAnimation()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraAnimation, size])
-
-  useEffect(() => {
-    const unsubscribePhase = useGame.subscribe(
-      state => state.phase,
-      phase => phase === 'started' && setTimeout(cameraAnimation, 500),
-    )
-    return unsubscribePhase
-  }, [cameraAnimation])
-
   return (
     <>
-      <mesh ref={ref} position-y={0.01} rotation-x={-Math.PI * 0.5} scale={radius * 1.05}>
+      <mesh
+        position-y={0.01}
+        rotation-x={-Math.PI * 0.5}
+        scale={radius * 1.05}
+        userData={{ name: 'water' }}
+      >
         <circleGeometry />
         <MeshDistortMaterial transmission={0.8} roughness={0.3} thickness={0.01} ior={2}>
           <GradientTexture

@@ -23,6 +23,8 @@ declare type ReturnedValue = [PlayFunction, ExposedData]
 const parse = ([play, data]: ReturnedValue) => ({ play, ...data })
 
 export default function SoundBooard() {
+  const phase = useGame(state => state.phase)
+
   const [context, setContext] = useState<AudioContext>()
   const [loaded, setLoaded] = useState(0)
   const onload = () => setLoaded(loaded => loaded + 1)
@@ -44,39 +46,32 @@ export default function SoundBooard() {
 
     setContext(Howler.ctx)
 
-    const unsubscribePhase = useGame.subscribe(
-      state => state.phase,
-      phase => {
-        switch (phase) {
-          case 'started':
-            sounds.loop.play()
-            sounds.fishes.play()
-            sounds.jump.play()
-            return
+    switch (phase) {
+      case 'started':
+        sounds.loop.play()
+        sounds.fishes.play()
+        sounds.jump.play()
+        return
 
-          case 'hooked':
-            sounds.jump.play()
-            sounds.reel.play()
-            return
+      case 'hooked':
+        sounds.jump.play()
+        sounds.reel.play()
+        return
 
-          case 'unhooked':
-            sounds.bucket.play()
-            sounds.collect.play()
-            sounds.reel.stop()
-            return
+      case 'unhooked':
+        sounds.bucket.play()
+        sounds.collect.play()
+        sounds.reel.stop()
+        return
 
-          case 'ended':
-            sounds.loop.stop()
-            sounds.fishes.stop()
-            sounds.whistle.play({ playbackRate: 1.3 })
-            return
-        }
-      },
-    )
-
-    return unsubscribePhase
+      case 'ended':
+        sounds.loop.stop()
+        sounds.fishes.stop()
+        sounds.whistle.play({ playbackRate: 1.3 })
+        return
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded])
+  }, [loaded, toLoad, phase])
 
   /**
    * This helps resume AudioContext when the tab is suspended (e.g., when switching apps or locking the phone) and later resumed,

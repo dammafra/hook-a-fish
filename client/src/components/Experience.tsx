@@ -2,6 +2,7 @@ import { CameraControls, CameraControlsImpl } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { useDebug } from '../hooks/use-debug'
+import CameraRig from './CameraRig'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
@@ -34,7 +35,6 @@ export default function Experience() {
         makeDefault
         minDistance={1}
         maxDistance={20}
-        // TODO: enable dolly
         mouseButtons={
           debug
             ? undefined
@@ -58,6 +58,7 @@ export default function Experience() {
       </Physics>
 
       <SoundBooard />
+      <CameraRig />
     </Canvas>
   )
 }

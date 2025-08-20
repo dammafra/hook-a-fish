@@ -1,6 +1,5 @@
 import { Vector3 } from 'three'
 import { create } from 'zustand'
-import { subscribeWithSelector } from 'zustand/middleware'
 import { randomInt } from '../utils/random'
 
 type MenuSection = 'main' | 'tutorial' | 'credits' | 'end' | 'pause'
@@ -37,103 +36,101 @@ type GameStore = {
   setMenu: (menu?: MenuSection) => void
 }
 
-const useGame = create<GameStore>()(
-  subscribeWithSelector(set => ({
-    countdownSeconds: 61, // start with 1 bonus second for the starting animation
-    startedAt: 0,
-    bonusTime: 0,
-    radius: 3.5,
+const useGame = create<GameStore>()(set => ({
+  countdownSeconds: 61, // start with 1 bonus second for the starting animation
+  startedAt: 0,
+  bonusTime: 0,
+  radius: 3.5,
 
-    setPhoto: photo => set(() => ({ photo })),
+  setPhoto: photo => set(() => ({ photo })),
 
-    bucketPosition: new Vector3(0, 0, 0),
-    setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
+  bucketPosition: new Vector3(0, 0, 0),
+  setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
-    total: 20,
-    score: 0,
-    lastScore: 0,
+  total: 20,
+  score: 0,
+  lastScore: 0,
 
-    fishes: [],
+  fishes: [],
 
-    phase: 'ready',
+  phase: 'ready',
 
-    start: () => {
-      set(state => {
-        if (state.phase === 'ready' || state.phase === 'ended') {
-          return {
-            startedAt: Date.now(),
-            photo: undefined,
-            score: 0,
-            fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
-            phase: 'started',
-            menu: undefined,
-          }
+  start: () => {
+    set(state => {
+      if (state.phase === 'ready' || state.phase === 'ended') {
+        return {
+          startedAt: Date.now(),
+          photo: undefined,
+          score: 0,
+          fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
+          phase: 'started',
+          menu: undefined,
+        }
+      }
+
+      return {}
+    })
+  },
+
+  hook: () => {
+    set(state => {
+      if (state.phase === 'started' || state.phase === 'unhooked') {
+        let fishes = state.fishes.filter(id => id !== state.lastHooked)
+
+        const spawnThreshold = Math.max(state.total / 2, 2)
+        const remaining = fishes.length
+
+        if (remaining <= spawnThreshold) {
+          const toSpawn = randomInt(remaining === 2 ? 1 : 0, 3)
+          const newFishes = Array.from({ length: toSpawn }, () => crypto.randomUUID())
+          fishes = [...fishes, ...newFishes]
         }
 
-        return {}
-      })
-    },
-
-    hook: () => {
-      set(state => {
-        if (state.phase === 'started' || state.phase === 'unhooked') {
-          let fishes = state.fishes.filter(id => id !== state.lastHooked)
-
-          const spawnThreshold = Math.max(state.total / 2, 2)
-          const remaining = fishes.length
-
-          if (remaining <= spawnThreshold) {
-            const toSpawn = randomInt(remaining === 2 ? 1 : 0, 3)
-            const newFishes = Array.from({ length: toSpawn }, () => crypto.randomUUID())
-            fishes = [...fishes, ...newFishes]
-          }
-
-          return {
-            phase: 'hooked',
-            lastHooked: undefined,
-            fishes,
-          }
+        return {
+          phase: 'hooked',
+          lastHooked: undefined,
+          fishes,
         }
+      }
 
-        return {}
-      })
-    },
+      return {}
+    })
+  },
 
-    unhook: fish => {
-      set(state => {
-        if (state.phase === 'hooked') {
-          return {
-            phase: 'unhooked',
-            lastHooked: fish,
-            score: state.score + 1,
-            bonusTime: state.bonusTime + 3,
-          }
+  unhook: fish => {
+    set(state => {
+      if (state.phase === 'hooked') {
+        return {
+          phase: 'unhooked',
+          lastHooked: fish,
+          score: state.score + 1,
+          bonusTime: state.bonusTime + 3,
         }
+      }
 
-        return {}
-      })
-    },
+      return {}
+    })
+  },
 
-    end: () => {
-      set(state => {
-        if (state.phase !== 'hooked' && state.phase !== 'ended') {
-          return {
-            countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
-            bonusTime: 0,
-            lastPhoto: state.photo,
-            lastScore: state.score,
-            phase: 'ended',
-            menu: 'end',
-          }
+  end: () => {
+    set(state => {
+      if (state.phase !== 'hooked' && state.phase !== 'ended') {
+        return {
+          countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
+          bonusTime: 0,
+          lastPhoto: state.photo,
+          lastScore: state.score,
+          phase: 'ended',
+          menu: 'end',
         }
+      }
 
-        return {}
-      })
-    },
+      return {}
+    })
+  },
 
-    menu: 'main',
-    setMenu: menu => set(() => ({ menu })),
-  })),
-)
+  menu: 'main',
+  setMenu: menu => set(() => ({ menu })),
+}))
 
 export default useGame

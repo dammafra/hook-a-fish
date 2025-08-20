@@ -1,6 +1,5 @@
 import { animated, useSpring, useTransition } from '@react-spring/web'
-import { CameraControls, Html } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
+import { Html } from '@react-three/drei'
 import { useEffect, useMemo } from 'react'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
@@ -8,19 +7,6 @@ import useGame from '../stores/use-game'
 export default function Menu() {
   const phase = useGame(state => state.phase)
   const menu = useGame(state => state.menu)
-
-  const { controls, size } = useThree()
-  const cameraAnimation = () => {
-    if (phase !== 'ready') return
-
-    const cameraControls = controls as CameraControls
-    if (!cameraControls) return
-
-    cameraControls.rotatePolarTo(0.5, false)
-    cameraControls.dollyTo(3, false)
-  }
-
-  useEffect(cameraAnimation, [size, controls, phase])
 
   const sections = useMemo(() => (menu ? [menu] : []), [menu])
   const transitions = useTransition(sections, {
@@ -31,23 +17,16 @@ export default function Menu() {
   })
 
   useEffect(() => {
-    const unsubscribePhase = useGame.subscribe(
-      state => state.phase,
-      phase => {
-        switch (phase) {
-          case 'started':
-            setTimeout(() => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33'), 600) //prettier-ignore
-            return
+    switch (phase) {
+      case 'started':
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
+        return
 
-          case 'ended':
-            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000') //prettier-ignore
-            return
-        }
-      },
-    )
-
-    return unsubscribePhase
-  }, [])
+      case 'ended':
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000') //prettier-ignore
+        return
+    }
+  }, [phase])
 
   return (
     <Html center className="menu">
