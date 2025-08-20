@@ -1,4 +1,4 @@
-import { animated, useTransition } from '@react-spring/web'
+import { animated, useSpring, useTransition } from '@react-spring/web'
 import { CameraControls, Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
@@ -27,6 +27,7 @@ export default function Menu() {
     from: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
     enter: item => (item === 'end' ? { opacity: 1 } : { scale: 1 }),
     leave: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
+    config: { tension: 120, friction: 14 },
   })
 
   return (
@@ -133,15 +134,21 @@ const End = animated(props => {
     }
   }
 
+  const imgProps = useSpring({
+    from: { transform: 'scale(0) rotate(0deg)' },
+    to: { transform: 'scale(1) rotate(360deg)' },
+    config: { tension: 120, friction: 14 },
+  })
+
   return (
     <div {...props} className="menu-section bg-black/80">
       {canShare ? (
-        <div className="relative">
+        <animated.div className="relative" style={imgProps}>
           <img src={lastPhoto} className="w-80 border-20 border-b-80 border-white" />
           <p className="absolute top-82 w-full font-title text-center text-3xl text-black">
             Score: {score}
           </p>
-        </div>
+        </animated.div>
       ) : (
         <p className="font-title text-3xl text-center">Oops… the fishes are laughing at you!</p>
       )}
