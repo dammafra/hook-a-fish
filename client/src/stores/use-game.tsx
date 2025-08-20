@@ -49,6 +49,8 @@ const useGame = create<GameStore>()(
         if (state.phase === 'ready' || state.phase === 'ended') {
           return {
             phase: 'started',
+            score: 0,
+            lastPhoto: undefined,
             fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
             startedAt: Date.now(),
           }

@@ -2,17 +2,24 @@ import { Billboard, Float, Html } from '@react-three/drei'
 import { addEffect } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import useGame from '../stores/use-game'
+import useMenu from '../stores/use-menu'
 
 export default function Countdown() {
+  const setSections = useMenu(state => state.setSections)
+
   const ref = useRef<HTMLDivElement>(null!)
   const [alarm, setAlarm] = useState(false)
 
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       if (!ref.current) return
+
       const state = useGame.getState()
-      if (state.phase === 'ready' || state.phase === 'ended') {
+
+      if (state.phase === 'ready') return
+      if (state.phase === 'ended') {
         setAlarm(false)
+        setSections([3])
         return
       }
 

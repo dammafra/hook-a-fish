@@ -66,6 +66,7 @@ export default function SoundBooard() {
             return
 
           case 'ended':
+            sounds.loop.stop()
             sounds.fishes.stop()
             sounds.whistle.play({ playbackRate: 1.3 })
             return

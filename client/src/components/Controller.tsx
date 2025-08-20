@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { Euler, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
@@ -11,8 +11,6 @@ export default function Controller() {
   const isTouch = useIsTouch()
 
   const phase = useGame(state => state.phase)
-  const score = useGame(state => state.score)
-  const lastPhoto = useGame(state => state.lastPhoto)
   const setLastPhoto = useGame(state => state.setLastPhoto)
 
   const initialPosition = useMemo(() => getPositionOnCirlce(2, 0, 2), [])
@@ -24,15 +22,6 @@ export default function Controller() {
     const dataUrl = photoCameraRef.current?.takePhoto(target)
     setLastPhoto(dataUrl)
   }
-
-  useEffect(() => {
-    if (phase !== 'ended' || !lastPhoto || !score) return
-
-    const link = document.createElement('a')
-    link.href = lastPhoto
-    link.download = `${Date.now()}_hook-a-fish_${score}.png`
-    // link.click()
-  }, [phase])
 
   if (phase === 'ready' || phase === 'ended') return
 

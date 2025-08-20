@@ -18,7 +18,7 @@ export default function Bucket() {
 
   return (
     <group position={bucketPosition}>
-      <Score />
+      {phase !== 'ended' && <Score />}
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}

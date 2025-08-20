@@ -1,7 +1,7 @@
 import { animated, useTransition } from '@react-spring/web'
 import { Html, type CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 import useMenu from '../stores/use-menu'
@@ -24,25 +24,23 @@ export default function Menu() {
   useEffect(cameraAnimation, [size, controls, phase])
 
   const transitions = useTransition(sections, {
-    from: { opacity: 0 },
-    enter: { opacity: 1, delay: 1000 },
-    leave: { opacity: 0, config: { duration: 500 } },
+    from: item => (item < 3 ? { scale: 0 } : { opacity: 0 }),
+    enter: item => (item < 3 ? { scale: 1 } : { opacity: 1 }),
+    leave: item => (item < 3 ? { scale: 0 } : { opacity: 0 }),
   })
 
   return (
-    phase === 'ready' && (
-      <Html center className="inset-0 w-screen h-[100dvh]">
-        <div className="absolute inset-0 font-body">
-          {transitions((style, item) => {
-            //prettier-ignore
-            switch (item) {
+    <Html center className="menu">
+      {transitions((style, item) => {
+        //prettier-ignore
+        switch (item) {
               case 0: return <MainMenu style={style} />
               case 1: return <Tutorial style={style} />
+              // case 2: return <Credits style={style} /> 
+              case 3: return <End style={style} /> 
             }
-          })}
-        </div>
-      </Html>
-    )
+      })}
+    </Html>
   )
 }
 
@@ -103,9 +101,75 @@ const Tutorial = animated(props => {
       <span className="icon-[solar--clock-circle-bold] text-5xl" />
       <p className="mb-10">Catch them as fast as you can!</p>
 
-      <button className="absolute top-5 left-5" onClick={() => setSections([0])}>
-        <span className="icon-[solar--alt-arrow-left-linear]" />
+      <button onClick={() => setSections([0])}>
+        <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
+    </div>
+  )
+})
+
+const End = animated(props => {
+  const start = useGame(state => state.start)
+  const score = useGame(state => state.score)
+  const lastPhoto = useGame(state => state.lastPhoto)
+  const setSections = useMenu(state => state.setSections)
+
+  const canShare = useMemo(() => !!score && lastPhoto, [score, lastPhoto])
+
+  const share = async () => {
+    const filename = `${Date.now()}_hook-a-fish_${score}.png`
+    const res = await fetch(lastPhoto!)
+    const blob = await res.blob()
+    const file = new File([blob], filename, { type: 'image/png' })
+
+    const toShare = {
+      files: [file],
+      url: 'https://hook-a-fish.vercel.app',
+      title: 'Hook-A-Fish!',
+      text: `I just hooked ${score} fish! 🎣 Can you beat my score? #hookafish #indiegame #threejs`,
+    }
+
+    if (navigator.canShare(toShare)) {
+      await navigator.share(toShare)
+    } else {
+      const link = document.createElement('a')
+      link.href = lastPhoto!
+      link.download = filename
+      link.click()
+    }
+  }
+
+  return (
+    <div {...props} className="menu-section bg-black/80">
+      {canShare ? (
+        <div className="relative">
+          <img src={lastPhoto} className="w-80 border-20 border-b-80 border-white" />
+          <p className="absolute top-82 w-full font-title text-center text-3xl text-black">
+            Score: {score}
+          </p>
+        </div>
+      ) : (
+        <p className="font-title text-3xl text-center">Oops… the fishes are laughing at you!</p>
+      )}
+
+      <div className="flex max-md:flex-col gap-4">
+        <button
+          onClick={() => {
+            start()
+            setSections([])
+          }}
+        >
+          <span className="icon-[stash--arrow-retry] -scale-x-100" />
+          <span>Retry</span>
+        </button>
+
+        {canShare && (
+          <button onClick={share}>
+            <span className="icon-[solar--share-bold]" />
+            <span>Share</span>
+          </button>
+        )}
+      </div>
     </div>
   )
 })

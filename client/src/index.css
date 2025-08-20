@@ -33,6 +33,10 @@
     @apply p-2 w-fit;
   }
 
+  button span:nth-child(2) {
+    @apply mx-auto;
+  }
+
   button:disabled {
     @apply opacity-20 pointer-events-none;
   }
@@ -52,8 +56,12 @@
     @apply font-title text-center select-none rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,1)] shadow-white bg-white/20 text-white;
   }
 
+  .menu {
+    @apply inset-0 w-screen h-[100dvh] absolute font-body pointer-events-none;
+  }
+
   .menu-section {
-    @apply w-full h-full flex flex-col justify-center items-center gap-5 text-white;
+    @apply w-full h-full flex flex-col justify-center items-center gap-5 text-white pointer-events-auto;
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 }
