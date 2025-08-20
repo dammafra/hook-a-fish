@@ -21,7 +21,7 @@ export default function Menu() {
     cameraControls.dollyTo(3, false)
   }
 
-  useEffect(cameraAnimation, [size, controls])
+  useEffect(cameraAnimation, [size, controls, phase])
 
   const transitions = useTransition(sections, {
     from: { opacity: 0 },

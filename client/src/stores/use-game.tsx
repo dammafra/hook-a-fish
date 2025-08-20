@@ -1,6 +1,7 @@
 import { Vector3 } from 'three'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+import { randomInt } from '../utils/random'
 
 type GameStore = {
   radius: number
@@ -10,8 +11,8 @@ type GameStore = {
 
   total: number
   counter: number
-  fishes: number[]
-  lastHooked?: number
+  fishes: string[]
+  lastHooked?: string
 
   startTime: number
   endTime: number
@@ -19,8 +20,8 @@ type GameStore = {
   phase: 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
 
   start: () => void
-  hook: (fish: number) => void
-  unhook: (fish: number) => void
+  hook: (fish: string) => void
+  unhook: (fish: string) => void
   end: () => void
 }
 
@@ -31,7 +32,7 @@ const useGame = create<GameStore>()(
     bucketPosition: new Vector3(0, 0, 0),
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
-    total: 25,
+    total: 24,
     counter: 0,
     fishes: [],
     startTime: 0,
@@ -44,7 +45,7 @@ const useGame = create<GameStore>()(
         if (state.phase === 'ready') {
           return {
             phase: 'started',
-            fishes: Array.from({ length: state.total }, (_, i) => i),
+            fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
             startTime: Date.now(),
           }
         }
@@ -56,10 +57,21 @@ const useGame = create<GameStore>()(
     hook: () => {
       set(state => {
         if (state.phase === 'started' || state.phase === 'unhooked') {
+          let fishes = state.fishes.filter(id => id !== state.lastHooked)
+
+          const spawnThreshold = Math.max(state.total / 2, 2)
+          const remaining = fishes.length
+
+          if (remaining <= spawnThreshold) {
+            const toSpawn = randomInt(remaining === 2 ? 1 : 0, 3)
+            const newFishes = Array.from({ length: toSpawn }, () => crypto.randomUUID())
+            fishes = [...fishes, ...newFishes]
+          }
+
           return {
             phase: 'hooked',
             lastHooked: undefined,
-            fishes: state.fishes.filter(id => id !== state.lastHooked),
+            fishes,
           }
         }
 

@@ -7,6 +7,7 @@ import InstancedGrass from '../models/InstancedGrass'
 import Stand from '../models/Stand'
 import Tree from '../models/Tree'
 import useGame from '../stores/use-game'
+import { random, randomAngle } from '../utils/random'
 import FishingRod from './FishingRod'
 
 export default function Grass() {
@@ -29,11 +30,11 @@ export default function Grass() {
   const grassInstances: GrassInstanceProps[] = useMemo(
     () =>
       Array.from({ length: grassInstancesCount }).map(() => {
-        const r = radius + 0.5 + Math.random() * 3
-        const angle = Math.random() * Math.PI * 2
+        const r = random(radius + 0.5, radius + 3.5)
+        const angle = randomAngle()
         const position = new Vector3(r * Math.cos(angle), 0.17, r * Math.sin(angle))
-        const rotation = new Euler(0, Math.random() * Math.PI * 2, 0)
-        const scale = Math.random() * (0.002 - 0.001) + 0.001
+        const rotation = new Euler(0, randomAngle(), 0)
+        const scale = random(0.001, 0.002)
 
         return { position, rotation, scale }
       }),

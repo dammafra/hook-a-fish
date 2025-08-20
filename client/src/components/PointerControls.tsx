@@ -15,7 +15,8 @@ type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
   PropsWithChildren & {
     enabled?: boolean
     lockPositionYAt?: number
-    offset?: Position
+    positionOffset?: Position
+    rotationOffset?: number
     hideCursor?: boolean
     type?: 'billboard' | 'target' | 'fixed'
     target?: Position
@@ -26,9 +27,10 @@ export default function PointerControls({
   children,
   enabled = true,
   lockPositionYAt = 0,
-  offset = 0,
+  positionOffset = 0,
+  rotationOffset = 0,
   hideCursor = false,
-  type = 'target',
+  type = 'fixed',
   target = 0,
   onMove,
   ...props
@@ -38,7 +40,7 @@ export default function PointerControls({
   const ref = useRef<Object3D>(null!)
 
   const _target = useMemo(() => parsePosition(target), [target])
-  const _offset = useMemo(() => parsePosition(offset), [offset])
+  const _positionOffset = useMemo(() => parsePosition(positionOffset), [positionOffset])
 
   const mouse = useMemo(() => new Vector2(), [])
   const plane = useMemo(() => new Plane(new Vector3(0, 1, 0), -lockPositionYAt), [lockPositionYAt])
@@ -54,14 +56,14 @@ export default function PointerControls({
       const position = new Vector3()
       raycaster.setFromCamera(mouse, camera)
       raycaster.ray.intersectPlane(plane, position)
-      ref.current.position.copy(position.add(_offset))
+      ref.current.position.copy(position.add(_positionOffset))
 
       if (type !== 'fixed') {
         const target = type === 'billboard' ? camera.position : _target
         const dir = new Vector3().subVectors(target, position).setY(0).normalize()
         const angle = Math.atan2(dir.x, dir.z)
         const rotationY = angle + Math.PI * (type === 'billboard' ? 1.5 : 0.5)
-        ref.current.rotation.y = rotationY
+        ref.current.rotation.y = rotationY + rotationOffset
       }
 
       onMove?.()
@@ -75,7 +77,7 @@ export default function PointerControls({
       gl.domElement.classList.remove('cursor-none')
     }
   }, [
-    _offset,
+    _positionOffset,
     _target,
     camera,
     enabled,
@@ -86,6 +88,7 @@ export default function PointerControls({
     onMove,
     plane,
     raycaster,
+    rotationOffset,
     type,
   ])
 

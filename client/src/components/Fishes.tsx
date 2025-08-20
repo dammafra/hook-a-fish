@@ -11,9 +11,10 @@ import { useMemo, useRef, useState } from 'react'
 import { Euler, Quaternion, Vector3 } from 'three'
 import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
+import { random, randomAngle, randomColor } from '../utils/random'
 
 interface FishProps {
-  id: number
+  id: string
 }
 
 export function Fish({ id }: FishProps) {
@@ -27,18 +28,26 @@ export function Fish({ id }: FishProps) {
   const bodyRadius = 0.25
   const targetRadius = 0.075
   const targetOffsetZ = 0.1
-  const colorA = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%)`, [])
-  const colorB = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
-  const colorC = useMemo(() => `hsl(${Math.random() * 360}, 50%, 50%))`, [])
+  const colorA = useMemo(randomColor, [])
+  const colorB = useMemo(randomColor, [])
+  const colorC = useMemo(randomColor, [])
 
-  const position = useMemo(() => new Vector3((Math.random() - 0.5) * radius, Math.random() * (-0.5 + 1) - 1, (Math.random() - 0.5) * radius), [radius]) //prettier-ignore
-  const rotation = useMemo(() => new Euler(0, Math.random() * 2 * Math.PI, 0), [])
+  const position = useMemo(
+    () =>
+      new Vector3(
+        random(-0.5 * radius, 0.5 * radius),
+        random(-1, -0.5),
+        random(-0.5 * radius, 0.5 * radius),
+      ),
+    [radius],
+  )
+  const rotation = useMemo(() => new Euler(0, randomAngle(), 0), [])
 
-  const floatFrequency = useMemo(() => Math.random() * (3 - 1) + 1, [])
-  const lastFloat = useRef(0)
-
-  const moveFrequency = useMemo(() => Math.random() * (1 - 0.5) + 0.5, [])
+  const moveFrequency = useMemo(() => random(1, 3), [])
   const lastMove = useRef(0)
+
+  const floatFrequency = useMemo(() => random(1, 3), [])
+  const lastFloat = useRef(0)
 
   const body = useRef<RapierRigidBody>(null!)
   const [bodyType, setBodyType] = useState<RigidBodyTypeString>('kinematicPosition')
@@ -100,8 +109,8 @@ export function Fish({ id }: FishProps) {
     }
 
     if (now - lastMove.current >= moveFrequency) {
-      impulse.x = (Math.random() - 0.5) * 0.25
-      impulse.z = (Math.random() - 0.5) * 0.25
+      impulse.x = random(-0.1, 0.1)
+      impulse.z = random(-0.1, 0.1)
       lastMove.current = now
     }
 
@@ -118,6 +127,8 @@ export function Fish({ id }: FishProps) {
         colliders={false}
         enabledRotations={[false, true, false]}
         gravityScale={0.5}
+        friction={0.2}
+        restitution={0.2}
         angularDamping={0.5}
       >
         <Center rotation-x={-Math.PI * 0.5} scale={1.5}>

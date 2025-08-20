@@ -16,10 +16,11 @@ export default function Controller() {
   return (
     phase !== 'ready' && (
       <PointerControls
-        type={phase === 'hooked' ? 'billboard' : 'target'}
+        type="billboard"
         hideCursor
         lockPositionYAt={1.5}
-        offset={isTouch ? [0, 0, -2] : 0}
+        positionOffset={isTouch ? [0, 0, -2] : 0}
+        rotationOffset={0.5}
         position={initialPosition}
         rotation={initialRotation}
       >

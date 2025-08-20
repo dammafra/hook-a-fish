@@ -63,6 +63,10 @@ export default function SoundBooard() {
             sounds.collect.play()
             sounds.reel.stop()
             return
+
+          case 'ended':
+            sounds.fishes.stop()
+            return
         }
       },
     )
