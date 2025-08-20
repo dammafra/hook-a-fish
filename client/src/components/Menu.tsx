@@ -84,22 +84,32 @@ const Tutorial = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
   return (
-    <div {...props} className="menu-section text-4xl text-center px-5 gap-2">
+    <div {...props} className="menu-section text-3xl text-center px-5 gap-2">
       <span className="icon-[mdi--hook] text-5xl" />
       <p className="mb-10">
-        Control the fishing rod by <b>moving your {isTouch ? 'finger' : 'mouse'}</b>
+        Control the fishing rod{' '}
+        <span className="font-extrabold"> with your {isTouch ? 'finger' : 'mouse'}</span>,
+        <br className="max-md:hidden" />
+        aim for the fish’s mouth and catch them as they jump
       </p>
       <span className="icon-[mdi--bucket] text-5xl" />
       <p className="mb-10">
-        After you <span className="font-extrabold">Hook-A-Fish</span>, put it inside your bucket and
-        catch another one!
+        After you <span className="font-extrabold">Hook-A-Fish</span>, <br />
+        put it inside your bucket
       </p>
       <span className="icon-[solar--clock-circle-bold] text-5xl" />
-      <p className="mb-10">Catch them as fast as you can!</p>
-
+      <p className="mb-10">
+        Catch them as fast as you can! <br />
+        Each fish gives you a <span className="font-extrabold">time bonus</span>
+      </p>
       <button onClick={() => setMenu('main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
+      <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
+        Power-ups are coming soon!
+        <br />
+        Stay tuned!
+      </p>
     </div>
   )
 })
@@ -142,19 +152,24 @@ const End = animated(props => {
 
   return (
     <div {...props} className="menu-section bg-black/80">
+      {canShare && (
+        <>
+          <p className="font-title text-6xl">Game Over</p>
+          <p className="text-4xl uppercase -mt-4">{score} Fish Caught</p>
+        </>
+      )}
       {canShare ? (
         <animated.div className="relative" style={imgProps}>
           <img src={lastPhoto} className="w-80 border-20 border-b-80 border-white" />
-          <p className="absolute top-80 w-full font-title text-center text-2xl leading-6 text-black">
-            Here's the last <br />
-            fish you caught!
+          <p className="absolute top-80 w-full text-center text-3xl text-black">
+            Here's the last one you hooked!
           </p>
         </animated.div>
       ) : (
         <p className="font-title text-3xl text-center">Oops… the fishes are laughing at you!</p>
       )}
 
-      <div className="flex max-md:flex-col gap-4">
+      <div className="flex max-md:flex-col gap-4 mt-4">
         <button onClick={start}>
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>

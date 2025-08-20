@@ -1,3 +1,4 @@
+import { useThree } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { Euler, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
@@ -9,6 +10,7 @@ import PointerControls from './PointerControls'
 
 export default function Controller() {
   const isTouch = useIsTouch()
+  const { viewport } = useThree()
 
   const phase = useGame(state => state.phase)
   const setLastPhoto = useGame(state => state.setLastPhoto)
@@ -30,8 +32,8 @@ export default function Controller() {
       <PointerControls
         type="billboard"
         hideCursor
-        lockPositionYAt={1.5}
-        positionOffset={isTouch ? [0, 0, -2] : 0}
+        lockPositionYAt={1.48}
+        positionOffset={isTouch && viewport.aspect < 1 ? [0, 0, -2] : 0}
         rotationYOffset={0.5}
         position={initialPosition}
         rotation={initialRotation}
