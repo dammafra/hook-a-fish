@@ -32,7 +32,7 @@ export default function Menu() {
   return (
     phase === 'ready' && (
       <Html center className="inset-0 w-screen h-[100dvh]">
-        <div className="absolute inset-0 text-white font-body">
+        <div className="absolute inset-0 font-body">
           {transitions((style, item) => {
             //prettier-ignore
             switch (item) {
