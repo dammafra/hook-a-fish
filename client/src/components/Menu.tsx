@@ -30,6 +30,25 @@ export default function Menu() {
     config: { tension: 120, friction: 14 },
   })
 
+  useEffect(() => {
+    const unsubscribePhase = useGame.subscribe(
+      state => state.phase,
+      phase => {
+        switch (phase) {
+          case 'started':
+            setTimeout(() => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33'), 600) //prettier-ignore
+            return
+
+          case 'ended':
+            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000') //prettier-ignore
+            return
+        }
+      },
+    )
+
+    return unsubscribePhase
+  }, [])
+
   return (
     <Html center className="menu">
       {transitions((style, item) => {
@@ -48,11 +67,6 @@ export default function Menu() {
 const MainMenu = animated(props => {
   const start = useGame(state => state.start)
   const setMenu = useGame(state => state.setMenu)
-
-  useEffect(() => {
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0094a5')
-    return () => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
-  }, [])
 
   return (
     <div {...props} className="menu-section">
@@ -89,20 +103,20 @@ const Tutorial = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
   return (
-    <div {...props} className="menu-section text-3xl text-center px-5 gap-2">
-      <span className="icon-[mdi--hook] text-5xl" />
+    <div {...props} className="menu-section text-2xl md:text-3xl text-center px-5 gap-2">
+      <span className="icon-[mdi--hook] text-4xl md:text-5xl" />
       <p className="mb-10">
         Control the fishing rod{' '}
         <span className="font-extrabold"> with your {isTouch ? 'finger' : 'mouse'}</span>,
         <br className="max-md:hidden" />
         aim for the fish’s mouth and catch them as they jump
       </p>
-      <span className="icon-[mdi--bucket] text-5xl" />
+      <span className="icon-[mdi--bucket] text-4xl md:text-5xl" />
       <p className="mb-10">
         After you <span className="font-extrabold">Hook-A-Fish</span>, <br />
         put it inside your bucket
       </p>
-      <span className="icon-[solar--clock-circle-bold] text-5xl" />
+      <span className="icon-[solar--clock-circle-bold] text-4xl md:text-5xl" />
       <p className="mb-10">
         Catch them as fast as you can! <br />
         Each fish gives you a <span className="font-extrabold">time bonus</span>
@@ -124,12 +138,7 @@ const End = animated(props => {
   const lastScore = useGame(state => state.lastScore)
   const lastPhoto = useGame(state => state.lastPhoto)
 
-  const canShare = useMemo(() => !!lastScore && lastPhoto, [])
-
-  useEffect(() => {
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000')
-    return () => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
-  }, [])
+  const canShare = useMemo(() => !!lastScore && lastPhoto, [lastScore, lastPhoto])
 
   const share = async () => {
     const filename = `${Date.now()}_hook-a-fish_${lastScore}.png`
