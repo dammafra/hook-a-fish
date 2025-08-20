@@ -5,11 +5,12 @@ export default function Counter() {
   const count = useGame(state => state.counter)
 
   return (
+    // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800
     <Billboard position={[0, 1, -1]}>
-      <Html transform wrapperClass="counter">
-        <span className="font-title select-none px-2 pt-2.5 pb-1 rounded-lg bg-white/20 border border-white text-white">
+      <Html scale={0.5} transform wrapperClass="overlay">
+        <div style={{ transform: 'scale(2)' }} className="overlay-content min-w-6 pt-1.5 ">
           {count}
-        </span>
+        </div>
       </Html>
     </Billboard>
   )
