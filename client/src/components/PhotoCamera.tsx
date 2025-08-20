@@ -1,11 +1,11 @@
 import { useThree } from '@react-three/fiber'
-import { useImperativeHandle, useRef, useState, type JSX, type Ref } from 'react'
+import { useEffect, useImperativeHandle, useRef, useState, type JSX, type Ref } from 'react'
 import { PerspectiveCamera, SRGBColorSpace, WebGLRenderTarget } from 'three'
 import { parsePosition, type Position } from '../utils/position'
 
 export type PhotoCameraHandle = {
-  cameraRef?: Ref<PerspectiveCamera>
-  takePhoto: () => string | null
+  camera: PerspectiveCamera
+  takePhoto: (target?: Position) => string | undefined
 }
 
 type PhotoCameraProps = JSX.IntrinsicElements['perspectiveCamera'] & {
@@ -14,36 +14,57 @@ type PhotoCameraProps = JSX.IntrinsicElements['perspectiveCamera'] & {
   size?: number
 }
 
-export default function PhotoCamera({ ref, target = 0, size = 512 }: PhotoCameraProps) {
+export default function PhotoCamera({
+  ref,
+
+  target = 0,
+  size = 512,
+
+  fov = 45,
+  aspect = 1,
+  near = 0.1,
+  far = 100,
+
+  ...props
+}: PhotoCameraProps) {
   const { gl, scene } = useThree()
   const cameraRef = useRef<PerspectiveCamera>(null!)
-  const [rt] = useState(() => {
+  const [renderTarget] = useState(() => {
     const target = new WebGLRenderTarget(size, size)
     target.texture.colorSpace = SRGBColorSpace
     return target
   })
 
-  const takePhoto = () => {
-    const camera = cameraRef.current
-    if (!camera) return null
+  useEffect(() => {
+    if (!cameraRef.current) return
+    cameraRef.current.fov = fov
+    cameraRef.current.aspect = aspect
+    cameraRef.current.near = near
+    cameraRef.current.far = far
+    cameraRef.current.updateProjectionMatrix()
+  }, [fov, aspect, near, far])
 
-    camera.lookAt(parsePosition(target))
+  const takePhoto = (_target?: Position) => {
+    const camera = cameraRef.current
+    if (!camera) return
+
+    camera.lookAt(parsePosition(_target || target))
 
     // render scene to render target
-    gl.setRenderTarget(rt)
+    gl.setRenderTarget(renderTarget)
     gl.render(scene, camera)
     gl.setRenderTarget(null)
 
     // read pixels
     const pixels = new Uint8Array(size * size * 4)
-    gl.readRenderTargetPixels(rt, 0, 0, size, size, pixels)
+    gl.readRenderTargetPixels(renderTarget, 0, 0, size, size, pixels)
 
     // create canvas and flip pixels vertically
     const canvas = document.createElement('canvas')
     canvas.width = size
     canvas.height = size
     const ctx = canvas.getContext('2d')
-    if (!ctx) return null
+    if (!ctx) return
 
     const imageData = ctx.createImageData(size, size)
     const rowSize = size * 4
@@ -57,16 +78,9 @@ export default function PhotoCamera({ ref, target = 0, size = 512 }: PhotoCamera
     return canvas.toDataURL('image/png')
   }
 
-  useImperativeHandle(ref, () => ({ cameraRef, takePhoto }))
+  useImperativeHandle(ref, () => ({ camera: cameraRef.current, takePhoto }))
 
   return (
-    <perspectiveCamera
-      ref={cameraRef}
-      fov={45}
-      aspect={1}
-      near={0.1}
-      far={100}
-      position={[0, 5, 6]}
-    />
+    <perspectiveCamera ref={cameraRef} fov={fov} aspect={aspect} near={near} far={far} {...props} />
   )
 }

@@ -1,21 +1,26 @@
-import { Billboard, Html } from '@react-three/drei'
+import { Billboard, Float, Html } from '@react-three/drei'
 import { addEffect } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useGame from '../stores/use-game'
 
 export default function Timer() {
   const ref = useRef<HTMLDivElement>(null!)
+  const [alarm, setAlarm] = useState(false)
 
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       if (!ref.current) return
       const state = useGame.getState()
-      if (state.phase === 'ready' || state.phase === 'ended') return
+      if (state.phase === 'ready' || state.phase === 'ended') {
+        setAlarm(false)
+        return
+      }
 
       const now = Date.now()
       const elapsed = Math.round((now - state.startedAt) / 1000)
       const countdown = state.countdownSeconds - elapsed
 
+      setAlarm(countdown <= 10)
       if (countdown <= 0) state.end()
       if (countdown < 0) return
 
@@ -29,14 +34,16 @@ export default function Timer() {
 
   return (
     // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800
-    <Billboard position={[0, 2, -2]}>
-      <Html scale={0.5} transform wrapperClass="overlay">
-        <div
-          ref={ref}
-          style={{ transform: 'scale(2)' }}
-          className="overlay-content text-xl w-20 pt-2 pb-0.5"
-        />
-      </Html>
-    </Billboard>
+    <Float speed={alarm ? 50 : 0} floatIntensity={1} rotationIntensity={0}>
+      <Billboard position={[0, 2, -2]}>
+        <Html scale={0.5} transform wrapperClass="overlay">
+          <div
+            ref={ref}
+            style={{ transform: 'scale(2)' }}
+            className="overlay-content text-xl w-20 pt-2 pb-0.5"
+          />
+        </Html>
+      </Billboard>
+    </Float>
   )
 }

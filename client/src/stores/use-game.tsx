@@ -8,6 +8,9 @@ type GameStore = {
   startedAt: number
   radius: number
 
+  lastPhoto?: string
+  setLastPhoto: (lastPhoto?: string) => void
+
   bucketPosition: Vector3
   setBucketPosition: (x: number, y: number, z: number) => void
 
@@ -30,6 +33,8 @@ const useGame = create<GameStore>()(
     startedAt: 0,
     radius: 3.5,
 
+    setLastPhoto: lastPhoto => set(() => ({ lastPhoto })),
+
     bucketPosition: new Vector3(0, 0, 0),
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
@@ -41,7 +46,7 @@ const useGame = create<GameStore>()(
 
     start: () => {
       set(state => {
-        if (state.phase === 'ready') {
+        if (state.phase === 'ready' || state.phase === 'ended') {
           return {
             phase: 'started',
             fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),

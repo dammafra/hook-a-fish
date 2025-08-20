@@ -16,11 +16,11 @@ type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
     enabled?: boolean
     lockPositionYAt?: number
     positionOffset?: Position
-    rotationOffset?: number
+    rotationYOffset?: number
     hideCursor?: boolean
     type?: 'billboard' | 'target' | 'fixed'
     target?: Position
-    onMove?: () => void
+    onMove?: (position: Vector3) => void
   }
 
 export default function PointerControls({
@@ -28,7 +28,7 @@ export default function PointerControls({
   enabled = true,
   lockPositionYAt = 0,
   positionOffset = 0,
-  rotationOffset = 0,
+  rotationYOffset = 0,
   hideCursor = false,
   type = 'fixed',
   target = 0,
@@ -63,10 +63,10 @@ export default function PointerControls({
         const dir = new Vector3().subVectors(target, position).setY(0).normalize()
         const angle = Math.atan2(dir.x, dir.z)
         const rotationY = angle + Math.PI * (type === 'billboard' ? 1.5 : 0.5)
-        ref.current.rotation.y = rotationY + rotationOffset
+        ref.current.rotation.y = rotationY + rotationYOffset
       }
 
-      onMove?.()
+      onMove?.(position)
     }
 
     gl.domElement.addEventListener('pointermove', handleMove)
@@ -88,7 +88,7 @@ export default function PointerControls({
     onMove,
     plane,
     raycaster,
-    rotationOffset,
+    rotationYOffset,
     type,
   ])
 

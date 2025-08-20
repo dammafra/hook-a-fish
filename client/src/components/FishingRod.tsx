@@ -18,6 +18,7 @@ interface FishingRodProps {
   ropeRadius?: number
   colorA?: ColorRepresentation
   colorB?: ColorRepresentation
+  onHook?: (position: Vector3) => void
 }
 
 export default function FishingRod({
@@ -28,6 +29,7 @@ export default function FishingRod({
   ropeRadius = 0.005,
   colorA,
   colorB,
+  onHook,
 }: FishingRodProps) {
   const _position = useMemo(() => parsePosition(position), [position])
   const _rotation = useMemo(() => parseRotation(rotation), [rotation])
@@ -69,10 +71,22 @@ export default function FishingRod({
         angularDamping={8}
         canSleep={false}
         collisionGroups={BOUNDS_COLLISION_GROUP}
+        onCollisionEnter={({ target }) => {
+          if (!onHook) return
+          const translation = target.rigidBody?.translation()
+          const position = new Vector3().fromArray(Object.values(translation || []))
+          onHook(position)
+        }}
       >
-        <Center scale={0.001} position={[0.003, 0, -0.001]}>
-          <FishingHook />
-        </Center>
+        <group>
+          <mesh scale={0.04} position-y={0.1}>
+            <icosahedronGeometry args={[1, 2]} />
+            <meshStandardMaterial color="darkred" />
+          </mesh>
+          <Center scale={0.001} position={[0.003, 0, -0.001]}>
+            <FishingHook />
+          </Center>
+        </group>
       </RigidBody>
 
       <Rope
