@@ -1,8 +1,8 @@
 import { Billboard, Html } from '@react-three/drei'
 import useGame from '../stores/use-game'
 
-export default function Counter() {
-  const count = useGame(state => state.counter)
+export default function Score() {
+  const count = useGame(state => state.score)
 
   return (
     // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800

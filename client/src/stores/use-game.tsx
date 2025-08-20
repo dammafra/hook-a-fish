@@ -12,7 +12,7 @@ type GameStore = {
   setBucketPosition: (x: number, y: number, z: number) => void
 
   total: number
-  counter: number
+  score: number
   fishes: string[]
   lastHooked?: string
 
@@ -34,7 +34,7 @@ const useGame = create<GameStore>()(
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
     total: 24,
-    counter: 0,
+    score: 0,
     fishes: [],
 
     phase: 'ready',
@@ -84,7 +84,7 @@ const useGame = create<GameStore>()(
           return {
             phase: 'unhooked',
             lastHooked: fish,
-            counter: state.counter + 1,
+            score: state.score + 1,
           }
         }
 

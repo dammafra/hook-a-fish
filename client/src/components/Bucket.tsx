@@ -3,7 +3,7 @@ import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import BucketModel from '../models/Bucket'
 import useGame from '../stores/use-game'
-import Counter from './Counter'
+import Score from './Score'
 
 export default function Bucket() {
   const { viewport } = useThree()
@@ -18,7 +18,7 @@ export default function Bucket() {
 
   return (
     <group position={bucketPosition}>
-      <Counter />
+      <Score />
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}
