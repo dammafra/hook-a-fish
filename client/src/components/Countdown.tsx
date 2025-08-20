@@ -3,7 +3,7 @@ import { addEffect } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import useGame from '../stores/use-game'
 
-export default function Timer() {
+export default function Countdown() {
   const ref = useRef<HTMLDivElement>(null!)
   const [alarm, setAlarm] = useState(false)
 
