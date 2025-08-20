@@ -34,6 +34,7 @@ export default function SoundBooard() {
     reel: parse(useSound('./sounds/reel.mp3', { loop: true, volume: 0.3, onload })),
     bucket: parse(useSound('./sounds/bucket.mp3', { onload })),
     collect: parse(useSound('./sounds/collect.mp3', { onload })),
+    whistle: parse(useSound('./sounds/whistle.mp3', { onload })),
   }
 
   const toLoad = Object.keys(sounds).length
@@ -66,6 +67,7 @@ export default function SoundBooard() {
 
           case 'ended':
             sounds.fishes.stop()
+            sounds.whistle.play({ playbackRate: 1.3 })
             return
         }
       },

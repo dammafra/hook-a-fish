@@ -14,7 +14,8 @@ export default function Controller() {
   const initialRotation = useMemo(() => new Euler(0, 0, Math.PI * 0.35), [])
 
   return (
-    phase !== 'ready' && (
+    phase !== 'ready' &&
+    phase !== 'ended' && (
       <PointerControls
         type="billboard"
         hideCursor

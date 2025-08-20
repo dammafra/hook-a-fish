@@ -4,6 +4,8 @@ import { subscribeWithSelector } from 'zustand/middleware'
 import { randomInt } from '../utils/random'
 
 type GameStore = {
+  countdownSeconds: number
+  startedAt: number
   radius: number
 
   bucketPosition: Vector3
@@ -13,9 +15,6 @@ type GameStore = {
   counter: number
   fishes: string[]
   lastHooked?: string
-
-  startTime: number
-  endTime: number
 
   phase: 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
 
@@ -27,6 +26,8 @@ type GameStore = {
 
 const useGame = create<GameStore>()(
   subscribeWithSelector(set => ({
+    countdownSeconds: 61,
+    startedAt: 0,
     radius: 3.5,
 
     bucketPosition: new Vector3(0, 0, 0),
@@ -35,8 +36,6 @@ const useGame = create<GameStore>()(
     total: 24,
     counter: 0,
     fishes: [],
-    startTime: 0,
-    endTime: 0,
 
     phase: 'ready',
 
@@ -46,7 +45,7 @@ const useGame = create<GameStore>()(
           return {
             phase: 'started',
             fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
-            startTime: Date.now(),
+            startedAt: Date.now(),
           }
         }
 
@@ -95,8 +94,8 @@ const useGame = create<GameStore>()(
 
     end: () => {
       set(state => {
-        if (state.phase === 'unhooked') {
-          return { phase: 'ended', endTime: Date.now() }
+        if (state.phase !== 'hooked' && state.phase !== 'ended') {
+          return { phase: 'ended' }
         }
 
         return {}
