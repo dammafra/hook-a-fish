@@ -7,6 +7,7 @@ import InstancedGrass from '../models/InstancedGrass'
 import Stand from '../models/Stand'
 import Tree from '../models/Tree'
 import useGame from '../stores/use-game'
+import FishingRod from './FishingRod'
 
 export default function Grass() {
   const radius = useGame(state => state.radius)
@@ -76,11 +77,23 @@ export default function Grass() {
       <Tree scale={0.5} position={[3, 0, -5]} rotation-y={-Math.PI * 0.2} />
       <Tree scale={0.48} position={[3.5, 0, -3.5]} rotation-y={-Math.PI * 0.25} />
 
-      <Stand
-        scale={3}
-        position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}
-        rotation-y={Math.PI * 0.2}
-      />
+      <group position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}>
+        <Stand scale={3} rotation-y={Math.PI * 0.2} />
+        <FishingRod
+          position={[0, 0.82, -0.4]}
+          rotation={[0, -1, 0.8]}
+          ropeLength={0.2}
+          colorA="saddlebrown"
+          colorB="silver"
+        />
+        <FishingRod
+          position={[-0.3, 0.82, -0.2]}
+          rotation={[0, -1, 0.8]}
+          ropeLength={0.2}
+          colorA="sandyBrown"
+          colorB="brown"
+        />
+      </group>
 
       <Sparkles size={5} scale={[10, 2, 10]} position-y={1} speed={0.5} count={20} color="white" />
     </>

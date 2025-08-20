@@ -1,58 +1,61 @@
 import { Center } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
-import { useRef, useState } from 'react'
-import { Object3D, Quaternion } from 'three'
-import { useIsTouch } from '../hooks/use-is-touch'
+import { useMemo, useRef, type RefObject } from 'react'
+import { Object3D, Quaternion, Vector3, type ColorRepresentation } from 'three'
 import FishingHook from '../models/FishingHook'
 import FishingPole from '../models/FishingPole'
-import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
-import PointerControls from './PointerControls'
 import Rope from './Rope'
 import { BOUNDS_COLLISION_GROUP } from './Water'
 
 interface FishingRodProps {
+  ref?: RefObject<Object3D>
   position?: Position
   rotation?: Rotation
   ropeLength?: number
   ropeRadius?: number
+  colorA?: ColorRepresentation
+  colorB?: ColorRepresentation
 }
 
 export default function FishingRod({
+  ref,
   position = 0,
-  rotation = [0, 0, Math.PI * 0.35],
+  rotation = 0,
   ropeLength = 1.5,
   ropeRadius = 0.005,
+  colorA,
+  colorB,
 }: FishingRodProps) {
-  const phase = useGame(state => state.phase)
-
-  const isTouch = useIsTouch()
-  const [_position] = useState(() => parsePosition(position))
-  const [_rotation] = useState(() => parseRotation(rotation))
+  const _position = useMemo(() => parsePosition(position), [position])
+  const _rotation = useMemo(() => parseRotation(rotation), [rotation])
 
   const poleBody = useRef<RapierRigidBody>(null!)
   const hookBody = useRef<RapierRigidBody>(null!)
 
-  const poleMesh = useRef<Object3D>(null!)
-  const hookMesh = useRef<Object3D>(null!)
+  useFrame(() => {
+    if (!ref?.current) return
 
-  const onMove = () => {
-    const { position, rotation } = poleMesh.current
-    poleBody.current.setNextKinematicTranslation(position)
-    poleBody.current.setNextKinematicRotation(new Quaternion().setFromEuler(rotation))
-  }
+    const position = new Vector3()
+    ref.current.getWorldPosition(position)
+    poleBody.current.setTranslation(position, false)
+
+    const rotation = ref.current.rotation.clone()
+    poleBody.current.setRotation(new Quaternion().setFromEuler(rotation), false)
+  })
 
   return (
     <>
-      <group ref={poleMesh} position={_position} rotation={_rotation}>
+      <group ref={ref} position={_position} rotation={_rotation}>
         <RigidBody ref={poleBody} type="kinematicPosition" />
         <Center
           scale={0.01}
           position={[0, -0.06, -0.05]}
           rotation={[-Math.PI * 0.5, Math.PI * 0.094, 0]}
         >
-          <FishingPole />
+          <FishingPole colorA={colorA} colorB={colorB} />
         </Center>
       </group>
 
@@ -68,7 +71,7 @@ export default function FishingRod({
         collisionGroups={BOUNDS_COLLISION_GROUP}
       >
         <Center scale={0.001} position={[0.003, 0, -0.001]}>
-          <FishingHook ref={hookMesh} />
+          <FishingHook />
         </Center>
       </RigidBody>
 
@@ -79,16 +82,6 @@ export default function FishingRod({
         endAnchor={[0, 0.1, 0]}
         length={ropeLength}
         radius={ropeRadius}
-      />
-
-      {/* TODO improve lockPositionYAt value */}
-      <PointerControls
-        type={phase === 'hooked' ? 'billboard' : 'target'}
-        hideCursor
-        targetRef={poleMesh}
-        lockPositionYAt={1.5}
-        onMove={onMove}
-        offset={isTouch ? [0, 0, -2] : 0}
       />
     </>
   )

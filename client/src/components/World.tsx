@@ -1,22 +1,16 @@
-import { useMemo } from 'react'
-import useGame from '../stores/use-game'
-import { getPositionOnCirlce } from '../utils/position'
 import Bucket from './Bucket'
+import Controller from './Controller'
 import Fishes from './Fishes'
-import FishingRod from './FishingRod'
 import Grass from './Grass'
 import Menu from './Menu'
 import Water from './Water'
 
 export default function World() {
-  const phase = useGame(state => state.phase)
-  const fishingRodPosition = useMemo(() => getPositionOnCirlce(2, 0, 2), [])
-
   return (
     <>
-      {phase === 'ready' && <Menu />}
-      {phase !== 'ready' && <FishingRod position={fishingRodPosition} />}
-      {phase !== 'ready' && <Fishes />}
+      <Menu />
+      <Controller />
+      <Fishes />
       <Water />
       <Bucket />
       <Grass />

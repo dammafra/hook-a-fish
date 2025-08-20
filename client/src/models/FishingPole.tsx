@@ -7,8 +7,8 @@
 */
 import { useGLTF } from '@react-three/drei'
 import type { ObjectMap } from '@react-three/fiber'
-import { useEffect, type JSX } from 'react'
-import type { Mesh, MeshStandardMaterial } from 'three'
+import { useEffect, useState, type JSX } from 'react'
+import type { ColorRepresentation, Material, Mesh, MeshStandardMaterial } from 'three'
 import type { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF &
@@ -23,29 +23,37 @@ type GLTFResult = GLTF &
     }
   }
 
-export default function FishingPole(props: JSX.IntrinsicElements['group']) {
+type FishingPoleProps = JSX.IntrinsicElements['group'] & {
+  colorA?: ColorRepresentation
+  colorB?: ColorRepresentation
+}
+
+export default function FishingPole({
+  colorA = 'sienna',
+  colorB = 'goldenrod',
+  ...props
+}: FishingPoleProps) {
   const { nodes, materials } = useGLTF('./models/fishing-pole.glb') as GLTFResult
+  const [materialA, setMaterialA] = useState<Material>()
+  const [materialB, setMaterialB] = useState<Material>()
 
   useEffect(() => {
-    materials.FrontColor.color.set('goldenrod')
-    materials.FrontColor.metalness = 0.8
-    materials.FrontColor.roughness = 0.5
+    const materialA = materials['[0038_Orange]'].clone()
+    materialA.color.set(colorA)
 
-    materials['[0038_Orange]'].color.set('sienna')
-  }, [materials])
+    const materialB = materials.FrontColor.clone()
+    materialB.color.set(colorB)
+    materialB.metalness = 0.8
+    materialB.roughness = 0.2
+
+    setMaterialA(materialA)
+    setMaterialB(materialB)
+  }, [materials, colorA, colorB])
 
   return (
     <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        geometry={nodes['Group#5-Entity38825'].geometry}
-        material={materials['[0038_Orange]']}
-      />
-      <mesh
-        castShadow
-        geometry={nodes['Group#7-Entity38827'].geometry}
-        material={materials.FrontColor}
-      />
+      <mesh castShadow geometry={nodes['Group#5-Entity38825'].geometry} material={materialA} />
+      <mesh castShadow geometry={nodes['Group#7-Entity38827'].geometry} material={materialB} />
     </group>
   )
 }

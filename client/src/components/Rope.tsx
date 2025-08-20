@@ -75,8 +75,13 @@ export default function Rope({
   })
 
   return type === 'line' ? (
-    // @ts-expect-error don't need to specify `start` and `end` props since will be set in `useFrame`
-    <QuadraticBezierLine ref={line} lineWidth={radius * 300} color="white" />
+    <QuadraticBezierLine
+      start={_startAnchor}
+      end={_endAnchor}
+      ref={line}
+      lineWidth={radius * 300}
+      color="white"
+    />
   ) : (
     <mesh ref={line} castShadow>
       <tubeGeometry args={[tubeCurve, 6, radius, 3, false]} />

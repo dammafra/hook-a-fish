@@ -1,7 +1,8 @@
-import { CameraControls } from '@react-three/drei'
+import { CameraControls, CameraControlsImpl } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { Suspense } from 'react'
+import { useDebug } from '../hooks/use-debug'
 import Canvas from './Canvas'
 import Environment from './Environment'
 import Helpers from './Helpers'
@@ -9,7 +10,8 @@ import SoundBooard from './SoundBoard'
 import World from './World'
 
 export default function Experience() {
-  // const debug = useDebug()
+  const debug = useDebug()
+
   const physicsControls = useControls(
     'physics',
     { debug: false, paused: false },
@@ -18,6 +20,7 @@ export default function Experience() {
 
   return (
     <Canvas
+      gl={{ debug: { checkShaderErrors: debug, onShaderError: console.error } }}
       shadows
       camera={{
         fov: 45,
@@ -28,33 +31,35 @@ export default function Experience() {
     >
       <Environment />
 
-      {/* TODO dolly only when started, with a limit */}
       <CameraControls
-        enabled={false}
         makeDefault
-        // mouseButtons={
-        //   debug
-        //     ? undefined
-        //     : {
-        //         left: CameraControlsImpl.ACTION.NONE,
-        //         right: CameraControlsImpl.ACTION.NONE,
-        //         middle: CameraControlsImpl.ACTION.DOLLY,
-        //         wheel: CameraControlsImpl.ACTION.DOLLY,
-        //       }
-        // }
-        // touches={{
-        //   one: CameraControlsImpl.ACTION.NONE,
-        //   two: CameraControlsImpl.ACTION.TOUCH_DOLLY,
-        //   three: CameraControlsImpl.ACTION.NONE,
-        // }}
+        minDistance={1}
+        maxDistance={20}
+        // TODO: enable dolly
+        mouseButtons={
+          debug
+            ? undefined
+            : {
+                left: CameraControlsImpl.ACTION.NONE,
+                right: CameraControlsImpl.ACTION.NONE,
+                middle: CameraControlsImpl.ACTION.NONE,
+                wheel: CameraControlsImpl.ACTION.NONE,
+              }
+        }
+        touches={{
+          one: CameraControlsImpl.ACTION.NONE,
+          two: CameraControlsImpl.ACTION.NONE,
+          three: CameraControlsImpl.ACTION.NONE,
+        }}
       />
 
-      <Suspense>
-        <Physics {...physicsControls}>
+      {/* TODO Loader fallback */}
+      <Physics {...physicsControls}>
+        <Suspense>
           <World />
           <Helpers />
-        </Physics>
-      </Suspense>
+        </Suspense>
+      </Physics>
 
       <SoundBooard />
     </Canvas>

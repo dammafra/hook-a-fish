@@ -1,21 +1,29 @@
 import { useThree } from '@react-three/fiber'
-import { useEffect, useMemo, type RefObject } from 'react'
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useMemo,
+  useRef,
+  type JSX,
+  type PropsWithChildren,
+} from 'react'
 import { Object3D, Plane, Vector2, Vector3 } from 'three'
 import { parsePosition, type Position } from '../utils/position'
 
-interface PointerControlsProps {
-  targetRef: RefObject<Object3D>
-  enabled?: boolean
-  lockPositionYAt?: number
-  offset?: Position
-  hideCursor?: boolean
-  type?: 'billboard' | 'target' | 'fixed'
-  target?: Position
-  onMove?: () => void
-}
+type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
+  PropsWithChildren & {
+    enabled?: boolean
+    lockPositionYAt?: number
+    offset?: Position
+    hideCursor?: boolean
+    type?: 'billboard' | 'target' | 'fixed'
+    target?: Position
+    onMove?: () => void
+  }
 
 export default function PointerControls({
-  targetRef,
+  children,
   enabled = true,
   lockPositionYAt = 0,
   offset = 0,
@@ -23,8 +31,11 @@ export default function PointerControls({
   type = 'target',
   target = 0,
   onMove,
+  ...props
 }: PointerControlsProps) {
   const { camera, gl, raycaster } = useThree()
+
+  const ref = useRef<Object3D>(null!)
 
   const _target = useMemo(() => parsePosition(target), [target])
   const _offset = useMemo(() => parsePosition(offset), [offset])
@@ -34,8 +45,7 @@ export default function PointerControls({
 
   useEffect(() => {
     const handleMove = (e: PointerEvent) => {
-      if (!enabled) return
-      if (!targetRef.current) return
+      if (!enabled || !ref.current) return
 
       const rect = gl.domElement.getBoundingClientRect()
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
@@ -44,14 +54,14 @@ export default function PointerControls({
       const position = new Vector3()
       raycaster.setFromCamera(mouse, camera)
       raycaster.ray.intersectPlane(plane, position)
-      targetRef.current.position.copy(position.add(_offset))
+      ref.current.position.copy(position.add(_offset))
 
       if (type !== 'fixed') {
         const target = type === 'billboard' ? camera.position : _target
         const dir = new Vector3().subVectors(target, position).setY(0).normalize()
         const angle = Math.atan2(dir.x, dir.z)
         const rotationY = angle + Math.PI * (type === 'billboard' ? 1.5 : 0.5)
-        targetRef.current.rotation.y = rotationY
+        ref.current.rotation.y = rotationY
       }
 
       onMove?.()
@@ -76,9 +86,23 @@ export default function PointerControls({
     onMove,
     plane,
     raycaster,
-    targetRef,
     type,
   ])
+
+  if (Array.isArray(children) && children.length > 1) {
+    return (
+      <group {...props} ref={ref}>
+        {children}
+      </group>
+    )
+  }
+
+  if (isValidElement(children)) {
+    return cloneElement(children as React.ReactElement<JSX.IntrinsicElements['object3D']>, {
+      ...props,
+      ref,
+    })
+  }
 
   return null
 }
