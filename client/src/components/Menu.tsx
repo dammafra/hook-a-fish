@@ -35,7 +35,7 @@ export default function Menu() {
         switch (item) {
               case 'main': return <MainMenu style={style} />
               case 'tutorial': return <Tutorial style={style} />
-              // case 'credits': return <Credits style={style} /> 
+              case 'credits': return <Credits style={style} /> 
               case 'end': return <End style={style} /> 
             }
       })}
@@ -62,7 +62,7 @@ const MainMenu = animated(props => {
         <span className="icon-[solar--question-circle-bold]" />
         <span>How to Play</span>
       </button>
-      <button disabled>
+      <button onClick={() => setMenu('credits')}>
         <span className="icon-[solar--info-circle-bold]" />
         <span>Credits</span>
       </button>
@@ -108,6 +108,19 @@ const Tutorial = animated(props => {
         <br />
         Stay tuned!
       </p>
+    </div>
+  )
+})
+
+const Credits = animated(props => {
+  const setMenu = useGame(state => state.setMenu)
+
+  return (
+    <div {...props} className="menu-section text-2xl">
+      <p>TBD</p>
+      <button onClick={() => setMenu('main')}>
+        <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
+      </button>
     </div>
   )
 })

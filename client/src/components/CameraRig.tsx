@@ -30,11 +30,9 @@ export default function CameraRig() {
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.fitToBox(target, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
+    cameraControls.setTarget(0, 0.1, 0, true)
 
-    if (viewport.aspect < 1) {
-      cameraControls.zoomTo(1.25, true)
-      cameraControls.setTarget(0, -1, 0, true)
-    }
+    if (viewport.aspect < 1) cameraControls.rotatePolarTo(Math.PI * 0.2, true)
   }, [controls, target, size, phase])
 
   return <></>
