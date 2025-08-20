@@ -1,7 +1,6 @@
 import { CameraControls, CameraControlsImpl } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
-import { Suspense } from 'react'
 import { useDebug } from '../hooks/use-debug'
 import Canvas from './Canvas'
 import Environment from './Environment'
@@ -53,12 +52,9 @@ export default function Experience() {
         }}
       />
 
-      {/* TODO Loader fallback */}
       <Physics {...physicsControls}>
-        <Suspense>
-          <World />
-          <Helpers />
-        </Suspense>
+        <World />
+        <Helpers />
       </Physics>
 
       <SoundBooard />

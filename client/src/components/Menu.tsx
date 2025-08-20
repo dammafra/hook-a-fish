@@ -146,7 +146,7 @@ const End = animated(props => {
 
   const imgProps = useSpring({
     from: { transform: 'scale(0) rotate(0deg)' },
-    to: { transform: 'scale(1) rotate(360deg)' },
+    to: { transform: 'scale(1) rotate(355deg)' },
     config: { tension: 120, friction: 14 },
   })
 
