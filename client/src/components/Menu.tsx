@@ -1,14 +1,13 @@
 import { animated, useTransition } from '@react-spring/web'
-import { Html, type CameraControls } from '@react-three/drei'
+import { CameraControls, Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
-import useMenu from '../stores/use-menu'
 
 export default function Menu() {
   const phase = useGame(state => state.phase)
-  const sections = useMenu(state => state.sections)
+  const menu = useGame(state => state.menu)
 
   const { controls, size } = useThree()
   const cameraAnimation = () => {
@@ -23,10 +22,11 @@ export default function Menu() {
 
   useEffect(cameraAnimation, [size, controls, phase])
 
+  const sections = useMemo(() => (menu ? [menu] : []), [menu])
   const transitions = useTransition(sections, {
-    from: item => (item < 3 ? { scale: 0 } : { opacity: 0 }),
-    enter: item => (item < 3 ? { scale: 1 } : { opacity: 1 }),
-    leave: item => (item < 3 ? { scale: 0 } : { opacity: 0 }),
+    from: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
+    enter: item => (item === 'end' ? { opacity: 1 } : { scale: 1 }),
+    leave: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
   })
 
   return (
@@ -34,10 +34,10 @@ export default function Menu() {
       {transitions((style, item) => {
         //prettier-ignore
         switch (item) {
-              case 0: return <MainMenu style={style} />
-              case 1: return <Tutorial style={style} />
-              // case 2: return <Credits style={style} /> 
-              case 3: return <End style={style} /> 
+              case 'main': return <MainMenu style={style} />
+              case 'tutorial': return <Tutorial style={style} />
+              // case 'credits': return <Credits style={style} /> 
+              case 'end': return <End style={style} /> 
             }
       })}
     </Html>
@@ -46,7 +46,7 @@ export default function Menu() {
 
 const MainMenu = animated(props => {
   const start = useGame(state => state.start)
-  const setSections = useMenu(state => state.setSections)
+  const setMenu = useGame(state => state.setMenu)
 
   return (
     <div {...props} className="menu-section">
@@ -55,16 +55,11 @@ const MainMenu = animated(props => {
         <span className="text-2xl">-A-</span>
         <span className="text-7xl">Fish!</span>
       </h1>
-      <button
-        onClick={() => {
-          start()
-          setSections([])
-        }}
-      >
+      <button onClick={start}>
         <span className="icon-[solar--play-bold]" />
         <span>Start</span>
       </button>
-      <button onClick={() => setSections([1])}>
+      <button onClick={() => setMenu('tutorial')}>
         <span className="icon-[solar--question-circle-bold]" />
         <span>How to Play</span>
       </button>
@@ -85,7 +80,7 @@ const MainMenu = animated(props => {
 
 const Tutorial = animated(props => {
   const isTouch = useIsTouch()
-  const setSections = useMenu(state => state.setSections)
+  const setMenu = useGame(state => state.setMenu)
 
   return (
     <div {...props} className="menu-section text-4xl text-center px-5 gap-2">
@@ -101,7 +96,7 @@ const Tutorial = animated(props => {
       <span className="icon-[solar--clock-circle-bold] text-5xl" />
       <p className="mb-10">Catch them as fast as you can!</p>
 
-      <button onClick={() => setSections([0])}>
+      <button onClick={() => setMenu('main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
     </div>
@@ -112,7 +107,6 @@ const End = animated(props => {
   const start = useGame(state => state.start)
   const score = useGame(state => state.score)
   const lastPhoto = useGame(state => state.lastPhoto)
-  const setSections = useMenu(state => state.setSections)
 
   const canShare = useMemo(() => !!score && lastPhoto, [score, lastPhoto])
 
@@ -153,12 +147,7 @@ const End = animated(props => {
       )}
 
       <div className="flex max-md:flex-col gap-4">
-        <button
-          onClick={() => {
-            start()
-            setSections([])
-          }}
-        >
+        <button onClick={start}>
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>
         </button>

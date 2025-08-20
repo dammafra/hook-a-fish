@@ -3,6 +3,9 @@ import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { randomInt } from '../utils/random'
 
+type MenuSection = 'main' | 'tutorial' | 'credits' | 'end' | 'pause'
+type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
+
 type GameStore = {
   countdownSeconds: number
   startedAt: number
@@ -19,17 +22,20 @@ type GameStore = {
   fishes: string[]
   lastHooked?: string
 
-  phase: 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
+  phase: GamePhase
 
   start: () => void
   hook: (fish: string) => void
   unhook: (fish: string) => void
   end: () => void
+
+  menu?: MenuSection
+  setMenu: (menu?: MenuSection) => void
 }
 
 const useGame = create<GameStore>()(
   subscribeWithSelector(set => ({
-    countdownSeconds: 61,
+    countdownSeconds: 61, // start with 1 bonus second for the starting animation
     startedAt: 0,
     radius: 3.5,
 
@@ -38,7 +44,7 @@ const useGame = create<GameStore>()(
     bucketPosition: new Vector3(0, 0, 0),
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
-    total: 24,
+    total: 20,
     score: 0,
     fishes: [],
 
@@ -48,11 +54,12 @@ const useGame = create<GameStore>()(
       set(state => {
         if (state.phase === 'ready' || state.phase === 'ended') {
           return {
-            phase: 'started',
-            score: 0,
-            lastPhoto: undefined,
-            fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
             startedAt: Date.now(),
+            lastPhoto: undefined,
+            score: 0,
+            fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
+            phase: 'started',
+            menu: undefined,
           }
         }
 
@@ -102,12 +109,19 @@ const useGame = create<GameStore>()(
     end: () => {
       set(state => {
         if (state.phase !== 'hooked' && state.phase !== 'ended') {
-          return { phase: 'ended' }
+          return {
+            countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
+            phase: 'ended',
+            menu: 'end',
+          }
         }
 
         return {}
       })
     },
+
+    menu: 'main',
+    setMenu: menu => set(() => ({ menu })),
   })),
 )
 
