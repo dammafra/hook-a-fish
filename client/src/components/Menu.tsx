@@ -49,6 +49,11 @@ const MainMenu = animated(props => {
   const start = useGame(state => state.start)
   const setMenu = useGame(state => state.setMenu)
 
+  useEffect(() => {
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0094a5')
+    return () => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
+  }, [])
+
   return (
     <div {...props} className="menu-section">
       <h1 className="font-title flex flex-col items-center gap-0">
@@ -116,13 +121,18 @@ const Tutorial = animated(props => {
 
 const End = animated(props => {
   const start = useGame(state => state.start)
-  const score = useGame(state => state.score)
+  const lastScore = useGame(state => state.lastScore)
   const lastPhoto = useGame(state => state.lastPhoto)
 
-  const canShare = useMemo(() => !!score && lastPhoto, [score, lastPhoto])
+  const canShare = useMemo(() => !!lastScore && lastPhoto, [])
+
+  useEffect(() => {
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000')
+    return () => document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
+  }, [])
 
   const share = async () => {
-    const filename = `${Date.now()}_hook-a-fish_${score}.png`
+    const filename = `${Date.now()}_hook-a-fish_${lastScore}.png`
     const res = await fetch(lastPhoto!)
     const blob = await res.blob()
     const file = new File([blob], filename, { type: 'image/png' })
@@ -131,7 +141,7 @@ const End = animated(props => {
       files: [file],
       url: 'https://hook-a-fish.vercel.app',
       title: 'Hook-A-Fish!',
-      text: `I just hooked ${score} fish! 🎣 Can you beat my score? #hookafish #indiegame #threejs`,
+      text: `I just hooked ${lastScore} fish! 🎣 Can you beat my score? #hookafish #indiegame #threejs`,
     }
 
     if (navigator.canShare(toShare)) {
@@ -155,13 +165,16 @@ const End = animated(props => {
       {canShare && (
         <>
           <p className="font-title text-6xl">Game Over</p>
-          <p className="text-4xl uppercase -mt-4">{score} Fish Caught</p>
+          <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
         </>
       )}
       {canShare ? (
         <animated.div className="relative" style={imgProps}>
-          <img src={lastPhoto} className="w-80 border-20 border-b-80 border-white" />
-          <p className="absolute top-80 w-full text-center text-3xl text-black">
+          <img
+            src={lastPhoto}
+            className="w-60 md:w-80 border-15 border-b-50 md:border-20 md:border-b-80 border-white"
+          />
+          <p className="absolute top-58 md:top-80 w-full text-center text-2xl md:text-3xl text-black">
             Here's the last one you hooked!
           </p>
         </animated.div>

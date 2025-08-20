@@ -38,9 +38,6 @@ export default function Water() {
     cameraControls.fitToBox(ref.current, true)
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.rotateAzimuthTo(0, true)
-
-    const colorPrimary = getComputedStyle(document.documentElement).getPropertyValue('--color-primary') //prettier-ignore
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colorPrimary)
   }, [controls])
 
   useEffect(() => {

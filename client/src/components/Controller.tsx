@@ -3,7 +3,6 @@ import { useMemo, useRef } from 'react'
 import { Euler, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
-import { getPositionOnCirlce } from '../utils/position'
 import FishingRod from './FishingRod'
 import PhotoCamera, { type PhotoCameraHandle } from './PhotoCamera'
 import PointerControls from './PointerControls'
@@ -13,16 +12,16 @@ export default function Controller() {
   const { viewport } = useThree()
 
   const phase = useGame(state => state.phase)
-  const setLastPhoto = useGame(state => state.setLastPhoto)
+  const setPhoto = useGame(state => state.setPhoto)
 
-  const initialPosition = useMemo(() => getPositionOnCirlce(2, 0, 2), [])
-  const initialRotation = useMemo(() => new Euler(0, 0, Math.PI * 0.35), [])
+  const initialPosition = useMemo(() => new Vector3(0, 2, 3), [])
+  const initialRotation = useMemo(() => new Euler(0, Math.PI * 1.65, Math.PI * 0.35), [])
 
   const photoCameraRef = useRef<PhotoCameraHandle>(null)
 
   const takePhoto = (target: Vector3) => {
     const dataUrl = photoCameraRef.current?.takePhoto(target)
-    setLastPhoto(dataUrl)
+    setPhoto(dataUrl)
   }
 
   if (phase === 'ready' || phase === 'ended') return

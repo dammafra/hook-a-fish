@@ -12,14 +12,17 @@ type GameStore = {
   bonusTime: number
   radius: number
 
+  photo?: string
   lastPhoto?: string
-  setLastPhoto: (lastPhoto?: string) => void
+  setPhoto: (photo?: string) => void
 
   bucketPosition: Vector3
   setBucketPosition: (x: number, y: number, z: number) => void
 
   total: number
   score: number
+  lastScore: number
+
   fishes: string[]
   lastHooked?: string
 
@@ -41,13 +44,15 @@ const useGame = create<GameStore>()(
     bonusTime: 0,
     radius: 3.5,
 
-    setLastPhoto: lastPhoto => set(() => ({ lastPhoto })),
+    setPhoto: photo => set(() => ({ photo })),
 
     bucketPosition: new Vector3(0, 0, 0),
     setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
 
     total: 20,
     score: 0,
+    lastScore: 0,
+
     fishes: [],
 
     phase: 'ready',
@@ -57,7 +62,7 @@ const useGame = create<GameStore>()(
         if (state.phase === 'ready' || state.phase === 'ended') {
           return {
             startedAt: Date.now(),
-            lastPhoto: undefined,
+            photo: undefined,
             score: 0,
             fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
             phase: 'started',
@@ -115,6 +120,8 @@ const useGame = create<GameStore>()(
           return {
             countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
             bonusTime: 0,
+            lastPhoto: state.photo,
+            lastScore: state.score,
             phase: 'ended',
             menu: 'end',
           }
