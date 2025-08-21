@@ -63,7 +63,7 @@ body,
 
   .overlay-content {
     /* border + border-radius causes glitch in firefox, so use shadow workaround */
-    @apply font-title text-center rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,1)] shadow-white bg-white/20 text-white;
+    @apply font-title text-center rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,1)] shadow-white bg-white/20 text-white hover:bg-white/50 active:bg-white/50;
   }
 
   .menu {

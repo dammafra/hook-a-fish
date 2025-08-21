@@ -24,6 +24,7 @@ export function Fish({ id }: FishProps) {
   const unhook = useGame(state => state.unhook)
   const lastHooked = useGame(state => state.lastHooked)
   const bucketPosition = useGame(state => state.bucketPosition)
+  const paused = useGame(state => state.paused)
 
   const bodyRadius = 0.25
   const targetRadius = 0.075
@@ -62,6 +63,8 @@ export function Fish({ id }: FishProps) {
   }
 
   useFrame(({ clock }, delta) => {
+    if (paused) return
+
     // Emerge on start
     if (bodyType === 'kinematicPosition') {
       const position = body.current.translation()

@@ -9,7 +9,7 @@ export default function World() {
   return (
     <>
       <Menu />
-      <Countdown />
+      <Countdown seconds={60} />
 
       <Controller />
       <Fishes />

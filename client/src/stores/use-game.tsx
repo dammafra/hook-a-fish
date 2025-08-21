@@ -6,9 +6,7 @@ type MenuSection = 'main' | 'tutorial' | 'credits' | 'game-over' | 'pause'
 type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
 
 type GameStore = {
-  countdownSeconds: number
   startedAt: number
-  bonusTime: number
   radius: number
 
   photo?: string
@@ -32,6 +30,10 @@ type GameStore = {
   unhook: (fish: string) => void
   end: () => void
 
+  paused: boolean
+  pause: () => void
+  resume: () => void
+
   menu?: MenuSection
   setMenu: (menu?: MenuSection) => void
 }
@@ -40,9 +42,7 @@ const generateId = () =>
   crypto.randomUUID ? crypto.randomUUID() : (Date.now() * Math.random()).toFixed(0)
 
 const useGame = create<GameStore>()(set => ({
-  countdownSeconds: 61, // start with 1 bonus second for the starting animation
   startedAt: 0,
-  bonusTime: 0,
   radius: 3.5,
 
   setPhoto: photo => set(() => ({ photo })),
@@ -67,6 +67,7 @@ const useGame = create<GameStore>()(set => ({
           score: 0,
           fishes: Array.from({ length: state.total }, generateId),
           phase: 'started',
+          paused: false,
           menu: undefined,
         }
       }
@@ -90,9 +91,9 @@ const useGame = create<GameStore>()(set => ({
         }
 
         return {
-          phase: 'hooked',
-          lastHooked: undefined,
           fishes,
+          lastHooked: undefined,
+          phase: 'hooked',
         }
       }
 
@@ -104,10 +105,9 @@ const useGame = create<GameStore>()(set => ({
     set(state => {
       if (state.phase === 'hooked') {
         return {
-          phase: 'unhooked',
-          lastHooked: fish,
           score: state.score + 1,
-          bonusTime: state.bonusTime + 3,
+          lastHooked: fish,
+          phase: 'unhooked',
         }
       }
 
@@ -119,8 +119,6 @@ const useGame = create<GameStore>()(set => ({
     set(state => {
       if (state.phase !== 'hooked' && state.phase !== 'ended') {
         return {
-          countdownSeconds: 60, // remove the 1 bonus second since on the retry there is no starting animation
-          bonusTime: 0,
           lastPhoto: state.photo,
           lastScore: state.score,
           phase: 'ended',
@@ -131,6 +129,10 @@ const useGame = create<GameStore>()(set => ({
       return {}
     })
   },
+
+  paused: true,
+  pause: () => set(() => ({ paused: true })),
+  resume: () => set(() => ({ paused: false })),
 
   menu: 'main',
   setMenu: menu => set(() => ({ menu })),

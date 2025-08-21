@@ -1,6 +1,6 @@
 import { Float } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useGame from '../stores/use-game'
 import BonusTime from './interface/BonusTime'
 import Score from './interface/Score'
@@ -9,7 +9,7 @@ import BucketModel from './models/Bucket'
 export default function Bucket() {
   const { viewport } = useThree()
   const phase = useGame(state => state.phase)
-  const bonusTime = useGame(state => state.bonusTime)
+  const [bonusTime, setBonusTime] = useState(0)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
 
@@ -18,10 +18,15 @@ export default function Bucket() {
     else setBucketPosition(-3.5, 0, 3)
   }, [setBucketPosition, viewport.aspect])
 
+  useEffect(() => {
+    if (phase === 'unhooked') setBonusTime(bt => bt + 1)
+  }, [phase])
+
   return (
     <group position={bucketPosition}>
       <Score />
       {!!bonusTime && <BonusTime key={bonusTime} />}
+
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}

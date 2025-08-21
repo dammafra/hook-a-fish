@@ -12,6 +12,7 @@ import { BOUNDS_COLLISION_GROUP } from './Water'
 
 interface FishingRodProps {
   ref?: RefObject<Object3D>
+  visible?: boolean
   position?: Position
   rotation?: Rotation
   ropeLength?: number
@@ -23,6 +24,7 @@ interface FishingRodProps {
 
 export default function FishingRod({
   ref,
+  visible = true,
   position = 0,
   rotation = 0,
   ropeLength = 1.5,
@@ -49,7 +51,7 @@ export default function FishingRod({
   })
 
   return (
-    <>
+    <group visible={visible}>
       <group ref={ref} position={_position} rotation={_rotation}>
         <RigidBody ref={poleBody} type="kinematicPosition" />
         <Center
@@ -97,6 +99,6 @@ export default function FishingRod({
         length={ropeLength}
         radius={ropeRadius}
       />
-    </>
+    </group>
   )
 }

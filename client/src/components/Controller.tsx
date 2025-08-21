@@ -10,6 +10,7 @@ import PointerControls from './helpers/PointerControls'
 export default function Controller() {
   const isTouch = useIsTouch()
   const { viewport } = useThree()
+  const paused = useGame(state => state.paused)
 
   const phase = useGame(state => state.phase)
   const setPhoto = useGame(state => state.setPhoto)
@@ -24,13 +25,15 @@ export default function Controller() {
     setPhoto(dataUrl)
   }
 
-  if (phase === 'ready' || phase === 'ended') return
+  if (phase === 'ended') return
 
   return (
     <>
       <PointerControls
         type="billboard"
-        hideCursor
+        visible={!paused}
+        enabled={!paused}
+        hideCursor={!paused}
         lockPositionYAt={1.48}
         positionOffset={isTouch && viewport.aspect < 1 ? [0, 0, -2] : 0}
         rotationYOffset={0.5}
