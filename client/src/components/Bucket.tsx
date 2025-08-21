@@ -9,6 +9,7 @@ import BucketModel from './models/Bucket'
 export default function Bucket() {
   const { viewport } = useThree()
   const phase = useGame(state => state.phase)
+  const paused = useGame(state => state.paused)
   const [bonusTime, setBonusTime] = useState(0)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
@@ -30,7 +31,7 @@ export default function Bucket() {
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}
-        enabled={phase === 'hooked'}
+        enabled={!paused && phase === 'hooked'}
         floatingRange={[0, 0.1]}
         floatIntensity={0.1}
         scale={2}

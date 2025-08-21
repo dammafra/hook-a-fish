@@ -134,7 +134,11 @@ export function Fish({ id }: FishProps) {
         restitution={0.2}
         angularDamping={0.5}
       >
-        <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
+        <Center
+          visible={!(paused && hookBody && id !== lastHooked)}
+          rotation-x={-Math.PI * 0.5}
+          scale={1.5}
+        >
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
         </Center>
         {!hookBody && (
