@@ -3,6 +3,8 @@ import { Html } from '@react-three/drei'
 import { useMemo } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
+import { randomOneOf } from '../../utils/random'
+import { LOST_MESSAGES, WIN_MESSAGES } from '../data/messages'
 
 export default function Menu() {
   const menu = useGame(state => state.menu)
@@ -153,6 +155,9 @@ const End = animated(props => {
 
   const canShare = useMemo(() => !!lastScore && lastPhoto, [lastScore, lastPhoto])
 
+  const winMessage = useMemo(() => randomOneOf(WIN_MESSAGES), [])
+  const lostMessage = useMemo(() => randomOneOf(LOST_MESSAGES), [])
+
   const share = async () => {
     const filename = `${Date.now()}_hook-a-fish_${lastScore}.png`
     const res = await fetch(lastPhoto!)
@@ -192,14 +197,14 @@ Can you beat my score?
         <animated.div className="relative" style={imgProps}>
           <img
             src={lastPhoto}
-            className="w-60 md:w-80 border-15 border-b-50 md:border-20 md:border-b-80 border-white"
+            className="w-60 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"
           />
-          <p className="absolute top-58 md:top-80 w-full text-center text-2xl md:text-3xl text-black">
-            Here's the last one you hooked!
+          <p className="absolute h-16 md:h-20 inline-flex items-center justify-center top-58 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
+            {winMessage}
           </p>
         </animated.div>
       ) : (
-        <p className="text-3xl text-center">Oops… the fishes are laughing at you!</p>
+        <p className="text-3xl text-center">{lostMessage}</p>
       )}
 
       <div className="flex max-md:flex-col gap-4 mt-4">

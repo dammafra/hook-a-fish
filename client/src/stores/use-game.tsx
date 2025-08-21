@@ -85,7 +85,7 @@ const useGame = create<GameStore>()(set => ({
         const remaining = fishes.length
 
         if (remaining <= spawnThreshold) {
-          const toSpawn = randomInt(remaining === 2 ? 1 : 0, 3)
+          const toSpawn = randomInt(remaining === 2 ? 1 : 0, 5)
           const newFishes = Array.from({ length: toSpawn }, generateId)
           fishes = [...fishes, ...newFishes]
         }
