@@ -5,7 +5,7 @@ import { type Object3D } from 'three'
 import useGame from '../stores/use-game'
 
 export default function CameraRig() {
-  const { controls, size, scene, viewport } = useThree()
+  const { controls, size, scene } = useThree()
   const phase = useGame(state => state.phase)
   const [target, setTarget] = useState<Object3D>(null!)
 
@@ -32,7 +32,7 @@ export default function CameraRig() {
     cameraControls.rotatePolarTo(Math.PI * 0.25, true)
     cameraControls.setTarget(0, 0.1, 0, true)
 
-    if (viewport.aspect < 1) cameraControls.rotatePolarTo(Math.PI * 0.2, true)
+    // TODO improve mobile positioning
   }, [controls, target, size, phase])
 
   return <></>

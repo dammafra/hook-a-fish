@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import useGame from '../stores/use-game'
 
 export default function Countdown() {
+  const phase = useGame(state => state.phase)
   const ref = useRef<HTMLDivElement>(null!)
   const [alarm, setAlarm] = useState(false)
 
@@ -36,17 +37,19 @@ export default function Countdown() {
   }, [])
 
   return (
-    // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800
-    <Float speed={alarm ? 50 : 0} floatIntensity={1} rotationIntensity={0}>
-      <Billboard position={[0, 2, -2]}>
-        <Html scale={0.5} transform wrapperClass="overlay">
-          <div
-            ref={ref}
-            style={{ transform: 'scale(2)' }}
-            className="overlay-content text-xl w-20 pt-2 pb-0.5"
-          />
-        </Html>
-      </Billboard>
-    </Float>
+    phase !== 'ended' && (
+      // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800
+      <Float speed={alarm ? 50 : 0} floatIntensity={1} rotationIntensity={0}>
+        <Billboard position={[0, 2, -2]}>
+          <Html scale={0.5} transform wrapperClass="overlay">
+            <div
+              ref={ref}
+              style={{ transform: 'scale(2)' }}
+              className="overlay-content text-xl w-20 pt-2 pb-0.5"
+            />
+          </Html>
+        </Billboard>
+      </Float>
+    )
   )
 }
