@@ -1,11 +1,14 @@
 import { Billboard, Float, Html } from '@react-three/drei'
 import { addEffect } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
+import useSound from 'use-sound'
 import useGame from '../stores/use-game'
+import { parseSound } from './SoundBoard'
 
 export default function Countdown() {
   const ref = useRef<HTMLDivElement>(null!)
   const [alarm, setAlarm] = useState(false)
+  const tickSound = parseSound(useSound('./sounds/tick.mp3', { loop: true }))
 
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
@@ -34,6 +37,10 @@ export default function Countdown() {
     })
     return unsubscribeEffect
   }, [])
+
+  useEffect(() => {
+    alarm ? tickSound.play() : tickSound.stop()
+  }, [alarm])
 
   return (
     // see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800

@@ -71,19 +71,19 @@ const Tutorial = animated(props => {
   return (
     <div {...props} className="menu-section text-2xl md:text-3xl text-center px-5 gap-2">
       <span className="icon-[mdi--hook] text-4xl md:text-5xl" />
-      <p className="mb-10">
+      <p className="mb-5 md:mb-10">
         Control the fishing rod{' '}
         <span className="font-extrabold"> with your {isTouch ? 'finger' : 'mouse'}</span>,
         <br className="max-md:hidden" />
         aim for the fish’s mouth and catch them as they jump
       </p>
       <span className="icon-[mdi--bucket] text-4xl md:text-5xl" />
-      <p className="mb-10">
+      <p className="mb-5 md:mb-10">
         After you <span className="font-extrabold">Hook-A-Fish</span>, <br />
         put it inside your bucket
       </p>
       <span className="icon-[solar--clock-circle-bold] text-4xl md:text-5xl" />
-      <p className="mb-10">
+      <p className="mb-5 md:mb-10">
         Catch them as fast as you can! <br />
         Each fish gives you a <span className="font-extrabold">time bonus</span>
       </p>
@@ -103,7 +103,7 @@ const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
   return (
-    <div {...props} className="menu-section text-sm md:text-lg tracking-wide text-center">
+    <div {...props} className="menu-section text-xs md:text-lg tracking-wide text-center">
       <div>
         <h2 className="font-title">Models</h2>
         {/* prettier-ignore */}
@@ -128,6 +128,7 @@ const Credits = animated(props => {
           <li><a href="https://pixabay.com/users/alexis_gaming_cam-50011695/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=367087" target="_blank" className="uppercase">Item Collected</a> by <span className="uppercase">ALEXIS_GAMING_CAM</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=367087" target="_blank">Pixabay</a></li>
           <li><a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6462" target="_blank" className="uppercase">Jump</a> by <span className="uppercase">freesound_community</span> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6462" target="_blank">Pixabay</a></li>
           <li><a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6320" target="_blank" className="uppercase">Referee whistle blow, gymnasium</a> by <span className="uppercase">freesound_community</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6320" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/reddog0607-51038821/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=365218" target="_blank" className="uppercase">Clock Ticking</a> by <span className="uppercase">RedDog0607</span> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=365218" target="_blank">Pixabay</a></li>
       </ul>
       </div>
       <div>
@@ -137,7 +138,7 @@ const Credits = animated(props => {
           <li><a href="https://codepen.io/matchboxhero/pen/LzdgOv" target="_blank" className="uppercase">Animated SVG Bubbles</a> by <span className="uppercase">Steven Roberts</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank">CodePen</a></li>
         </ul>
       </div>
-      <button onClick={() => setMenu('main')}>
+      <button className="max-md:absolute max-md:bottom-10" onClick={() => setMenu('main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
     </div>

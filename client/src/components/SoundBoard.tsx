@@ -20,7 +20,7 @@ interface ExposedData {
 
 declare type ReturnedValue = [PlayFunction, ExposedData]
 
-const parse = ([play, data]: ReturnedValue) => ({ play, ...data })
+export const parseSound = ([play, data]: ReturnedValue) => ({ play, ...data })
 
 export default function SoundBooard() {
   const phase = useGame(state => state.phase)
@@ -30,13 +30,13 @@ export default function SoundBooard() {
   const onload = () => setLoaded(loaded => loaded + 1)
 
   const sounds = {
-    loop: parse(useSound('./sounds/loop.mp3', { loop: true, volume: 0.1, onload })),
-    fishes: parse(useSound('./sounds/fishes.mp3', { loop: true, volume: 0.5, onload })),
-    jump: parse(useSound('./sounds/jump.mp3', { onload })),
-    reel: parse(useSound('./sounds/reel.mp3', { loop: true, volume: 0.3, onload })),
-    bucket: parse(useSound('./sounds/bucket.mp3', { onload })),
-    collect: parse(useSound('./sounds/collect.mp3', { onload })),
-    whistle: parse(useSound('./sounds/whistle.mp3', { onload, volume: 0.5 })),
+    loop: parseSound(useSound('./sounds/loop.mp3', { loop: true, volume: 0.1, onload })),
+    fishes: parseSound(useSound('./sounds/fishes.mp3', { loop: true, volume: 0.5, onload })),
+    jump: parseSound(useSound('./sounds/jump.mp3', { onload })),
+    reel: parseSound(useSound('./sounds/reel.mp3', { loop: true, volume: 0.3, onload })),
+    bucket: parseSound(useSound('./sounds/bucket.mp3', { onload })),
+    collect: parseSound(useSound('./sounds/collect.mp3', { onload })),
+    whistle: parseSound(useSound('./sounds/whistle.mp3', { onload, volume: 0.5 })),
   }
 
   const toLoad = Object.keys(sounds).length
