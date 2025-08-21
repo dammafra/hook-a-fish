@@ -36,6 +36,9 @@ type GameStore = {
   setMenu: (menu?: MenuSection) => void
 }
 
+const generateId = () =>
+  crypto.randomUUID ? crypto.randomUUID() : (Date.now() * Math.random()).toFixed(0)
+
 const useGame = create<GameStore>()(set => ({
   countdownSeconds: 61, // start with 1 bonus second for the starting animation
   startedAt: 0,
@@ -62,7 +65,7 @@ const useGame = create<GameStore>()(set => ({
           startedAt: Date.now(),
           photo: undefined,
           score: 0,
-          fishes: Array.from({ length: state.total }, () => crypto.randomUUID()),
+          fishes: Array.from({ length: state.total }, generateId),
           phase: 'started',
           menu: undefined,
         }
@@ -82,7 +85,7 @@ const useGame = create<GameStore>()(set => ({
 
         if (remaining <= spawnThreshold) {
           const toSpawn = randomInt(remaining === 2 ? 1 : 0, 3)
-          const newFishes = Array.from({ length: toSpawn }, () => crypto.randomUUID())
+          const newFishes = Array.from({ length: toSpawn }, generateId)
           fishes = [...fishes, ...newFishes]
         }
 

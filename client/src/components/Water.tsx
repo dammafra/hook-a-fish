@@ -11,7 +11,7 @@ export const BOUNDS_COLLISION_GROUP = (GROUP << 16) | MASK
 
 export default function Water() {
   const { gl } = useThree()
-  gl.transmissionResolutionScale = 0.7
+  gl.transmissionResolutionScale = 0.6
   const radius = useGame(state => state.radius)
 
   const [boundsGeometry] = useState(
@@ -35,7 +35,7 @@ export default function Water() {
         userData={{ name: 'water' }}
       >
         <circleGeometry />
-        <MeshDistortMaterial transmission={0.8} roughness={0.3} thickness={0.01} ior={2}>
+        <MeshDistortMaterial transmission={0.8} roughness={0.3} thickness={0.02} ior={2}>
           <GradientTexture
             stops={[0, 1]}
             colors={['dodgerblue', 'aquamarine']}

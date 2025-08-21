@@ -22,7 +22,7 @@ export default function BonusTime() {
       <Html transform scale={0.5}>
         <div
           style={{ transform: 'scale(1.5)' }}
-          className="font-title text-center text-white select-none flex gap-0.5"
+          className="font-title text-center text-white flex gap-0.5"
         >
           +3 <span className="icon-[ic--twotone-access-time] mt-0.5" />
         </div>

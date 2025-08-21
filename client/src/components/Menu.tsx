@@ -127,9 +127,11 @@ const End = animated(props => {
 
     const toShare = {
       files: [file],
-      url: 'https://hook-a-fish.vercel.app',
-      title: 'Hook-A-Fish!',
-      text: `I just hooked ${lastScore} fish! 🎣 Can you beat my score? #hookafish #indiegame #threejs`,
+      text: `I just caught ${lastScore} fish in Hook-A-Fish!
+Can you beat my score?
+#hookafish #indiegame #indiedev #fishinggame #webgame #threejs
+
+🎣 https://hook-a-fish.vercel.app`,
     }
 
     if (navigator.canShare(toShare)) {

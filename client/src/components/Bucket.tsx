@@ -33,7 +33,7 @@ export default function Bucket() {
         <BucketModel />
         <mesh scale={0.15} position-y={0.25} rotation={[-Math.PI * 0.5, 0, Math.PI * 0.14]}>
           <circleGeometry args={[1, 8]} />
-          <meshStandardMaterial color="dodgerblue" />
+          <meshStandardMaterial color="#006CB1" />
         </mesh>
       </Float>
     </group>
