@@ -54,6 +54,10 @@ body,
   a {
     @apply underline;
   }
+
+  .adhs-container {
+    @apply bg-transparent! bg-gradient-to-t from-black from-50% to-transparent;
+  }
 }
 
 @layer components {

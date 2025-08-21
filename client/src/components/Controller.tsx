@@ -33,7 +33,6 @@ export default function Controller() {
         type="billboard"
         visible={!paused}
         enabled={!paused}
-        hideCursor={!paused}
         lockPositionYAt={1.48}
         positionOffset={isTouch && viewport.aspect < 1 ? [0, 0, -2] : 0}
         rotationYOffset={0.5}

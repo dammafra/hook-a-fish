@@ -81,7 +81,7 @@ export default function FishingRod({
         }}
       >
         <group>
-          <mesh scale={0.04} position-y={0.1}>
+          <mesh castShadow scale={0.04} position-y={0.1}>
             <icosahedronGeometry args={[1, 2]} />
             <meshStandardMaterial color="darkred" />
           </mesh>
