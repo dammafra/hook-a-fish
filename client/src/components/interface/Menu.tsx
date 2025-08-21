@@ -1,8 +1,8 @@
 import { animated, useSpring, useTransition } from '@react-spring/web'
 import { Html } from '@react-three/drei'
 import { useMemo } from 'react'
-import { useIsTouch } from '../hooks/use-is-touch'
-import useGame from '../stores/use-game'
+import { useIsTouch } from '../../hooks/use-is-touch'
+import useGame from '../../stores/use-game'
 
 export default function Menu() {
   const menu = useGame(state => state.menu)

@@ -9,8 +9,8 @@ import { Instance, Instances, useGLTF } from '@react-three/drei'
 import { useMemo } from 'react'
 import { BufferGeometry, Mesh } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import type { Position } from '../utils/position'
-import type { Rotation } from '../utils/rotation'
+import type { Position } from '../../utils/position'
+import type { Rotation } from '../../utils/rotation'
 
 export interface GrassInstanceProps {
   position: Position

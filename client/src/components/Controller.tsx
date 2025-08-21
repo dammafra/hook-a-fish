@@ -4,8 +4,8 @@ import { Euler, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
-import PhotoCamera, { type PhotoCameraHandle } from './PhotoCamera'
-import PointerControls from './PointerControls'
+import PhotoCamera, { type PhotoCameraHandle } from './helpers/PhotoCamera'
+import PointerControls from './helpers/PointerControls'
 
 export default function Controller() {
   const isTouch = useIsTouch()

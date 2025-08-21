@@ -1,5 +1,5 @@
 import { Billboard, Html } from '@react-three/drei'
-import useGame from '../stores/use-game'
+import useGame from '../../stores/use-game'
 
 export default function Score() {
   const count = useGame(state => state.score)

@@ -1,9 +1,8 @@
-import Bucket from './Bucket'
 import Controller from './Controller'
-import Countdown from './Countdown'
 import Fishes from './Fishes'
 import Grass from './Grass'
-import Menu from './Menu'
+import Countdown from './interface/Countdown'
+import Menu from './interface/Menu'
 import Water from './Water'
 
 export default function World() {
@@ -15,7 +14,6 @@ export default function World() {
       <Controller />
       <Fishes />
       <Water />
-      <Bucket />
       <Grass />
     </>
   )

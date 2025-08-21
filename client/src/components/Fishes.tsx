@@ -9,9 +9,9 @@ import {
 } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
 import { Euler, Quaternion, Vector3 } from 'three'
-import FishModel from '../models/Fish'
 import useGame from '../stores/use-game'
 import { random, randomAngle, randomColor } from '../utils/random'
+import FishModel from './models/Fish'
 
 interface FishProps {
   id: string

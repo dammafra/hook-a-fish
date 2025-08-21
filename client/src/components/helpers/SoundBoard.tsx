@@ -1,7 +1,7 @@
 import { Howler } from 'howler'
 import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
-import useGame from '../stores/use-game'
+import useGame from '../../stores/use-game'
 
 interface PlayOptions {
   id?: string

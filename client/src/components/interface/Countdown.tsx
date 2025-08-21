@@ -2,8 +2,8 @@ import { Billboard, Float, Html } from '@react-three/drei'
 import { addEffect } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
-import useGame from '../stores/use-game'
-import { parseSound } from './SoundBoard'
+import useGame from '../../stores/use-game'
+import { parseSound } from '../helpers/SoundBoard'
 
 export default function Countdown() {
   const ref = useRef<HTMLDivElement>(null!)

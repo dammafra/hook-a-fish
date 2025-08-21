@@ -1,7 +1,7 @@
 import { useThree } from '@react-three/fiber'
 import { useEffect, useImperativeHandle, useRef, useState, type JSX, type Ref } from 'react'
 import { PerspectiveCamera, SRGBColorSpace, WebGLRenderTarget } from 'three'
-import { parsePosition, type Position } from '../utils/position'
+import { parsePosition, type Position } from '../../utils/position'
 
 export type PhotoCameraHandle = {
   camera: PerspectiveCamera

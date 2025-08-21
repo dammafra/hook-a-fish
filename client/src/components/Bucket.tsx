@@ -1,10 +1,10 @@
 import { Float } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
-import BucketModel from '../models/Bucket'
 import useGame from '../stores/use-game'
-import BonusTime from './BonusTime'
-import Score from './Score'
+import BonusTime from './interface/BonusTime'
+import Score from './interface/Score'
+import BucketModel from './models/Bucket'
 
 export default function Bucket() {
   const { viewport } = useThree()

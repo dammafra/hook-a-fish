@@ -9,7 +9,7 @@ import {
   type PropsWithChildren,
 } from 'react'
 import { Object3D, Plane, Vector2, Vector3 } from 'three'
-import { parsePosition, type Position } from '../utils/position'
+import { parsePosition, type Position } from '../../utils/position'
 
 type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
   PropsWithChildren & {

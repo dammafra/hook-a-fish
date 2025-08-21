@@ -2,7 +2,7 @@ import type { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useState } from 'react'
 import { type Object3D } from 'three'
-import useGame from '../stores/use-game'
+import useGame from '../../stores/use-game'
 
 export default function CameraRig() {
   const { controls, size, scene, viewport } = useThree()

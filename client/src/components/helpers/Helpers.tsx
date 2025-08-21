@@ -2,7 +2,7 @@ import { GizmoHelper, GizmoViewport } from '@react-three/drei'
 import { useRapier } from '@react-three/rapier'
 import { button, monitor, useControls } from 'leva'
 import { Perf } from 'r3f-perf'
-import { useDebug } from '../hooks/use-debug'
+import { useDebug } from '../../hooks/use-debug'
 
 export default function Helpers() {
   const debug = useDebug()
