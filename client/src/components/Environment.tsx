@@ -43,7 +43,7 @@ export default function Environment() {
       >
         <orthographicCamera
           attach="shadow-camera"
-          near={1}
+          near={0.1}
           far={10}
           top={6}
           right={6}

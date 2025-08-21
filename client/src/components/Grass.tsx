@@ -26,11 +26,11 @@ export default function Grass() {
   // const aoMap = setupTexture(useTexture('./textures/grass/grass_01_ambient_occlusion_1k.png'))
   // const roughnessMap = setupTexture(useTexture('./textures/grass/grass_01_roughness_1k.png'))
 
-  const grassInstancesCount = 100
+  const grassInstancesCount = 150
   const grassInstances: GrassInstanceProps[] = useMemo(
     () =>
       Array.from({ length: grassInstancesCount }).map(() => {
-        const r = random(radius + 0.5, radius + 3.5)
+        const r = random(radius + 0.75, radius + 4)
         const angle = randomAngle()
         const position = new Vector3(r * Math.cos(angle), 0.17, r * Math.sin(angle))
         const rotation = new Euler(0, randomAngle(), 0)
