@@ -1,5 +1,5 @@
 import { useThree } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Euler, Object3D, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
@@ -10,7 +10,7 @@ import Target from './Target'
 
 export default function Controller() {
   const isTouch = useIsTouch()
-  const { viewport } = useThree()
+  const { viewport, gl } = useThree()
   const paused = useGame(state => state.paused)
 
   const phase = useGame(state => state.phase)
@@ -27,6 +27,11 @@ export default function Controller() {
   }
 
   const ref = useRef<Object3D>(null!)
+
+  useEffect(() => {
+    gl.domElement.classList.add('cursor-grab!')
+    return () => gl.domElement.classList.remove('cursor-grab!')
+  }, [])
 
   if (phase === 'ended') return
 

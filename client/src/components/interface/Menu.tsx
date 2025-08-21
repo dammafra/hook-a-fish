@@ -136,6 +136,7 @@ const Credits = animated(props => {
         {/* prettier-ignore */}
         <ul>
           <li><a href="https://codepen.io/matchboxhero/pen/LzdgOv" target="_blank" className="uppercase">Animated SVG Bubbles</a> by <span className="uppercase">Steven Roberts</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank">CodePen</a></li>
+          <li><a href="https://kenney.nl/assets/cursor-pack" target="_blank" className="uppercase">Cursor Pack</a> by <span className="uppercase">Kenney</span></li>
         </ul>
       </div>
       <button className="max-md:absolute max-md:bottom-10" onClick={() => setMenu('main')}>

@@ -18,6 +18,22 @@
   font-style: normal;
 }
 
+@utility cursor-auto {
+  cursor: url('/cursors/auto.png'), auto;
+}
+
+@utility cursor-pointer {
+  cursor: url('/cursors/pointer.png'), pointer;
+}
+
+@utility cursor-grab {
+  cursor: url('/cursors/grab.png'), grab;
+}
+
+@utility cursor-grabbing {
+  cursor: url('/cursors/grabbing.png'), grabbing;
+}
+
 /* Prevent iOS text selection */
 body,
 * {
@@ -26,6 +42,14 @@ body,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  @apply cursor-auto;
+}
+
+a,
+button,
+a *,
+button * {
+  @apply cursor-pointer;
 }
 
 @layer base {
@@ -35,11 +59,11 @@ body,
     @apply fixed inset-0 overflow-hidden bg-radial bg-menu;
   }
 
-  button {
-    @apply border border-white text-white rounded-full px-4 py-2 text-2xl md:text-3xl w-40 md:w-50 inline-flex items-center gap-2 font-bold hover:bg-white/20 active:bg-white/20 cursor-pointer;
+  button:not(.overlay-content) {
+    @apply border border-white text-white rounded-full px-4 py-2 text-2xl md:text-3xl w-40 md:w-50 inline-flex items-center gap-2 font-bold hover:bg-white/20 active:bg-white/20;
   }
 
-  button:has(> span[class^='icon']:only-child) {
+  button:not(.overlay-content):has(> span[class^='icon']:only-child) {
     @apply p-2 w-fit;
   }
 

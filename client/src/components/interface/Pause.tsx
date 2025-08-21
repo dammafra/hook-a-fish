@@ -32,12 +32,12 @@ export default function Pause() {
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
         <Html scale={0.5} transform>
-          <div
+          <button
             onClick={paused ? resume : pause}
-            className="overlay-content size-10 md:size-8 flex items-center justify-center text-2xl cursor-pointer"
+            className="overlay-content size-10 md:size-8 flex items-center justify-center text-2xl"
           >
             <span className={paused ? 'icon-[solar--play-bold]' : 'icon-[solar--pause-bold]'} />
-          </div>
+          </button>
         </Html>
       </Billboard>
     </Float>

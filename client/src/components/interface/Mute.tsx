@@ -12,12 +12,12 @@ export default function Mute() {
     <Billboard position={[-0.6, 1, -0.4]}>
       {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
       <Html scale={0.5} transform>
-        <div
+        <button
           onClick={paused ? undefined : toggleMuted}
-          className={`overlay-content size-10 md:size-8 flex items-center justify-center text-2xl ${paused ? 'pointer-events-none cursor-auto opacity-45' : 'cursor-pointer'}`}
+          className={`overlay-content size-10 md:size-8 flex items-center justify-center text-2xl ${paused ? 'pointer-events-none opacity-45' : ''}`}
         >
           <span className={muted ? 'icon-[solar--muted-bold]' : 'icon-[solar--volume-loud-bold]'} />
-        </div>
+        </button>
       </Html>
     </Billboard>
   )
