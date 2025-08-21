@@ -70,6 +70,6 @@ export const LOST_MESSAGES = [
   'The fish staged a strike',
   'Your cast earned zero likes',
   'Your hook became fish furniture',
-  'The fish RSVP’d ‘no’ to your invite',
+  'The fish RSVP’d "no" to your invite',
   'Your patience just got roasted',
 ]

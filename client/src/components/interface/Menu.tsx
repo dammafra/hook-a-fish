@@ -166,11 +166,14 @@ const End = animated(props => {
 
     const toShare = {
       files: [file],
-      text: `I just caught ${lastScore} fish in Hook-A-Fish!
+      text: `${winMessage}
+      
+I just caught ${lastScore} fish in Hook-A-Fish!
 Can you beat my score?
-#hookafish #indiegame #indiedev #fishinggame #webgame #threejs
 
-🎣 https://hook-a-fish.vercel.app`,
+🎣 https://hook-a-fish.vercel.app
+
+#hookafish #indiegame #indiedev #fishinggame #webgame #threejs`,
     }
 
     if (navigator.canShare(toShare)) {
@@ -199,15 +202,15 @@ Can you beat my score?
             src={lastPhoto}
             className="w-60 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"
           />
-          <p className="absolute h-16 md:h-20 inline-flex items-center justify-center top-58 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
+          <p className="text-shadow-none absolute h-16 md:h-20 inline-flex items-center justify-center top-58 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
             {winMessage}
           </p>
         </animated.div>
       ) : (
-        <p className="text-3xl text-center">{lostMessage}</p>
+        <p className="text-5xl text-center">{lostMessage}</p>
       )}
 
-      <div className="flex max-md:flex-col gap-4 mt-4">
+      <div className="absolute bottom-10 flex max-md:flex-col gap-4 mt-4">
         <button onClick={start}>
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>
