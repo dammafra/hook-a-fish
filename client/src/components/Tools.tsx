@@ -1,6 +1,7 @@
 import { Vector3 } from 'three'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
+import Mute from './interface/Mute'
 import Pause from './interface/Pause'
 import Stand from './models/Stand'
 
@@ -10,6 +11,7 @@ export default function Tools() {
   return (
     <group position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}>
       <Pause />
+      <Mute />
 
       <Stand scale={3} rotation-y={Math.PI * 0.2} />
       <FishingRod

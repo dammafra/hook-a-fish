@@ -1,7 +1,7 @@
 import { Billboard, Float, Html } from '@react-three/drei'
 import { useEffect, useRef, useState } from 'react'
-import useSoundBoard from '../../hooks/use-sound-board'
 import useGame from '../../stores/use-game'
+import useSoundBoard from '../../stores/use-sound-board'
 
 interface CountdownProps {
   seconds: number
@@ -15,7 +15,7 @@ export default function Countdown({ seconds }: CountdownProps) {
   const ref = useRef<HTMLDivElement>(null!)
   const [timeLeft, setTimeLeft] = useState(seconds)
   const [alarm, setAlarm] = useState(false)
-  const { sounds } = useSoundBoard()
+  const sounds = useSoundBoard(state => state.sounds)
 
   useEffect(() => {
     if (!ref.current || paused) return
@@ -38,8 +38,8 @@ export default function Countdown({ seconds }: CountdownProps) {
   }, [timeLeft, paused, end])
 
   useEffect(() => {
-    if (alarm && !paused) sounds.tick.play()
-    else sounds.tick.stop()
+    if (alarm && !paused) sounds?.tick.play()
+    else sounds?.tick.stop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alarm, paused])
 
@@ -49,8 +49,14 @@ export default function Countdown({ seconds }: CountdownProps) {
   }, [seconds, phase])
 
   return (
-    <Float enabled={alarm && !paused} speed={50} floatIntensity={1} rotationIntensity={0}>
-      <Billboard position={[0, 2, -2]}>
+    <Float
+      enabled={alarm && !paused}
+      speed={50}
+      floatIntensity={1}
+      rotationIntensity={0}
+      position={[0, 2, -2]}
+    >
+      <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
         <Html scale={0.5} transform wrapperClass="overlay">
           <div
