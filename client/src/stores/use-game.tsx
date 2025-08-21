@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { create } from 'zustand'
 import { randomInt } from '../utils/random'
 
-type MenuSection = 'main' | 'tutorial' | 'credits' | 'end' | 'pause'
+type MenuSection = 'main' | 'tutorial' | 'credits' | 'game-over' | 'pause'
 type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
 
 type GameStore = {
@@ -121,7 +121,7 @@ const useGame = create<GameStore>()(set => ({
           lastPhoto: state.photo,
           lastScore: state.score,
           phase: 'ended',
-          menu: 'end',
+          menu: 'game-over',
         }
       }
 

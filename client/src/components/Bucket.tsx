@@ -20,8 +20,8 @@ export default function Bucket() {
 
   return (
     <group position={bucketPosition}>
-      {phase !== 'ended' && <Score />}
-      {phase !== 'ended' && !!bonusTime && <BonusTime key={bonusTime} />}
+      <Score />
+      {!!bonusTime && <BonusTime key={bonusTime} />}
       <Float
         key={`bucket-${phase}`} // re-render in order to reset position and rotation after floating
         speed={50}

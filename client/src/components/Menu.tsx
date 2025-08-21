@@ -1,32 +1,19 @@
 import { animated, useSpring, useTransition } from '@react-spring/web'
 import { Html } from '@react-three/drei'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 
 export default function Menu() {
-  const phase = useGame(state => state.phase)
   const menu = useGame(state => state.menu)
 
   const sections = useMemo(() => (menu ? [menu] : []), [menu])
   const transitions = useTransition(sections, {
-    from: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
-    enter: item => (item === 'end' ? { opacity: 1 } : { scale: 1 }),
-    leave: item => (item === 'end' ? { opacity: 0 } : { scale: 0 }),
+    from: { scale: 0 },
+    enter: { scale: 1 },
+    leave: { scale: 0 },
     config: { tension: 120, friction: 14 },
   })
-
-  useEffect(() => {
-    switch (phase) {
-      case 'started':
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33') //prettier-ignore
-        return
-
-      case 'ended':
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000') //prettier-ignore
-        return
-    }
-  }, [phase])
 
   return (
     <Html center className="menu">
@@ -36,7 +23,7 @@ export default function Menu() {
               case 'main': return <MainMenu style={style} />
               case 'tutorial': return <Tutorial style={style} />
               case 'credits': return <Credits style={style} /> 
-              case 'end': return <End style={style} /> 
+              case 'game-over': return <End style={style} /> 
             }
       })}
     </Html>
@@ -67,7 +54,7 @@ const MainMenu = animated(props => {
         <span>Credits</span>
       </button>
 
-      <footer className="absolute bottom-15 inline-flex items-center justify-center gap-1 text-2xl">
+      <footer className="absolute bottom-10 inline-flex items-center justify-center gap-1 text-2xl">
         Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
         <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
           @dammafra
@@ -162,13 +149,9 @@ const End = animated(props => {
   })
 
   return (
-    <div {...props} className="menu-section bg-black/80">
-      {canShare && (
-        <>
-          <p className="font-title text-6xl">Game Over</p>
-          <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
-        </>
-      )}
+    <div {...props} className="menu-section">
+      <p className="font-title text-6xl">Game Over</p>
+      {canShare && <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>}
       {canShare ? (
         <animated.div className="relative" style={imgProps}>
           <img
@@ -180,7 +163,7 @@ const End = animated(props => {
           </p>
         </animated.div>
       ) : (
-        <p className="font-title text-3xl text-center">Oops… the fishes are laughing at you!</p>
+        <p className="text-3xl text-center">Oops… the fishes are laughing at you!</p>
       )}
 
       <div className="flex max-md:flex-col gap-4 mt-4">
