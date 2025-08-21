@@ -107,5 +107,5 @@ export default function PointerControls({
     })
   }
 
-  return null
+  return <></>
 }

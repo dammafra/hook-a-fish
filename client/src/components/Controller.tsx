@@ -1,11 +1,12 @@
 import { useThree } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
-import { Euler, Vector3 } from 'three'
+import { Euler, Object3D, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
 import PhotoCamera, { type PhotoCameraHandle } from './helpers/PhotoCamera'
 import PointerControls from './helpers/PointerControls'
+import Target from './Target'
 
 export default function Controller() {
   const isTouch = useIsTouch()
@@ -25,6 +26,8 @@ export default function Controller() {
     setPhoto(dataUrl)
   }
 
+  const ref = useRef<Object3D>(null!)
+
   if (phase === 'ended') return
 
   return (
@@ -40,10 +43,11 @@ export default function Controller() {
         rotation={initialRotation}
         onMove={p => photoCameraRef.current && photoCameraRef.current.camera.position.copy(p)}
       >
-        <FishingRod onHook={takePhoto} />
+        <FishingRod ref={ref} onHook={takePhoto} makeDefault />
       </PointerControls>
 
       <PhotoCamera ref={photoCameraRef} fov={25} size={1024} />
+      <Target />
     </>
   )
 }

@@ -20,6 +20,7 @@ interface FishingRodProps {
   colorA?: ColorRepresentation
   colorB?: ColorRepresentation
   onHook?: (position: Vector3) => void
+  makeDefault?: boolean
 }
 
 export default function FishingRod({
@@ -32,6 +33,7 @@ export default function FishingRod({
   colorA,
   colorB,
   onHook,
+  makeDefault = false,
 }: FishingRodProps) {
   const _position = useMemo(() => parsePosition(position), [position])
   const _rotation = useMemo(() => parseRotation(rotation), [rotation])
@@ -64,7 +66,7 @@ export default function FishingRod({
       </group>
 
       <RigidBody
-        userData={{ name: 'hook' }}
+        userData={makeDefault ? { name: 'hook' } : undefined}
         ref={hookBody}
         colliders="ball"
         position={_position}
