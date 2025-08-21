@@ -41,20 +41,17 @@
 
     <link rel="canonical" href="https://hook-a-fish.vercel.app/index.html" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Pompiere&display=swap"
-      rel="stylesheet"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/add-to-homescreen.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/add-to-homescreen.min.js"></script>
-
     <style>
+      @font-face {
+        font-family: 'Pompiere';
+        src: url('./fonts/Pompiere-Regular.ttf');
+      }
+
+      @font-face {
+        font-family: 'Luckiest Guy';
+        src: url('./fonts/LuckiestGuy-Regular.ttf');
+      }
+
       #loader {
         position: fixed;
         display: flex;
@@ -422,20 +419,6 @@
         </svg>
       </div>
     </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        window.AddToHomeScreenInstance = window.AddToHomeScreen({
-          appName: 'Hook-A-Fish!',
-          appNameDisplay: 'standalone',
-          appIconUrl: 'favicon/apple-touch-icon.png',
-          assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/assets/img/',
-          maxModalDisplayCount: 1,
-          displayOptions: { showMobile: true, showDesktop: false },
-        })
-
-        window.AddToHomeScreenInstance.show('en')
-      })
-    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
