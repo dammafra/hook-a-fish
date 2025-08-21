@@ -36,8 +36,18 @@ export default function Tree(props: JSX.IntrinsicElements['group']) {
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={51.843}>
-        <mesh castShadow geometry={nodes.Tree_3_1.geometry} material={materials.Tree_Green} />
-        <mesh castShadow geometry={nodes.Tree_3_2.geometry} material={materials.Tree_Wood} />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Tree_3_1.geometry}
+          material={materials.Tree_Green}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Tree_3_2.geometry}
+          material={materials.Tree_Wood}
+        />
       </group>
     </group>
   )

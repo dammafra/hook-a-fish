@@ -83,7 +83,6 @@ export default function Fish({
             scale={100}
           />
           <mesh
-            castShadow
             geometry={nodes.Sphere002_Color_0.geometry}
             material={materialC}
             position={[0, 231.474, 6.24]}
@@ -91,7 +90,6 @@ export default function Fish({
             scale={140.754}
           />
           <mesh
-            castShadow
             geometry={nodes.Iris_Color_0.geometry}
             material={materials.Color}
             position={[0, 240.885, 158.506]}

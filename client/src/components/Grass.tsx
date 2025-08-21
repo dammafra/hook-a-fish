@@ -13,18 +13,6 @@ import Tools from './Tools'
 export default function Grass() {
   const radius = useGame(state => state.radius)
 
-  // const setupTexture = (texture: Texture) => {
-  //   texture.repeat.set(6, 6)
-  //   texture.wrapS = texture.wrapT = RepeatWrapping
-  //   return texture
-  // }
-
-  // const map = setupTexture(useTexture('./textures/grass/grass_01_color_1k.png'))
-  // const displacementMap = setupTexture(useTexture('./textures/grass/grass_01_height_1k.png'))
-  // const normalMap = setupTexture(useTexture('./textures/grass/grass_01_normal_gl_1k.png'))
-  // const aoMap = setupTexture(useTexture('./textures/grass/grass_01_ambient_occlusion_1k.png'))
-  // const roughnessMap = setupTexture(useTexture('./textures/grass/grass_01_roughness_1k.png'))
-
   const grassInstancesCount = 150
   const grassInstances: GrassInstanceProps[] = useMemo(
     () =>
@@ -43,14 +31,7 @@ export default function Grass() {
   return (
     <>
       <mesh receiveShadow>
-        <meshStandardMaterial
-        // map={map}
-        // displacementMap={displacementMap}
-        // displacementScale={0.5}
-        // normalMap={normalMap}
-        // aoMap={aoMap}
-        // roughnessMap={roughnessMap}
-        >
+        <meshStandardMaterial>
           <GradientTexture
             stops={[0, 1]}
             colors={['#9BC45E', '#598719']}
