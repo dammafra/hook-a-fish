@@ -28,11 +28,15 @@ export default function Pause() {
   }, [context, paused, muted])
 
   return (
-    <Float speed={paused ? 50 : 0} position={[0, 1, -1]} floatIntensity={0.5} rotationIntensity={2}>
+    <Float speed={paused ? 30 : 0} position={[0, 1, -1]} floatIntensity={0.5} rotationIntensity={2}>
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
         <Html scale={0.5} transform>
-          <button onClick={paused ? resume : pause} className="overlay-content overlay-button">
+          <button
+            onClick={paused ? resume : pause}
+            className="overlay-content overlay-button"
+            style={{ transform: 'scale(2)' }}
+          >
             <span className={paused ? 'icon-[solar--play-bold]' : 'icon-[solar--pause-bold]'} />
           </button>
         </Html>

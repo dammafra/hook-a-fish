@@ -36,25 +36,38 @@ const MainMenu = animated(props => {
   const start = useGame(state => state.start)
   const setMenu = useGame(state => state.setMenu)
 
+  const getSprings = () =>
+    useSpring({
+      from: { x: 0, y: 0 },
+      loop: () => ({
+        x: (Math.random() - 0.5) * 10,
+        y: (Math.random() - 0.5) * 10,
+      }),
+      config: { mass: 1, tension: 40, friction: 12 },
+    })
   return (
     <div {...props} className="menu-section">
-      <h1 className="font-title flex flex-col items-center gap-0">
+      <h1 className="font-title flex flex-col items-center gap-0 relative">
         <span className="text-7xl leading-8">Hook</span>
         <span className="text-2xl">-A-</span>
         <span className="text-7xl">Fish!</span>
+        <animated.span
+          style={getSprings()}
+          className="icon-[mdi--hook] absolute text-[250px] -top-[80px] ml-1 rotate-8 text-white/20"
+        />
       </h1>
-      <button onClick={start}>
+      <animated.button onClick={start} style={getSprings()}>
         <span className="icon-[solar--play-bold]" />
         <span>Start</span>
-      </button>
-      <button onClick={() => setMenu('tutorial')}>
+      </animated.button>
+      <animated.button onClick={() => setMenu('tutorial')} style={getSprings()}>
         <span className="icon-[solar--question-circle-bold]" />
         <span>How to Play</span>
-      </button>
-      <button onClick={() => setMenu('credits')}>
+      </animated.button>
+      <animated.button onClick={() => setMenu('credits')} style={getSprings()}>
         <span className="icon-[solar--info-circle-bold]" />
         <span>Credits</span>
-      </button>
+      </animated.button>
 
       <footer className="absolute bottom-10 inline-flex items-center justify-center gap-1 text-2xl">
         Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
@@ -105,7 +118,10 @@ const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
   return (
-    <div {...props} className="menu-section text-xs md:text-lg tracking-wide text-center">
+    <div
+      {...props}
+      className="menu-section text-xs sm:text-sm md:text-lg tracking-wide text-center"
+    >
       <div>
         <h2 className="font-title">Models</h2>
         {/* prettier-ignore */}
@@ -186,7 +202,7 @@ Can you beat my score?
     }
   }
 
-  const imgProps = useSpring({
+  const imgSprings = useSpring({
     from: { transform: 'scale(0) rotate(0deg)' },
     to: { transform: 'scale(1) rotate(355deg)' },
     config: { tension: 120, friction: 14 },
@@ -197,7 +213,7 @@ Can you beat my score?
       <p className="font-title text-6xl">Game Over</p>
       {canShare && <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>}
       {canShare ? (
-        <animated.div className="relative" style={imgProps}>
+        <animated.div className="relative" style={imgSprings}>
           <img
             src={lastPhoto}
             className="w-60 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"

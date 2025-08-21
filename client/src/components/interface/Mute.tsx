@@ -14,7 +14,8 @@ export default function Mute() {
       <Html scale={0.5} transform>
         <button
           onClick={paused ? undefined : toggleMuted}
-          className={`overlay-content overlay-button ${paused ? 'pointer-events-none opacity-45' : ''}`}
+          className={`overlay-content overlay-button ${paused && 'pointer-events-none opacity-45'}`}
+          style={{ transform: 'scale(2)' }}
         >
           <span className={muted ? 'icon-[solar--muted-bold]' : 'icon-[solar--volume-loud-bold]'} />
         </button>
