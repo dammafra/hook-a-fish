@@ -17,10 +17,10 @@ export default function SoundBoard() {
   const onload = () => setLoaded(loaded => loaded + 1)
 
   const sounds = {
-    loop: parse(useSound('./sounds/loop.mp3', { loop: true, volume: 0.1, onload })),
+    loop: parse(useSound('./sounds/loop.mp3', { loop: true, volume: 0.2, onload })),
     fishes: parse(useSound('./sounds/fishes.mp3', { loop: true, volume: 0.5, onload })),
     jump: parse(useSound('./sounds/jump.mp3', { onload })),
-    reel: parse(useSound('./sounds/reel.mp3', { loop: true, volume: 0.3, onload })),
+    reel: parse(useSound('./sounds/reel.mp3', { loop: true, volume: 0.1, onload })),
     bucket: parse(useSound('./sounds/bucket.mp3', { onload })),
     collect: parse(useSound('./sounds/collect.mp3', { onload })),
     whistle: parse(useSound('./sounds/whistle.mp3', { onload, volume: 0.5 })),
@@ -55,6 +55,7 @@ export default function SoundBoard() {
 
       case 'ended':
         sounds.loop.stop()
+        sounds.reel.stop()
         sounds.fishes.stop()
         sounds.whistle.play({ playbackRate: 1.3 })
         return

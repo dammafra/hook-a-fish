@@ -20,18 +20,18 @@ export default function Countdown({ seconds }: CountdownProps) {
   useEffect(() => {
     if (!ref.current || paused) return
 
+    // format mm:ss
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0') //prettier-ignore
+    const s = (timeLeft % 60).toString().padStart(2, '0')
+    ref.current.textContent = `${m}:${s}`
+
+    setAlarm(timeLeft <= 10)
+
     if (timeLeft <= 0) {
       end()
       setAlarm(false)
       return
     }
-
-    setAlarm(timeLeft <= 10)
-
-    // format mm:ss
-    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0') //prettier-ignore
-    const s = (timeLeft % 60).toString().padStart(2, '0')
-    ref.current.textContent = `${m}:${s}`
 
     const interval = setInterval(() => setTimeLeft(t => t - 1), 1000)
     return () => clearInterval(interval)

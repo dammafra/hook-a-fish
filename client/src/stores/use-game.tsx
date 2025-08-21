@@ -117,7 +117,7 @@ const useGame = create<GameStore>()(set => ({
 
   end: () => {
     set(state => {
-      if (state.phase !== 'hooked' && state.phase !== 'ended') {
+      if (state.phase !== 'ended') {
         return {
           lastPhoto: state.photo,
           lastScore: state.score,
