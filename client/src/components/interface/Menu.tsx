@@ -207,10 +207,10 @@ Can you beat my score?
           </p>
         </animated.div>
       ) : (
-        <p className="text-5xl text-center">{lostMessage}</p>
+        <p className="text-3xl md:text-5xl text-center">{lostMessage}</p>
       )}
 
-      <div className="absolute bottom-10 flex max-md:flex-col gap-4 mt-4">
+      <div className="flex max-md:flex-col gap-4 mt-4">
         <button onClick={start}>
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>
