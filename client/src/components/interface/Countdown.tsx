@@ -59,11 +59,9 @@ export default function Countdown({ seconds }: CountdownProps) {
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
         <Html scale={0.5} transform wrapperClass="overlay">
-          <div
-            ref={ref}
-            style={{ transform: 'scale(2)' }}
-            className="overlay-content text-xl w-20 pt-2 pb-0.5"
-          />
+          <div style={{ transform: 'scale(2)' }} className="overlay-content w-20 py-1 text-2xl">
+            <div ref={ref} className="h-6" />
+          </div>
         </Html>
       </Billboard>
     </Float>
