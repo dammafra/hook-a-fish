@@ -103,8 +103,40 @@ const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
   return (
-    <div {...props} className="menu-section text-2xl">
-      <p>TBD</p>
+    <div {...props} className="menu-section text-sm md:text-lg tracking-wide text-center">
+      <div>
+        <h2 className="font-title">Models</h2>
+        {/* prettier-ignore */}
+        <ul>
+          <li><a href="https://poly.pizza/m/eyuCxAqI9er" target="_blank" className='uppercase'>Fishing Pole</a> by <span className="uppercase">Shawn Westphal</span> [<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC-BY</a>] via Poly Pizza</li>
+          <li><a href="https://poly.pizza/m/3xxRFD2brcq" target="_blank" className='uppercase'>Fish hook</a> by <span className="uppercase">Poly by Google</span> [<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC-BY</a>] via Poly Pizza</li>
+          <li><a href="https://poly.pizza/m/3tyh15Fbmsx" target="_blank" className='uppercase'>Tuft of grass</a> by <span className="uppercase">Poly by Google</span> [<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC-BY</a>] via Poly Pizza</li>
+          <li><a href="https://poly.pizza/m/i4QMw4L64D" target="_blank" className='uppercase'>Tree</a> by <span className="uppercase">Quaternius</span></li>
+          <li><a href="https://poly.pizza/m/83obI9bNun" target="_blank"className='uppercase'>Bucket</a> by <span className="uppercase">Quaternius</span></li>
+          <li><a href="https://poly.pizza/m/Li1cr0atPF" target="_blank"className='uppercase'>Fishing Stand</a> by <span className="uppercase">Kenney</span></li>
+          <li><a href="https://skfb.ly/6WVNM" target="_blank"className='uppercase'>Fish</a> by <span className="uppercase">Zainal Abd. Kahar</span> <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">[CC-BY]</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="font-title">Sound Effects</h2>
+        {/* prettier-ignore */}
+        <ul>
+          <li><a href="https://pixabay.com/users/audiopapkin-14728698/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank" className="uppercase">Fishing Reel</a> by <span className="uppercase">Pawel Spychala</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/u_vlcuq4wxwj-34182338/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=142159" target="_blank" className="uppercase">Your Plastic Bucket is Full of Water</a> by <span className="uppercase">u_vlcuq4wxwj</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=142159" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6114" target="_blank" className="uppercase">Fish in River</a> by <span className="uppercase">freesound_community</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6114" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/sergequadrado-24990007/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=109009" target="_blank" className="uppercase">Positive Cartoon Loop</a> Music by <span className="uppercase">Sergei Chetvertnykh</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=109009" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/alexis_gaming_cam-50011695/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=367087" target="_blank" className="uppercase">Item Collected</a> by <span className="uppercase">ALEXIS_GAMING_CAM</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=367087" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6462" target="_blank" className="uppercase">Jump</a> by <span className="uppercase">freesound_community</span> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6462" target="_blank">Pixabay</a></li>
+          <li><a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6320" target="_blank" className="uppercase">Referee whistle blow, gymnasium</a> by <span className="uppercase">freesound_community</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6320" target="_blank">Pixabay</a></li>
+      </ul>
+      </div>
+      <div>
+        <h2 className="font-title">Others</h2>
+        {/* prettier-ignore */}
+        <ul>
+          <li><a href="https://codepen.io/matchboxhero/pen/LzdgOv" target="_blank" className="uppercase">Animated SVG Bubbles</a> by <span className="uppercase">Steven Roberts</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank">CodePen</a></li>
+        </ul>
+      </div>
       <button onClick={() => setMenu('main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
