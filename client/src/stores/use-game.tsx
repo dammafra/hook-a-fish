@@ -9,6 +9,9 @@ type GameStore = {
   startedAt: number
   radius: number
 
+  flip: boolean
+  toggleFlip: () => void
+
   photo?: string
   lastPhoto?: string
   setPhoto: (photo?: string) => void
@@ -46,6 +49,9 @@ const generateId = () =>
 const useGame = create<GameStore>()(set => ({
   startedAt: 0,
   radius: 3.5,
+
+  flip: false,
+  toggleFlip: () => set(state => ({ flip: !state.flip })),
 
   setPhoto: photo => set(() => ({ photo })),
 

@@ -1,12 +1,15 @@
 import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
+import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
+import Flip from './interface/Flip'
 import Mute from './interface/Mute'
 import Pause from './interface/Pause'
 import Stand from './models/Stand'
 
 export default function Tools() {
+  const isTouch = useIsTouch()
   const { viewport } = useThree()
   const toolsPosition = useGame(state => state.toolsPosition)
   const setToolsPosition = useGame(state => state.setToolsPosition)
@@ -18,8 +21,11 @@ export default function Tools() {
 
   return (
     <group position={toolsPosition}>
-      <Pause />
-      <Mute />
+      <group position={[0.2, 0, 0.2]}>
+        <Pause />
+        <Mute />
+        {isTouch && <Flip />}
+      </group>
 
       <Stand scale={3} rotation-y={Math.PI * 0.2} />
       <FishingRod

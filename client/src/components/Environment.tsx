@@ -56,7 +56,7 @@ export default function Environment() {
 
       <ambientLight intensity={ambientLightIntensity} />
 
-      <SoftShadows size={10} focus={0.05} />
+      <SoftShadows size={15} />
     </>
   )
 }

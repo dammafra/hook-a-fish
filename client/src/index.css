@@ -101,11 +101,11 @@ button * {
     /* border + border-radius causes glitch in firefox, so use shadow workaround */
     @apply shadow-white shadow-[0_0_0_1px_rgba(0,0,0,1)];
     @apply font-title text-center text-white text-shadow-sm rounded-lg;
-    @apply flex items-center justify-center bg-white/20 hover:bg-white/50 active:bg-white/50;
+    @apply flex items-center justify-center bg-white/20;
   }
 
   .overlay-button {
-    @apply rounded-full flex items-center justify-center text-sm md:text-xs p-1;
+    @apply rounded-full flex items-center justify-center text-sm md:text-xs p-1 hover:bg-white/50 active:bg-white/50;
   }
 
   .menu {

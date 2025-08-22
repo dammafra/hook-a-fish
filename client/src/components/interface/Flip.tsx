@@ -1,27 +1,25 @@
 import { Billboard, Html } from '@react-three/drei'
 import { useState } from 'react'
 import useGame from '../../stores/use-game'
-import useSoundBoard from '../../stores/use-sound-board'
 import { getPositionOnCirlce } from '../../utils/position'
 
-export default function Mute() {
+export default function Flip() {
   const paused = useGame(state => state.paused)
+  const flip = useGame(state => state.flip)
+  const toggleFlip = useGame(state => state.toggleFlip)
 
-  const muted = useSoundBoard(state => state.muted)
-  const toggleMuted = useSoundBoard(state => state.toggleMuted)
-
-  const [position] = useState(() => getPositionOnCirlce(1, 225, 1))
+  const [position] = useState(() => getPositionOnCirlce(1, 270, 1))
 
   return (
-    <Billboard key={JSON.stringify(paused)} position={position}>
+    <Billboard position={position}>
       {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
       <Html scale={0.5} transform>
         <button
-          onClick={paused ? undefined : toggleMuted}
+          onClick={toggleFlip}
           className={`overlay-content overlay-button ${paused && 'pointer-events-none opacity-45'}`}
           style={{ transform: 'scale(2)' }}
         >
-          <span className={muted ? 'icon-[solar--muted-bold]' : 'icon-[solar--volume-loud-bold]'} />
+          <span className={`icon-[uim--flip-v-alt] ${flip && 'rotate-y-180'}`} />
         </button>
       </Html>
     </Billboard>
