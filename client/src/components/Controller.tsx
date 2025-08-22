@@ -8,16 +8,17 @@ import PhotoCamera, { type PhotoCameraHandle } from './helpers/PhotoCamera'
 import PointerControls from './helpers/PointerControls'
 import Target from './Target'
 
+// TODO left handed support
 export default function Controller() {
   const isTouch = useIsTouch()
-  const { viewport, gl } = useThree()
-  const paused = useGame(state => state.paused)
+  const { gl, viewport } = useThree()
 
+  const paused = useGame(state => state.paused)
   const phase = useGame(state => state.phase)
   const setPhoto = useGame(state => state.setPhoto)
 
-  const initialPosition = useMemo(() => new Vector3(0, 2, 3), [])
-  const initialRotation = useMemo(() => new Euler(0, Math.PI * 1.65, Math.PI * 0.35), [])
+  const initialPosition = useMemo(() => new Vector3(0, 3, viewport.aspect < 1 ? 5 : 3), [viewport.aspect]) //prettier-ignore
+  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25, Math.PI * 0.35), [])
 
   const photoCameraRef = useRef<PhotoCameraHandle>(null)
 
@@ -41,16 +42,18 @@ export default function Controller() {
         type="billboard"
         visible={!paused}
         enabled={!paused}
-        lockPositionYAt={1.48}
-        positionOffset={isTouch && viewport.aspect < 1 ? [0, 0, -2] : 0}
-        rotationYOffset={0.5}
+        lockPositionYAt={1.5}
+        positionOffset={[-0.5, 1, isTouch ? -1 : 0]}
+        rotationYOffset={-initialRotation.y}
         position={initialPosition}
         rotation={initialRotation}
         onMove={p => photoCameraRef.current && photoCameraRef.current.camera.position.copy(p)}
       >
-        <FishingRod ref={ref} onHook={takePhoto} makeDefault />
+        <FishingRod ref={ref} makeDefault onHook={takePhoto} ropeLength={2.5} />
       </PointerControls>
 
+      {/* TODO put inside a group togeher with FishingRod as child of  PointerControls removing onMove */}
+      {/* In order to do this, reimplemnt Rope component */}
       <PhotoCamera ref={photoCameraRef} fov={25} size={1024} />
       <Target />
     </>

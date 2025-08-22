@@ -15,6 +15,8 @@ type GameStore = {
 
   bucketPosition: Vector3
   setBucketPosition: (x: number, y: number, z: number) => void
+  toolsPosition: Vector3
+  setToolsPosition: (x: number, y: number, z: number) => void
 
   total: number
   score: number
@@ -49,6 +51,8 @@ const useGame = create<GameStore>()(set => ({
 
   bucketPosition: new Vector3(0, 0, 0),
   setBucketPosition: (x, y, z) => set(() => ({ bucketPosition: new Vector3(x, y, z) })),
+  toolsPosition: new Vector3(0, 0, 0),
+  setToolsPosition: (x, y, z) => set(() => ({ toolsPosition: new Vector3(x, y, z) })),
 
   total: 20,
   score: 0,

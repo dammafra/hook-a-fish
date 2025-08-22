@@ -1,17 +1,17 @@
 import type { CameraControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { type Object3D } from 'three'
 import useGame from '../../stores/use-game'
 
 export default function CameraRig() {
   const { controls, size, scene, viewport } = useThree()
   const phase = useGame(state => state.phase)
-  const [target, setTarget] = useState<Object3D>(null!)
+  const target = useRef<Object3D>(null!)
 
   useEffect(() => {
     scene.traverse(child => {
-      if (child.userData.name === 'water') setTarget(child)
+      if (child.userData.name === 'water') target.current = child
     })
   }, [scene])
 
@@ -34,7 +34,7 @@ export default function CameraRig() {
 
     // TODO why do I need to call them multiple times?
     for (let i = 0; i < 3; i++) {
-      cameraControls.fitToBox(target, true, viewport.aspect < 1 ?{ paddingLeft: -1, paddingRight: -1 } : undefined) // prettier-ignore
+      cameraControls.fitToBox(target.current, true, viewport.aspect < 1 ?{ paddingLeft: -1, paddingRight: -1 } : undefined) // prettier-ignore
       cameraControls.rotatePolarTo(Math.PI * 0.25, true)
       cameraControls.setTarget(0, 0.1, 0, true)
     }

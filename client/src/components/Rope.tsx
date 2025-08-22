@@ -45,6 +45,8 @@ export default function Rope({
   const [_endAnchor] = useState(() => parsePosition(endAnchor))
 
   useEffect(() => {
+    if (!line.current) return
+
     const offset = getWorldPositionOffset(line.current)
     setOffset(offset.toArray())
   }, [])
@@ -52,6 +54,8 @@ export default function Rope({
   useRopeJoint(start, end, [_startAnchor, _endAnchor, length])
 
   useFrame(() => {
+    if (!line.current) return
+
     const startPoint = _startAnchor
       .clone()
       .applyQuaternion(start.current.rotation() as Quaternion)

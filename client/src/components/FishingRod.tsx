@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 import { useMemo, useRef, type RefObject } from 'react'
 import { Object3D, Quaternion, Vector3, type ColorRepresentation } from 'three'
+import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import FishingHook from './models/FishingHook'
@@ -35,6 +36,8 @@ export default function FishingRod({
   onHook,
   makeDefault = false,
 }: FishingRodProps) {
+  const phase = useGame(state => state.phase)
+
   const _position = useMemo(() => parsePosition(position), [position])
   const _rotation = useMemo(() => parseRotation(rotation), [rotation])
 
@@ -66,14 +69,14 @@ export default function FishingRod({
       </group>
 
       <RigidBody
-        userData={makeDefault ? { name: 'hook' } : undefined}
         ref={hookBody}
-        colliders="ball"
         position={_position}
-        gravityScale={5}
+        userData={makeDefault ? { name: 'hook' } : undefined}
+        canSleep={!makeDefault}
+        gravityScale={makeDefault && phase === 'hooked' ? 15 : 5}
         linearDamping={2}
         angularDamping={8}
-        canSleep={false}
+        colliders="ball"
         collisionGroups={BOUNDS_COLLISION_GROUP}
         onCollisionEnter={({ target }) => {
           if (!onHook) return

@@ -1,4 +1,5 @@
-import { Vector3 } from 'three'
+import { useThree } from '@react-three/fiber'
+import { useEffect } from 'react'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
 import Mute from './interface/Mute'
@@ -6,10 +7,17 @@ import Pause from './interface/Pause'
 import Stand from './models/Stand'
 
 export default function Tools() {
-  const bucketPosition = useGame(state => state.bucketPosition)
+  const { viewport } = useThree()
+  const toolsPosition = useGame(state => state.toolsPosition)
+  const setToolsPosition = useGame(state => state.setToolsPosition)
+
+  useEffect(() => {
+    if (viewport.aspect < 1) setToolsPosition(2, 0, 5)
+    else setToolsPosition(3.5, 0, 3)
+  }, [setToolsPosition, viewport.aspect])
 
   return (
-    <group position={bucketPosition.clone().multiply(new Vector3(-1, 1, 1))}>
+    <group position={toolsPosition}>
       <Pause />
       <Mute />
 

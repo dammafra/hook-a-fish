@@ -8,12 +8,11 @@ export default function Target() {
 
   const ref = useRef<Object3D>(null!)
   const hookRef = useRef<Object3D>(null!)
-  const waterRef = useRef<Object3D>(null!)
 
+  // TODO improve
   useEffect(() => {
     scene.traverse(child => {
       if (child.userData.name === 'hook') hookRef.current = child
-      if (child.userData.name === 'water') waterRef.current = child
     })
   }, [scene])
 
@@ -25,9 +24,10 @@ export default function Target() {
       </mesh>
       <RayToFloor
         fromRef={hookRef}
-        floorRef={waterRef}
+        minDistance={0.2}
         onHit={hit => {
           ref.current.position.x = hit.point.x
+          ref.current.position.y = hit.point.y + 0.001
           ref.current.position.z = hit.point.z
         }}
       />

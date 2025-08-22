@@ -1,23 +1,30 @@
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useMemo, type RefObject } from 'react'
-import { Object3D, Raycaster, Vector3, type Intersection } from 'three'
+import { Mesh, Object3D, Raycaster, Vector3, type Intersection } from 'three'
 
 interface RayToFloorProps {
   fromRef: RefObject<Object3D>
-  floorRef: RefObject<Object3D>
+  minDistance?: number
   onHit?: (hit: Intersection) => void
 }
 
-export default function RayToFloor({ fromRef, floorRef, onHit }: RayToFloorProps) {
+export default function RayToFloor({ fromRef, minDistance = 0, onHit }: RayToFloorProps) {
+  const { scene } = useThree()
   const raycaster = useMemo(() => new Raycaster(), [])
   const down = useMemo(() => new Vector3(0, -1, 0), [])
-  const tmp = useMemo(() => new Vector3(), [])
+  const fromWorldPosition = useMemo(() => new Vector3(), [])
 
   useFrame(() => {
-    if (!fromRef.current || !floorRef.current) return
-    fromRef.current.getWorldPosition(tmp)
-    raycaster.set(tmp, down)
-    const hits = raycaster.intersectObject(floorRef.current, true)
+    if (!fromRef.current) return
+    fromRef.current.getWorldPosition(fromWorldPosition)
+    raycaster.set(fromWorldPosition, down)
+
+    const toTest: Object3D[] = []
+    scene.traverse(child => {
+      if (child instanceof Mesh && !child.type.includes('Line')) toTest.push(child)
+    })
+
+    const hits = raycaster.intersectObjects(toTest).filter(hit => hit.distance > minDistance)
     if (hits.length && onHit) onHit(hits[0])
   })
 

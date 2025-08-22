@@ -28,6 +28,7 @@ export function Fish({ id }: FishProps) {
 
   const bodyRadius = 0.25
   const targetRadius = 0.075
+  const targetOffsetY = -0.2
   const targetOffsetZ = 0.1
   const colorA = useMemo(randomColor, [])
   const colorB = useMemo(randomColor, [])
@@ -94,9 +95,9 @@ export function Fish({ id }: FishProps) {
       body.current.setAngvel(new Vector3(), false)
 
       const { x, y, z } = hookBody.translation()
-      const position = new Vector3(x, y - targetRadius, z - targetOffsetZ)
+      const position = new Vector3(x, y - targetRadius + targetOffsetY, z - targetOffsetZ)
       body.current.setTranslation(position, false)
-      body.current.setRotation(new Quaternion(), false)
+      body.current.setRotation(new Quaternion(), false) // this ensures accurate positioning of hook
 
       if (position.distanceTo(bucketPosition) < 0.8) unhook(id)
       return
@@ -158,6 +159,5 @@ export function Fish({ id }: FishProps) {
 
 export default function Fishes() {
   const fishes = useGame(state => state.fishes)
-
   return fishes.map(id => <Fish key={`fish-${id}`} id={id} />)
 }
