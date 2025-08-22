@@ -54,7 +54,7 @@ export default function Rope({
   useRopeJoint(start, end, [_startAnchor, _endAnchor, length])
 
   useFrame(() => {
-    if (!line.current) return
+    if (!line.current || !start.current || !end.current) return
 
     const startPoint = _startAnchor
       .clone()

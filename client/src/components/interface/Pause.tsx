@@ -1,10 +1,13 @@
 import { Billboard, Float, Html } from '@react-three/drei'
 import { useEffect, useState } from 'react'
+import { useHideOnResize } from '../../hooks/use-hide-on-resize'
 import useGame from '../../stores/use-game'
 import useSoundBoard from '../../stores/use-sound-board'
 import { getPositionOnCirlce } from '../../utils/position'
 
 export default function Pause() {
+  const hidden = useHideOnResize()
+
   const phase = useGame(state => state.phase)
   const paused = useGame(state => state.paused)
   const pause = useGame(state => state.pause)
@@ -34,7 +37,7 @@ export default function Pause() {
     <Float speed={paused ? 30 : 0} position={position} floatIntensity={0.5} rotationIntensity={2}>
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
-        <Html scale={0.5} transform>
+        <Html scale={0.5} transform wrapperClass={hidden ? 'hidden' : 'block'}>
           <button
             onClick={paused ? resume : pause}
             className="overlay-content overlay-button"
