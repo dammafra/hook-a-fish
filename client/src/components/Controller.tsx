@@ -1,6 +1,6 @@
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { Euler, Object3D, Vector3 } from 'three'
+import { Euler, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
@@ -30,8 +30,6 @@ export default function Controller() {
     setPhoto(dataUrl)
   }
 
-  const ref = useRef<Object3D>(null!)
-
   useEffect(() => {
     gl.domElement.classList.toggle('cursor-grab!', !paused)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,7 +50,7 @@ export default function Controller() {
         rotation={initialRotation}
         onMove={p => photoCameraRef.current && photoCameraRef.current.camera.position.copy(p)}
       >
-        <FishingRod ref={ref} makeDefault onHook={takePhoto} ropeLength={2.5} />
+        <FishingRod makeDefault onHook={takePhoto} ropeLength={2.5} />
       </PointerControls>
 
       {/* TODO put inside a group togeher with FishingRod as child of  PointerControls removing onMove */}

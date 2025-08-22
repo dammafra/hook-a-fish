@@ -8,28 +8,32 @@ export default function Target() {
 
   const ref = useRef<Object3D>(null!)
   const hookRef = useRef<Object3D>(null!)
+  const waterRef = useRef<Object3D>(null!)
 
   // TODO improve
   useEffect(() => {
     scene.traverse(child => {
       if (child.userData.name === 'hook') hookRef.current = child
+      if (child.userData.name === 'water') waterRef.current = child
     })
   }, [scene])
 
   return (
     <>
-      <mesh ref={ref} rotation-x={-Math.PI * 0.5} position-y={0.02} scale={0.025}>
+      <mesh ref={ref} rotation-x={-Math.PI * 0.5} scale={0.025}>
         <circleGeometry />
         <meshBasicMaterial color="white" transparent opacity={0.5} />
       </mesh>
       <RayToFloor
         fromRef={hookRef}
-        minDistance={0.2}
+        floorRef={waterRef}
         onHit={hit => {
+          ref.current.visible = true
           ref.current.position.x = hit.point.x
           ref.current.position.y = hit.point.y + 0.001
           ref.current.position.z = hit.point.z
         }}
+        onMiss={() => (ref.current.visible = false)}
       />
     </>
   )

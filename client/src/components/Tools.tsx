@@ -28,6 +28,8 @@ export default function Tools() {
       </group>
 
       <Stand scale={3} rotation-y={Math.PI * 0.2} />
+
+      {/* TODO bug colliders on initial position */}
       <FishingRod
         position={[0, 0.82, -0.4]}
         rotation={[0, -1, 0.8]}
