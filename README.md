@@ -11,7 +11,7 @@
 
 > Try it live here 👉 [hook-a-fish.vercel.app](https://hook-a-fish.vercel.app)
 
-Dive into _Hook-a-Fish!_, a game inspired by childhood memories, where you face a fun, fast-paced fishing challenge against the clock.
+Dive into _Hook-A-Fish!_ Inspired by childhood memories, you will face a fun, fast-paced fishing challenge against the clock.
 
 The goal is simple: catch as many fish as you can. Each fish you catch gives you extra time, and you can share your results with friends to challenge them.
 
@@ -60,7 +60,7 @@ TBD
 
 ### Mobile-Friendly
 
-_Hook-A-Fish!_ is optimized for mobile devices, providing a smooth and engaging experience on smartphones and tablets. It adapts to smaller screens, ensuring easy interaction and navigation on touch interfaces and can also be installed as PWA.
+The game is optimized for mobile devices, providing a smooth and engaging experience on smartphones and tablets. It adapts to smaller screens, ensuring easy interaction and navigation on touch interfaces and can also be installed as PWA.
 
 ### Coming soon
 

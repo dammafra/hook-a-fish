@@ -31,6 +31,7 @@ export default function Controller() {
   useEffect(() => {
     gl.domElement.classList.add('cursor-grab!')
     return () => gl.domElement.classList.remove('cursor-grab!')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (phase === 'ended') return

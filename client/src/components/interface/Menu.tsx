@@ -36,35 +36,48 @@ const MainMenu = animated(props => {
   const start = useGame(state => state.start)
   const setMenu = useGame(state => state.setMenu)
 
-  const getSprings = () =>
-    useSpring({
-      from: { x: 0, y: 0 },
-      loop: () => ({
-        x: (Math.random() - 0.5) * 10,
-        y: (Math.random() - 0.5) * 10,
-      }),
-      config: { mass: 1, tension: 40, friction: 12 },
-    })
+  const logoSpring = useSpring({
+    from: { rotate: -5 },
+    to: { rotate: 5 },
+    loop: { reverse: true },
+    config: { mass: 2.5, tension: 200, friction: 12 },
+  })
+
+  const buttonSpringConfig = {
+    from: { x: 0, y: 0 },
+    loop: () => ({
+      x: (Math.random() - 0.5) * 10,
+      y: (Math.random() - 0.5) * 10,
+    }),
+    config: { mass: 1, tension: 40, friction: 12 },
+  }
+
+  const buttonStartSpring = useSpring(buttonSpringConfig)
+  const buttonTutorialSpring = useSpring(buttonSpringConfig)
+  const buttonCreditsSpring = useSpring(buttonSpringConfig)
+
   return (
     <div {...props} className="menu-section">
       <h1 className="font-title flex flex-col items-center gap-0 relative">
         <span className="text-7xl leading-8">Hook</span>
         <span className="text-2xl">-A-</span>
         <span className="text-7xl">Fish!</span>
-        <animated.span
-          style={getSprings()}
-          className="icon-[mdi--hook] absolute text-[250px] -top-[80px] ml-1 rotate-8 text-white/20"
-        />
+        <animated.div
+          style={logoSpring}
+          className="absolute size-100 -top-[191px] -left-22 rotate-15"
+        >
+          <span className="absolute left-14 top-33 icon-[mdi--hook] text-[250px] text-white/20" />
+        </animated.div>
       </h1>
-      <animated.button onClick={start} style={getSprings()}>
+      <animated.button onClick={start} style={buttonStartSpring}>
         <span className="icon-[solar--play-bold]" />
         <span>Start</span>
       </animated.button>
-      <animated.button onClick={() => setMenu('tutorial')} style={getSprings()}>
+      <animated.button onClick={() => setMenu('tutorial')} style={buttonTutorialSpring}>
         <span className="icon-[solar--question-circle-bold]" />
         <span>How to Play</span>
       </animated.button>
-      <animated.button onClick={() => setMenu('credits')} style={getSprings()}>
+      <animated.button onClick={() => setMenu('credits')} style={buttonCreditsSpring}>
         <span className="icon-[solar--info-circle-bold]" />
         <span>Credits</span>
       </animated.button>
