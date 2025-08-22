@@ -32,12 +32,12 @@ export default function CameraRig() {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33')
     }
 
-    // TODO why do I need to call them two times?
-    cameraControls.fitToBox(target, true, viewport.aspect < 1 ?{ paddingLeft: -1, paddingRight: -1 } : undefined) // prettier-ignore
-    cameraControls.rotatePolarTo(Math.PI * 0.25, true)
-    cameraControls.fitToBox(target, true, viewport.aspect < 1 ?{ paddingLeft: -1, paddingRight: -1 } : undefined) // prettier-ignore
-    cameraControls.rotatePolarTo(Math.PI * 0.25, true)
-    cameraControls.setTarget(0, 0.1, 0, true)
+    // TODO why do I need to call them multiple times?
+    for (let i = 0; i < 3; i++) {
+      cameraControls.fitToBox(target, true, viewport.aspect < 1 ?{ paddingLeft: -1, paddingRight: -1 } : undefined) // prettier-ignore
+      cameraControls.rotatePolarTo(Math.PI * 0.25, true)
+      cameraControls.setTarget(0, 0.1, 0, true)
+    }
 
     if (viewport.aspect < 1) cameraControls.setTarget(0, -1, 0, true)
   }, [controls, target, size, viewport.aspect, phase])

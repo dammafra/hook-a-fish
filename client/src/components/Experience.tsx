@@ -1,4 +1,4 @@
-import { CameraControls, CameraControlsImpl } from '@react-three/drei'
+import { CameraControls } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { useDebug } from '../hooks/use-debug'
@@ -31,26 +31,7 @@ export default function Experience() {
     >
       <Environment />
 
-      <CameraControls
-        makeDefault
-        minDistance={1}
-        maxDistance={20}
-        mouseButtons={
-          debug
-            ? undefined
-            : {
-                left: CameraControlsImpl.ACTION.NONE,
-                right: CameraControlsImpl.ACTION.NONE,
-                middle: CameraControlsImpl.ACTION.NONE,
-                wheel: CameraControlsImpl.ACTION.NONE,
-              }
-        }
-        touches={{
-          one: CameraControlsImpl.ACTION.NONE,
-          two: CameraControlsImpl.ACTION.NONE,
-          three: CameraControlsImpl.ACTION.NONE,
-        }}
-      />
+      <CameraControls enabled={debug} makeDefault minDistance={1} maxDistance={20} />
 
       <Physics {...physicsControls}>
         <World />

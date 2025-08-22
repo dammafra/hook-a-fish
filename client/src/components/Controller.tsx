@@ -29,10 +29,9 @@ export default function Controller() {
   const ref = useRef<Object3D>(null!)
 
   useEffect(() => {
-    gl.domElement.classList.add('cursor-grab!')
-    return () => gl.domElement.classList.remove('cursor-grab!')
+    gl.domElement.classList.toggle('cursor-grab!', !paused)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [paused])
 
   if (phase === 'ended') return
 
