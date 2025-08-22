@@ -1,9 +1,9 @@
-import { animated, useSpring, useTransition } from '@react-spring/web'
+import { animated, useSpring, useTransition, type UseSpringProps } from '@react-spring/web'
 import { Html } from '@react-three/drei'
 import { useMemo } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
-import { randomOneOf } from '../../utils/random'
+import { randomInt, randomOneOf } from '../../utils/random'
 import { LOST_MESSAGES, WIN_MESSAGES } from '../data/messages'
 
 export default function Menu() {
@@ -40,21 +40,27 @@ const MainMenu = animated(props => {
     from: { rotate: -5 },
     to: { rotate: 5 },
     loop: { reverse: true },
-    config: { mass: 2.5, tension: 200, friction: 12 },
+    config: { damping: 0, frequency: 3, bounce: 1 },
   })
 
-  const buttonSpringConfig = {
-    from: { x: 0, y: 0 },
-    loop: () => ({
-      x: (Math.random() - 0.5) * 10,
-      y: (Math.random() - 0.5) * 10,
-    }),
-    config: { mass: 1, tension: 40, friction: 12 },
-  }
+  const getButtonSpringConfig = () =>
+    ({
+      from: { x: 0, y: 0 },
+      to: async next => {
+        while (true) {
+          await next({
+            x: Math.random() * randomInt(5, 8),
+            y: Math.random() * randomInt(5, 8),
+            velocity: 0,
+          })
+        }
+      },
+      config: { damping: 0, frequency: 4 },
+    }) as UseSpringProps
 
-  const buttonStartSpring = useSpring(buttonSpringConfig)
-  const buttonTutorialSpring = useSpring(buttonSpringConfig)
-  const buttonCreditsSpring = useSpring(buttonSpringConfig)
+  const buttonStartSpring = useSpring(getButtonSpringConfig())
+  const buttonTutorialSpring = useSpring(getButtonSpringConfig())
+  const buttonCreditsSpring = useSpring(getButtonSpringConfig())
 
   return (
     <div {...props} className="menu-section">
