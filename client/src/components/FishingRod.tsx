@@ -56,6 +56,8 @@ export default function FishingRod({
   // Workaround: If only the world position changes (without a local position change),
   // rigid bodies won't update. Forcing a re-render by changing their keys ensures they refresh.
   const [key, setKey] = useState('')
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // TODO*: this causes issue where I rely on hookBody presence (fishes, target)
     if (makeDefault) return

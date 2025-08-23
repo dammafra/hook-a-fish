@@ -50,8 +50,13 @@ const useGame = create<GameStore>()(set => ({
   startedAt: 0,
   radius: 3.5,
 
-  flip: false,
-  toggleFlip: () => set(state => ({ flip: !state.flip })),
+  flip: JSON.parse(localStorage.getItem('hookafish-flip') || 'false'),
+  toggleFlip: () =>
+    set(state => {
+      const flip = !state.flip
+      localStorage.setItem('hookafish-flip', JSON.stringify(flip))
+      return { flip }
+    }),
 
   setPhoto: photo => set(() => ({ photo })),
 
