@@ -1,5 +1,5 @@
 import { Billboard, Float, Html } from '@react-three/drei'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useHideOnResize } from '../../hooks/use-hide-on-resize'
 import useGame from '../../stores/use-game'
 import useSoundBoard from '../../stores/use-sound-board'
@@ -10,13 +10,14 @@ export default function Pause() {
 
   const phase = useGame(state => state.phase)
   const paused = useGame(state => state.paused)
+  const flip = useGame(state => state.flip)
   const pause = useGame(state => state.pause)
   const resume = useGame(state => state.resume)
 
   const context = useSoundBoard(state => state.context)
   const muted = useSoundBoard(state => state.muted)
 
-  const [position] = useState(() => getPositionOnCirlce(1, 180, 1))
+  const position = useMemo(() => getPositionOnCirlce(1, flip ? 270 : 180, 1), [flip])
 
   useEffect(() => {
     const handle = () => {

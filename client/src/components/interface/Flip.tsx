@@ -1,6 +1,6 @@
 import { Billboard, Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useHideOnResize } from '../../hooks/use-hide-on-resize'
 import useGame from '../../stores/use-game'
 import { getPositionOnCirlce } from '../../utils/position'
@@ -13,7 +13,7 @@ export default function Flip() {
   const flip = useGame(state => state.flip)
   const toggleFlip = useGame(state => state.toggleFlip)
 
-  const [position] = useState(() => getPositionOnCirlce(1, 270, 1))
+  const position = useMemo(() => getPositionOnCirlce(1, flip ? 180 : 270, 1), [flip])
 
   useEffect(() => {
     if (viewport.aspect > 1 && flip) toggleFlip()
@@ -30,7 +30,7 @@ export default function Flip() {
         >
           <button
             onClick={toggleFlip}
-            className={`overlay-content overlay-button ${paused && 'pointer-events-none opacity-45'}`}
+            className="overlay-content overlay-button"
             style={{ transform: 'scale(2)' }}
           >
             <span className="icon-[uim--flip-v-alt]" />

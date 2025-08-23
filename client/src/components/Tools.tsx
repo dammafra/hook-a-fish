@@ -9,16 +9,17 @@ import Stand from './models/Stand'
 
 export default function Tools() {
   const { viewport } = useThree()
+  const flip = useGame(state => state.flip)
   const toolsPosition = useGame(state => state.toolsPosition)
   const setToolsPosition = useGame(state => state.setToolsPosition)
 
   useEffect(() => {
-    if (viewport.aspect < 1) setToolsPosition(2, 0, 5)
-    else setToolsPosition(3.5, 0, 3)
-  }, [setToolsPosition, viewport.aspect])
+    if (viewport.aspect < 1) setToolsPosition(2 * (flip ? -1 : 1), 0, 5)
+    else setToolsPosition(3.5 * (flip ? -1 : 1), 0, 3)
+  }, [setToolsPosition, viewport.aspect, flip])
 
   return (
-    <group position={toolsPosition}>
+    <group position={toolsPosition} rotation-y={flip ? Math.PI * 1.5 : 0}>
       <group position={[0.2, 0, 0.2]}>
         <Pause />
         <Mute />
