@@ -1,8 +1,7 @@
 import { Center } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import { RapierRigidBody, RigidBody } from '@react-three/rapier'
-import { useMemo, useRef, type RefObject } from 'react'
-import { Object3D, Quaternion, Vector3, type ColorRepresentation } from 'three'
+import { CuboidCollider, RapierRigidBody, RigidBody, type CuboidArgs } from '@react-three/rapier'
+import { useImperativeHandle, useMemo, useRef, type RefObject } from 'react'
+import { Group, Vector3, type ColorRepresentation } from 'three'
 import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
@@ -11,8 +10,13 @@ import FishingPole from './models/FishingPole'
 import Rope from './Rope'
 import { BOUNDS_COLLISION_GROUP } from './Water'
 
+export type FishingRodHandle = {
+  mesh: RefObject<Group>
+  body: RefObject<RapierRigidBody>
+}
+
 interface FishingRodProps {
-  ref?: RefObject<Object3D>
+  ref?: RefObject<FishingRodHandle>
   visible?: boolean
   position?: Position
   rotation?: Rotation
@@ -43,34 +47,28 @@ export default function FishingRod({
 
   const poleBody = useRef<RapierRigidBody>(null!)
   const hookBody = useRef<RapierRigidBody>(null!)
+  const poleColliderArgs: CuboidArgs = [0.3, 1, 0.1]
 
-  useFrame(() => {
-    if (!ref?.current) return
+  const group = useRef<Group>(null!)
 
-    const position = new Vector3()
-    ref.current.getWorldPosition(position)
-    poleBody.current.setTranslation(position, false)
-
-    const rotation = ref.current.rotation.clone()
-    poleBody.current.setRotation(new Quaternion().setFromEuler(rotation), false)
-  })
+  useImperativeHandle(ref, () => ({ mesh: group, body: poleBody }), [group, poleBody])
 
   return (
-    <group visible={visible}>
-      <group ref={ref} position={_position} rotation={_rotation}>
-        <RigidBody ref={poleBody} type="kinematicPosition" />
-        <Center
-          scale={0.01}
-          position={[0, -0.06, -0.05]}
-          rotation={[-Math.PI * 0.5, Math.PI * 0.094, 0]}
-        >
+    <group ref={group} visible={visible} position={_position} rotation={_rotation}>
+      <RigidBody
+        ref={poleBody}
+        type="fixed"
+        colliders={false}
+        collisionGroups={BOUNDS_COLLISION_GROUP}
+      >
+        <CuboidCollider args={poleColliderArgs} />
+        <Center scale={0.01} rotation-x={-Math.PI * 0.5}>
           <FishingPole colorA={colorA} colorB={colorB} />
         </Center>
-      </group>
+      </RigidBody>
 
       <RigidBody
         ref={hookBody}
-        position={_position}
         userData={makeDefault ? { name: 'hook' } : undefined}
         canSleep={!makeDefault}
         gravityScale={makeDefault && phase === 'hooked' ? 15 : 5}
@@ -99,7 +97,7 @@ export default function FishingRod({
       <Rope
         start={poleBody}
         end={hookBody}
-        startAnchor={[0, 1, 0]}
+        startAnchor={[-poleColliderArgs[0], poleColliderArgs[1], poleColliderArgs[2] * 0.5]}
         endAnchor={[0, 0.1, 0]}
         length={ropeLength}
         radius={ropeRadius}

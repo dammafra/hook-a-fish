@@ -1,8 +1,8 @@
 import { QuadraticBezierLine, type QuadraticBezierLineRef } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
-import { useEffect, useRef, useState, type RefObject } from 'react'
-import { Object3D, QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
+import { quat, RapierRigidBody, useRopeJoint, vec3 } from '@react-three/rapier'
+import { useRef, useState, type RefObject } from 'react'
+import { QuadraticBezierCurve3, Vector3 } from 'three'
 import { parsePosition, type Position } from '../utils/position'
 
 interface RopeProps {
@@ -15,18 +15,6 @@ interface RopeProps {
   type?: 'line' | 'tube'
 }
 
-const getWorldPositionOffset = (object: Object3D) => {
-  const offset = new Vector3()
-
-  let parent = object.parent
-  while (parent) {
-    offset.sub(parent.position)
-    parent = parent.parent
-  }
-
-  return offset
-}
-
 // TODO: find a way to implement collisions, using instanced meshes along the curve might be an idea
 export default function Rope({
   start,
@@ -37,45 +25,40 @@ export default function Rope({
   radius = 0.01,
   type = 'line',
 }: RopeProps) {
-  const [offset, setOffset] = useState<[number, number, number]>([0, 0, 0])
   const line = useRef<QuadraticBezierLineRef>(null!)
   const [tubeCurve, setTubeCurve] = useState(() => new QuadraticBezierCurve3())
 
   const [_startAnchor] = useState(() => parsePosition(startAnchor))
   const [_endAnchor] = useState(() => parsePosition(endAnchor))
 
-  useEffect(() => {
-    if (!line.current) return
-
-    const offset = getWorldPositionOffset(line.current)
-    setOffset(offset.toArray())
-  }, [])
-
   useRopeJoint(start, end, [_startAnchor, _endAnchor, length])
 
   useFrame(() => {
     if (!line.current || !start.current || !end.current) return
 
-    const startPoint = _startAnchor
-      .clone()
-      .applyQuaternion(start.current.rotation() as Quaternion)
-      .add(start.current.translation() as Vector3)
+    const startWorldPos = vec3(start.current.translation())
+    const startWorldQuat = quat(start.current.rotation())
+    const startOffset = _startAnchor.clone().applyQuaternion(startWorldQuat)
+    const startPoint = startWorldPos.add(startOffset)
 
-    const endPoint = _endAnchor
-      .clone()
-      .applyQuaternion(end.current.rotation() as Quaternion)
-      .add(end.current.translation() as Vector3)
+    const endWorldPos = vec3(end.current.translation())
+    const endWorldQuat = quat(end.current.rotation())
+    const endOffset = _endAnchor.clone().applyQuaternion(endWorldQuat)
+    const endPoint = endWorldPos.add(endOffset)
 
-    const controlPoint = new Vector3().addVectors(startPoint, endPoint).multiplyScalar(0.5)
+    const controlPoint = new Vector3().addVectors(startWorldPos, endWorldPos).multiplyScalar(0.5)
     const direction = new Vector3(0, -1, 0)
-    const length = startPoint.distanceTo(endPoint)
+    const length = startWorldPos.distanceTo(endWorldPos)
     const sagging = 0.3
     controlPoint.addScaledVector(direction, sagging * length)
 
+    const parent = line.current.parent!
+    parent.worldToLocal(startWorldPos)
+    parent.worldToLocal(endWorldPos)
+    parent.worldToLocal(controlPoint)
+
     if (type === 'line') line.current.setPoints(startPoint, endPoint, controlPoint)
     else setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
-
-    line.current.geometry.translate(...offset)
   })
 
   return type === 'line' ? (

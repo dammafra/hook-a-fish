@@ -188,7 +188,8 @@ const End = animated(props => {
   const lastScore = useGame(state => state.lastScore)
   const lastPhoto = useGame(state => state.lastPhoto)
 
-  const canShare = useMemo(() => !!lastScore && lastPhoto, [lastScore, lastPhoto])
+  const win = useMemo(() => !!lastScore, [lastScore])
+  const canShare = useMemo(() => !!lastPhoto, [lastPhoto])
 
   const winMessage = useMemo(() => randomOneOf(WIN_MESSAGES), [])
   const lostMessage = useMemo(() => randomOneOf(LOST_MESSAGES), [])
@@ -230,8 +231,12 @@ Can you beat my score?
   return (
     <div {...props} className="menu-section">
       <p className="font-title text-6xl">Game Over</p>
-      {canShare && <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>}
-      {canShare ? (
+      {win ? (
+        <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
+      ) : (
+        <p className="text-3xl md:text-5xl text-center">{lostMessage}</p>
+      )}
+      {canShare && (
         <animated.div className="relative" style={imgSprings}>
           <img
             src={lastPhoto}
@@ -241,8 +246,6 @@ Can you beat my score?
             {winMessage}
           </p>
         </animated.div>
-      ) : (
-        <p className="text-3xl md:text-5xl text-center">{lostMessage}</p>
       )}
 
       <div className="flex max-md:flex-col gap-4 mt-4">

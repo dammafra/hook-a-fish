@@ -64,7 +64,7 @@ export function Fish({ id }: FishProps) {
   }
 
   useFrame(({ clock }, delta) => {
-    if (paused || phase === 'ended') return
+    if (paused || phase === 'ended' || !bucketPosition) return
 
     // Emerge on start
     if (bodyType === 'kinematicPosition') {
