@@ -64,7 +64,7 @@ export function Fish({ id }: FishProps) {
   }
 
   useFrame(({ clock }, delta) => {
-    if (paused || phase === 'ended' || !bucketPosition) return
+    if (phase === 'ended' || !bucketPosition) return
 
     // Emerge on start
     if (bodyType === 'kinematicPosition') {
@@ -103,6 +103,8 @@ export function Fish({ id }: FishProps) {
       return
     }
 
+    if (paused) return
+
     // Move
     const impulse = new Vector3()
     const now = clock.elapsedTime
@@ -135,11 +137,7 @@ export function Fish({ id }: FishProps) {
         restitution={0.2}
         angularDamping={0.5}
       >
-        <Center
-          visible={!(paused && hookBody && id !== lastHooked)}
-          rotation-x={-Math.PI * 0.5}
-          scale={1.5}
-        >
+        <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
         </Center>
         {!hookBody && (

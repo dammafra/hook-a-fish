@@ -57,6 +57,9 @@ export default function FishingRod({
   // rigid bodies won't update. Forcing a re-render by changing their keys ensures they refresh.
   const [key, setKey] = useState('')
   useEffect(() => {
+    // TODO*: this causes issue where I rely on hookBody presence (fishes, target)
+    if (makeDefault) return
+
     const _worldPposition = new Vector3()
     group.current?.getWorldPosition(_worldPposition)
 
