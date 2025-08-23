@@ -54,7 +54,7 @@ export default function Countdown({ seconds }: CountdownProps) {
 
   useEffect(() => {
     if (hidden) pause()
-  }, [hidden])
+  }, [hidden, pause])
 
   return (
     <Float
