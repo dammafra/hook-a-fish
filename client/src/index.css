@@ -90,6 +90,9 @@ button * {
   .adhs-container {
     @apply bg-transparent! bg-gradient-to-t from-black from-50% to-transparent;
   }
+  .adhs-container::after {
+    @apply content-[''] fixed right-5 top-5 flex icon-[solar--close-circle-bold] bg-white text-5xl cursor-pointer;
+  }
 }
 
 @layer components {
