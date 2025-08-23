@@ -5,7 +5,7 @@ import useGame from '../../stores/use-game'
 import useSoundBoard from '../../stores/use-sound-board'
 import { getPositionOnCirlce } from '../../utils/position'
 
-export default function Pause() {
+export default function PauseButton() {
   const hidden = useHideOnResize()
 
   const phase = useGame(state => state.phase)

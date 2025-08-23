@@ -5,7 +5,7 @@ import { useHideOnResize } from '../../hooks/use-hide-on-resize'
 import useGame from '../../stores/use-game'
 import { getPositionOnCirlce } from '../../utils/position'
 
-export default function Flip() {
+export default function FlipButton() {
   const { viewport } = useThree()
   const hidden = useHideOnResize()
 

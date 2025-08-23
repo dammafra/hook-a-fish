@@ -2,9 +2,9 @@ import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import useGame from '../stores/use-game'
 import FishingRod from './FishingRod'
-import Flip from './interface/Flip'
-import Mute from './interface/Mute'
-import Pause from './interface/Pause'
+import FlipButton from './interface/FlipButton'
+import MuteButton from './interface/MuteButton'
+import PauseButton from './interface/PauseButton'
 import Stand from './models/Stand'
 
 export default function Tools() {
@@ -21,9 +21,9 @@ export default function Tools() {
   return (
     <group position={toolsPosition} rotation-y={flip ? Math.PI * 1.5 : 0}>
       <group position={[0.2, 0, 0.2]}>
-        <Pause />
-        <Mute />
-        <Flip />
+        <PauseButton />
+        <MuteButton />
+        <FlipButton />
       </group>
 
       <Stand scale={3} rotation-y={Math.PI * 0.2} />
