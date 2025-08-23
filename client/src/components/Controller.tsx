@@ -10,14 +10,14 @@ import Target from './Target'
 
 export default function Controller() {
   const isTouch = useIsTouch()
-  const { gl } = useThree()
+  const { gl, viewport } = useThree()
 
   const paused = useGame(state => state.paused)
   const phase = useGame(state => state.phase)
   const flip = useGame(state => state.flip)
   const setPhoto = useGame(state => state.setPhoto)
 
-  const initialPosition = useMemo(() => new Vector3(0, 3, isTouch  ? 5 : 3), [isTouch]) //prettier-ignore
+  const initialPosition = useMemo(() => new Vector3(0, 3, viewport.aspect < 1 ? 5 : 3), [viewport.aspect]) //prettier-ignore
   const initialRotation = useMemo(
     () => new Euler(0, -Math.PI * 0.25 * (flip ? Math.PI : 1), Math.PI * 0.35),
     [flip],

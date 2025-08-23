@@ -1,7 +1,7 @@
 import { Center } from '@react-three/drei'
 import { CuboidCollider, RapierRigidBody, RigidBody, type CuboidArgs } from '@react-three/rapier'
-import { useImperativeHandle, useMemo, useRef, type RefObject } from 'react'
-import { Group, Vector3, type ColorRepresentation } from 'three'
+import { useEffect, useImperativeHandle, useMemo, useRef, useState, type RefObject } from 'react'
+import { Group, Quaternion, Vector3, type ColorRepresentation } from 'three'
 import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
@@ -53,11 +53,26 @@ export default function FishingRod({
 
   useImperativeHandle(ref, () => ({ mesh: group, body: poleBody }), [group, poleBody])
 
+  // Workaround: If only the world position changes (without a local position change),
+  // rigid bodies won't update. Forcing a re-render by changing their keys ensures they refresh.
+  const [key, setKey] = useState('')
+  useEffect(() => {
+    const _worldPposition = new Vector3()
+    group.current?.getWorldPosition(_worldPposition)
+
+    const _worldQuaternion = new Quaternion()
+    group.current?.getWorldQuaternion(_worldQuaternion)
+
+    const key = btoa(_worldPposition.toArray().concat(_worldQuaternion.toArray()).join())
+    setKey(key)
+  })
+
   return (
     <group ref={group} visible={visible} position={_position} rotation={_rotation}>
       <RigidBody
+        key={`pole-${key}`}
         ref={poleBody}
-        type="fixed"
+        type="kinematicPosition"
         colliders={false}
         collisionGroups={BOUNDS_COLLISION_GROUP}
       >
@@ -68,6 +83,7 @@ export default function FishingRod({
       </RigidBody>
 
       <RigidBody
+        key={`hook-${key}`}
         ref={hookBody}
         userData={makeDefault ? { name: 'hook' } : undefined}
         canSleep={!makeDefault}
@@ -95,6 +111,7 @@ export default function FishingRod({
       </RigidBody>
 
       <Rope
+        key={`rope-${key}`}
         start={poleBody}
         end={hookBody}
         startAnchor={[-poleColliderArgs[0], poleColliderArgs[1], poleColliderArgs[2] * 0.5]}
