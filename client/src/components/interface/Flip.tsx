@@ -9,7 +9,6 @@ export default function Flip() {
   const { viewport } = useThree()
   const hidden = useHideOnResize()
 
-  const paused = useGame(state => state.paused)
   const flip = useGame(state => state.flip)
   const toggleFlip = useGame(state => state.toggleFlip)
 
