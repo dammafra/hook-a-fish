@@ -52,7 +52,7 @@ export default function Controller() {
         visible={!paused}
         enabled={!paused}
         lockPositionYAt={1.5}
-        positionOffset={isTouch ? [-1, 1, -0.5] : [-0.5, 0, -0.5]}
+        positionOffset={isTouch ? [flip ? 1 : -1, 1, -0.5] : [flip ? 0.5 : -0.5, 0, -0.5]}
         rotationYOffset={flip ? -0.8 : 0.8}
         position={initialPosition}
         rotation={initialRotation}
