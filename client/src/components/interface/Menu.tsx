@@ -3,6 +3,7 @@ import { Html } from '@react-three/drei'
 import { useMemo } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
+import useSoundBoard from '../../stores/use-sound-board'
 import { randomInt, randomOneOf } from '../../utils/random'
 import { LOST_MESSAGES, WIN_MESSAGES } from '../data/messages'
 
@@ -26,6 +27,7 @@ export default function Menu() {
               case 'tutorial': return <Tutorial style={style} />
               case 'credits': return <Credits style={style} /> 
               case 'game-over': return <End style={style} /> 
+              case 'pause': return <Pause style={style} /> 
             }
       })}
     </Html>
@@ -100,6 +102,7 @@ const MainMenu = animated(props => {
 
 const Tutorial = animated(props => {
   const isTouch = useIsTouch()
+  const phase = useGame(state => state.phase)
   const setMenu = useGame(state => state.setMenu)
 
   return (
@@ -121,7 +124,7 @@ const Tutorial = animated(props => {
         Catch them as fast as you can! <br />
         Each fish gives you a <span className="font-extrabold">time bonus</span>
       </p>
-      <button onClick={() => setMenu('main')}>
+      <button onClick={() => setMenu(phase === 'paused' ? 'pause' : 'main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
       <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
@@ -260,6 +263,56 @@ Can you beat my score?
             <span>Share</span>
           </button>
         )}
+      </div>
+    </div>
+  )
+})
+
+const Pause = animated(props => {
+  const start = useGame(state => state.start)
+  const setMenu = useGame(state => state.setMenu)
+  const resetSounds = useSoundBoard(state => state.reset)
+
+  const getButtonSpringConfig = () =>
+    ({
+      from: { x: 0, y: 0 },
+      to: async next => {
+        while (true) {
+          await next({
+            x: Math.random() * randomInt(5, 8),
+            y: Math.random() * randomInt(5, 8),
+            velocity: 0,
+          })
+        }
+      },
+      config: { damping: 0, frequency: 4 },
+    }) as UseSpringProps
+
+  const buttonStartSpring = useSpring(getButtonSpringConfig())
+  const buttonTutorialSpring = useSpring(getButtonSpringConfig())
+
+  return (
+    <div {...props} className="menu-section ">
+      <div className="absolute bottom-5 flex flex-col gap-2">
+        <animated.button
+          onClick={() => {
+            resetSounds()
+            start()
+          }}
+          style={buttonStartSpring}
+          className="sm"
+        >
+          <span className="icon-[solar--restart-bold]" />
+          <span>Restart</span>
+        </animated.button>
+        <animated.button
+          onClick={() => setMenu('tutorial')}
+          style={buttonTutorialSpring}
+          className="sm"
+        >
+          <span className="icon-[solar--question-circle-bold]" />
+          <span>How to Play</span>
+        </animated.button>
       </div>
     </div>
   )

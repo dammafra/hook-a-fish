@@ -37,9 +37,11 @@ export default function SoundBoard() {
 
     switch (phase) {
       case 'started':
-        sounds.loop.play()
-        sounds.fishes.play()
-        sounds.jump.play()
+        if (!sounds.loop.sound?.playing()) {
+          sounds.loop.play()
+          sounds.fishes.play()
+          sounds.jump.play()
+        }
         return
 
       case 'hooked':
@@ -66,6 +68,7 @@ export default function SoundBoard() {
   useEffect(() => {
     Howler.volume(muted ? 0 : 1)
   }, [muted])
+
   /**
    * This helps resume AudioContext when the tab is suspended (e.g., when switching apps or locking the phone) and later resumed,
    * especially on mobile where browsers often suspend audio contexts to save resources;

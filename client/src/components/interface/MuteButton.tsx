@@ -8,7 +8,7 @@ import { getPositionOnCirlce } from '../../utils/position'
 export default function MuteButton() {
   const hidden = useHideOnResize()
 
-  const paused = useGame(state => state.paused)
+  const phase = useGame(state => state.phase)
 
   const muted = useSoundBoard(state => state.muted)
   const toggleMuted = useSoundBoard(state => state.toggleMuted)
@@ -16,12 +16,15 @@ export default function MuteButton() {
   const [position] = useState(() => getPositionOnCirlce(1, 225, 1))
 
   return (
-    <Billboard key={JSON.stringify(paused)} position={position}>
+    <Billboard
+      key={`mute-${phase}`} // re-render in order to reset position and rotation after floating
+      position={position}
+    >
       {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
       <Html scale={0.5} transform wrapperClass={hidden ? 'hidden' : 'block'}>
         <button
-          onClick={paused ? undefined : toggleMuted}
-          className={`overlay-content overlay-button ${paused && 'pointer-events-none opacity-45'}`}
+          onClick={phase === 'paused' ? undefined : toggleMuted}
+          className={`overlay-content overlay-button ${phase === 'paused' && 'pointer-events-none opacity-45'}`}
           style={{ transform: 'scale(2)' }}
         >
           <span className={muted ? 'icon-[solar--muted-bold]' : 'icon-[solar--volume-loud-bold]'} />
