@@ -4,7 +4,8 @@ import type { Object3D } from 'three'
 import RayToFloor from './helpers/RayToFloor'
 
 export default function Target() {
-  const { scene } = useThree()
+  const { scene, camera } = useThree()
+  camera.layers.enable(1)
 
   const ref = useRef<Object3D>(null!)
   const hookRef = useRef<Object3D>(null!)
@@ -17,6 +18,11 @@ export default function Target() {
       if (child.userData.name === 'water') waterRef.current = child
     })
   }, [scene])
+
+  useEffect(() => {
+    // Set target mesh to layer 1 so that will be ignored from PhotoCamera
+    ref.current.layers.set(1)
+  }, [])
 
   return (
     <>
