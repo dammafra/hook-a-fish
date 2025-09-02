@@ -6,6 +6,21 @@ import useGame from '../../stores/use-game'
 import { randomInt, randomOneOf } from '../../utils/random'
 import { LOST_MESSAGES, WIN_MESSAGES } from '../data/messages'
 
+const getButtonSpringConfig = () =>
+  ({
+    from: { x: 0, y: 0 },
+    to: async next => {
+      while (true) {
+        await next({
+          x: Math.random() * randomInt(5, 8),
+          y: Math.random() * randomInt(5, 8),
+          velocity: 0,
+        })
+      }
+    },
+    config: { damping: 0, frequency: 4 },
+  }) as UseSpringProps
+
 export default function Menu() {
   const menu = useGame(state => state.menu)
 
@@ -42,21 +57,6 @@ const MainMenu = animated(props => {
     loop: { reverse: true },
     config: { damping: 0, frequency: 3, bounce: 1 },
   })
-
-  const getButtonSpringConfig = () =>
-    ({
-      from: { x: 0, y: 0 },
-      to: async next => {
-        while (true) {
-          await next({
-            x: Math.random() * randomInt(5, 8),
-            y: Math.random() * randomInt(5, 8),
-            velocity: 0,
-          })
-        }
-      },
-      config: { damping: 0, frequency: 4 },
-    }) as UseSpringProps
 
   const buttonStartSpring = useSpring(getButtonSpringConfig())
   const buttonTutorialSpring = useSpring(getButtonSpringConfig())
@@ -111,6 +111,8 @@ const Tutorial = animated(props => {
   const isTouch = useIsTouch()
   const setMenu = useGame(state => state.setMenu)
 
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
+
   return (
     <div {...props} className="menu-section text-2xl md:text-3xl text-center px-5 gap-2">
       <span className="icon-[mdi--hook] text-4xl md:text-5xl" />
@@ -130,9 +132,9 @@ const Tutorial = animated(props => {
         Catch them as fast as you can! <br />
         Each fish gives you a <span className="font-extrabold">time bonus</span>
       </p>
-      <button onClick={() => setMenu('main')}>
+      <animated.button style={buttonBackSpring} onClick={() => setMenu('main')} className="sm">
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
-      </button>
+      </animated.button>
       {/* <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
         Power-ups are coming soon!
         <br />
@@ -144,6 +146,8 @@ const Tutorial = animated(props => {
 
 const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
+
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
 
   return (
     <div
@@ -185,9 +189,13 @@ const Credits = animated(props => {
           <li><a href="https://kenney.nl/assets/cursor-pack" target="_blank" className="uppercase">Cursor Pack</a> by <span className="uppercase">Kenney</span></li>
         </ul>
       </div>
-      <button className="max-md:absolute max-md:bottom-10" onClick={() => setMenu('main')}>
+      <animated.button
+        style={buttonBackSpring}
+        className="max-md:absolute max-md:bottom-10 sm"
+        onClick={() => setMenu('main')}
+      >
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
-      </button>
+      </animated.button>
     </div>
   )
 })
@@ -198,8 +206,6 @@ const End = animated(props => {
   const lastPhoto = useGame(state => state.lastPhoto)
 
   const win = useMemo(() => !!lastScore, [lastScore])
-  const canShare = useMemo(() => !!lastPhoto, [lastPhoto])
-
   const winMessage = useMemo(() => randomOneOf(WIN_MESSAGES), [])
   const lostMessage = useMemo(() => randomOneOf(LOST_MESSAGES), [])
 
@@ -237,37 +243,40 @@ Can you beat my score?
     config: { tension: 120, friction: 14 },
   })
 
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
+  const buttonShareSpring = useSpring(getButtonSpringConfig())
+
   return (
     <div {...props} className="menu-section">
       <p className="font-title text-6xl">Game Over</p>
       {win ? (
-        <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
+        <>
+          <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
+          <animated.div className="relative" style={imgSprings}>
+            <img
+              src={lastPhoto}
+              className="w-64 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"
+            />
+            <p className="text-shadow-none absolute h-16 md:h-20 inline-flex items-center justify-center top-62 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
+              {winMessage}
+            </p>
+          </animated.div>
+        </>
       ) : (
         <p className="text-3xl md:text-5xl text-center">{lostMessage}</p>
       )}
-      {canShare && (
-        <animated.div className="relative" style={imgSprings}>
-          <img
-            src={lastPhoto}
-            className="w-60 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"
-          />
-          <p className="text-shadow-none absolute h-16 md:h-20 inline-flex items-center justify-center top-58 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
-            {winMessage}
-          </p>
-        </animated.div>
-      )}
 
       <div className="flex max-md:flex-col gap-4 mt-4">
-        <button onClick={start}>
+        <animated.button style={buttonBackSpring} onClick={start} className="backdrop-blur-sm">
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>
-        </button>
+        </animated.button>
 
-        {canShare && (
-          <button onClick={share}>
+        {win && (
+          <animated.button style={buttonShareSpring} onClick={share} className="backdrop-blur-sm">
             <span className="icon-[solar--share-bold]" />
             <span>Share</span>
-          </button>
+          </animated.button>
         )}
       </div>
     </div>

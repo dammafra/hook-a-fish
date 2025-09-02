@@ -21,7 +21,7 @@ export default function Controller() {
   // const initialPosition = useMemo(() => new Vector3(0, 3, viewport.aspect < 1 ? 5 : 3), [viewport.aspect]) //prettier-ignore
   // const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25 * (flip ? Math.PI : 1), Math.PI * 0.35), [flip]) //prettier-ignore
   const initialPosition = useMemo(() => new Vector3(0, 3, 5), [])
-  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25, Math.PI * 0.35), [])
+  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.3, Math.PI * 0.35), [])
 
   const fishingRod = useRef<FishingRodHandle>(null!)
   const photoCamera = useRef<PhotoCameraHandle>(null!)
@@ -59,7 +59,7 @@ export default function Controller() {
         enabled={!paused}
         lockPositionYAt={1.5}
         positionOffset={isTouch ? [flip ? 1 : -1, 1, -0.5] : [flip ? 0.5 : -0.5, 0, -0.5]}
-        rotationYOffset={flip ? -0.8 : 0.8}
+        rotationYOffset={flip ? -0.5 : 0.5}
         position={initialPosition}
         rotation={initialRotation}
         onMove={onMove}
