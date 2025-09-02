@@ -90,10 +90,19 @@ const MainMenu = animated(props => {
         <span>Credits</span>
       </animated.button>
 
-      <footer className="absolute bottom-10 inline-flex items-center justify-center gap-1 text-2xl">
-        Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
-        <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
-          @dammafra
+      <footer className="absolute bottom-10 flex flex-col items-center gap-2">
+        <p className="inline-flex items-center gap-1 text-2xl">
+          Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
+          <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
+            @dammafra
+          </a>
+        </p>
+        <a href="https://www.buymeacoffee.com/dammafra" target="_blank">
+          <img
+            src="./bmc.png"
+            alt="Buy Me A Coffee"
+            className="h-10 hover:opacity-80 active:opacity-80"
+          />
         </a>
       </footer>
     </div>
@@ -127,11 +136,11 @@ const Tutorial = animated(props => {
       <button onClick={() => setMenu(phase === 'paused' ? 'pause' : 'main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
-      <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
+      {/* <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
         Power-ups are coming soon!
         <br />
         Stay tuned!
-      </p>
+      </p> */}
     </div>
   )
 })

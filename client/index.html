@@ -37,7 +37,6 @@
     <link rel="shortcut icon" href="./favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Hook-A-Fish!" />
-    <link rel="manifest" href="./site.webmanifest" />
 
     <link rel="canonical" href="https://hook-a-fish.vercel.app/index.html" />
 
@@ -424,6 +423,8 @@
     </div>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        if (!window.AddToHomeScreen) return
+
         window.AddToHomeScreenInstance = window.AddToHomeScreen({
           appName: 'Hook-A-Fish!',
           appNameDisplay: 'standalone',
