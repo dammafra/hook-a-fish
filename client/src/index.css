@@ -75,10 +75,6 @@ button * {
     @apply text-2xl w-40 px-4;
   }
 
-  button.sm {
-    @apply text-2xl w-40 px-4;
-  }
-
   button:has(> span[class^='icon']:only-child) {
     @apply p-2 w-fit;
   }

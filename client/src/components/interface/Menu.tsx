@@ -314,28 +314,26 @@ const Pause = animated(props => {
   const buttonTutorialSpring = useSpring(getButtonSpringConfig())
 
   return (
-    <div {...props} className="menu-section ">
-      <div className="absolute bottom-5 flex flex-col gap-2">
-        <animated.button
-          onClick={() => {
-            resetSounds()
-            start()
-          }}
-          style={buttonStartSpring}
-          className="sm"
-        >
-          <span className="icon-[solar--restart-bold]" />
-          <span>Restart</span>
-        </animated.button>
-        <animated.button
-          onClick={() => setMenu('tutorial')}
-          style={buttonTutorialSpring}
-          className="sm"
-        >
-          <span className="icon-[solar--question-circle-bold]" />
-          <span>How to Play</span>
-        </animated.button>
-      </div>
+    <div {...props} className="menu-section">
+      <animated.button
+        onClick={() => {
+          resetSounds()
+          start()
+        }}
+        style={buttonStartSpring}
+        className="sm backdrop-blur-sm"
+      >
+        <span className="icon-[solar--restart-bold]" />
+        <span>Restart</span>
+      </animated.button>
+      <animated.button
+        onClick={() => setMenu('tutorial')}
+        style={buttonTutorialSpring}
+        className="sm backdrop-blur-sm"
+      >
+        <span className="icon-[solar--question-circle-bold]" />
+        <span>How to Play</span>
+      </animated.button>
     </div>
   )
 })
