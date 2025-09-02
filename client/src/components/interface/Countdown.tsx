@@ -51,6 +51,10 @@ export default function Countdown({ seconds }: CountdownProps) {
     if (phase === 'unhooked') setTimeLeft(t => t + 3)
   }, [seconds, phase])
 
+  useEffect(() => {
+    if (hidden) pause()
+  }, [hidden, pause])
+
   return (
     <Float
       enabled={alarm && phase !== 'paused'}
