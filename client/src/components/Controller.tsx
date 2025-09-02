@@ -20,7 +20,7 @@ export default function Controller() {
   // const initialPosition = useMemo(() => new Vector3(0, 3, viewport.aspect < 1 ? 5 : 3), [viewport.aspect]) //prettier-ignore
   // const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25 * (flip ? Math.PI : 1), Math.PI * 0.35), [flip]) //prettier-ignore
   const initialPosition = useMemo(() => new Vector3(0, 3, 5), [])
-  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.3, Math.PI * 0.35), [])
+  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25, Math.PI * 0.35), [])
 
   const fishingRod = useRef<FishingRodHandle>(null!)
   const photoCamera = useRef<PhotoCameraHandle>(null!)
@@ -44,7 +44,7 @@ export default function Controller() {
 
   useEffect(() => {
     const rotation = initialRotation.clone()
-    rotation.y = rotation.y * (flip ? Math.PI : 1)
+    rotation.y = rotation.y * (flip ? 3 : 1)
     onMove(initialPosition, new Quaternion().setFromEuler(rotation))
   }, [flip, initialPosition, initialRotation])
 
