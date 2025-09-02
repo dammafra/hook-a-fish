@@ -68,7 +68,11 @@ button * {
   }
 
   button:not(.overlay-button) {
-    @apply border border-white text-white rounded-full px-4 py-2 text-3xl w-50 inline-flex items-center gap-2 font-bold hover:bg-white/20 active:bg-white/20 shadow-xs shadow-black text-shadow;
+    @apply border border-white text-white rounded-full px-4 py-2 text-3xl w-50 inline-flex items-center gap-2 font-bold bg-white/20 hover:bg-white/50 active:bg-white/50 shadow-xs shadow-black text-shadow;
+  }
+
+  button.sm {
+    @apply text-2xl w-40 px-4;
   }
 
   button.sm {
