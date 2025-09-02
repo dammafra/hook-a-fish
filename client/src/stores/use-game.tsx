@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { randomInt } from '../utils/random'
 
 type MenuSection = 'main' | 'tutorial' | 'credits' | 'game-over' | 'pause'
-type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
+type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended' | 'paused'
 
 type GameStore = {
   startedAt: number
@@ -35,7 +35,6 @@ type GameStore = {
   unhook: (fish: string) => void
   end: () => void
 
-  paused: boolean
   pause: () => void
   resume: () => void
 
@@ -73,14 +72,13 @@ const useGame = create<GameStore>()(set => ({
 
   start: () => {
     set(state => {
-      if (state.phase === 'ready' || state.phase === 'ended') {
+      if (state.phase === 'ready' || state.phase === 'paused' || state.phase === 'ended') {
         return {
           startedAt: Date.now(),
           photo: undefined,
           score: 0,
           fishes: Array.from({ length: state.total }, generateId),
           phase: 'started',
-          paused: false,
           menu: undefined,
         }
       }
@@ -143,9 +141,8 @@ const useGame = create<GameStore>()(set => ({
     })
   },
 
-  paused: true,
-  pause: () => set(() => ({ paused: true })),
-  resume: () => set(() => ({ paused: false })),
+  pause: () => set(() => ({ phase: 'paused', menu: 'pause' })),
+  resume: () => set(() => ({ phase: 'started', menu: undefined })),
 
   menu: 'main',
   setMenu: menu => set(() => ({ menu })),
