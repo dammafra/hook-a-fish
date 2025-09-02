@@ -133,11 +133,11 @@ const Tutorial = animated(props => {
       <button onClick={() => setMenu('main')}>
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </button>
-      <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
+      {/* <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
         Power-ups are coming soon!
         <br />
         Stay tuned!
-      </p>
+      </p> */}
     </div>
   )
 })
