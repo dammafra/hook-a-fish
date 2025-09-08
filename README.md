@@ -7,7 +7,7 @@
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 
-> Entry for the [Three.js Journey Challenge 019](https://threejs-journey.com/challenges/019-aquarium)
+> 🥇 1st place in the [Three.js Journey Challenge 019](https://threejs-journey.com/challenges/019-aquarium)
 
 > Try it live here 👉 [hook-a-fish.vercel.app](https://hook-a-fish.vercel.app)
 
