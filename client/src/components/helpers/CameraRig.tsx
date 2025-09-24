@@ -7,6 +7,7 @@ import useGame from '../../stores/use-game'
 export default function CameraRig() {
   const { controls, size, scene, viewport } = useThree()
   const phase = useGame(state => state.phase)
+  const menu = useGame(state => state.menu)
   const target = useRef<Object3D>(null!)
 
   useEffect(() => {
@@ -21,9 +22,9 @@ export default function CameraRig() {
 
     cameraControls.setTarget(0, 0, 0, true)
 
-    if (phase === 'ready' || phase === 'ended') {
-      cameraControls.rotatePolarTo(0.5, phase === 'ended')
-      cameraControls.dollyTo(3, phase === 'ended')
+    if (phase === 'ready' || phase === 'ended' || menu === 'tutorial') {
+      cameraControls.rotatePolarTo(0.5, phase !== 'ready')
+      cameraControls.dollyTo(3, phase !== 'ready')
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0094a5')
       return
     }
@@ -40,7 +41,7 @@ export default function CameraRig() {
     }
 
     if (viewport.aspect < 1) cameraControls.setTarget(0, -1, 0, true)
-  }, [controls, target, size, viewport.aspect, phase])
+  }, [controls, target, size, viewport.aspect, phase, menu])
 
   return <></>
 }

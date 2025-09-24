@@ -12,7 +12,6 @@ export default function Controller() {
   const isTouch = useIsTouch()
   const { gl } = useThree()
 
-  const paused = useGame(state => state.paused)
   const phase = useGame(state => state.phase)
   const flip = useGame(state => state.flip)
   const setPhoto = useGame(state => state.setPhoto)
@@ -39,9 +38,9 @@ export default function Controller() {
   }
 
   useEffect(() => {
-    gl.domElement.classList.toggle('cursor-grab!', !paused)
+    gl.domElement.classList.toggle('cursor-grab!', phase !== 'ready' && phase !== 'paused')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paused])
+  }, [phase])
 
   useEffect(() => {
     const rotation = initialRotation.clone()
@@ -55,8 +54,8 @@ export default function Controller() {
     <>
       <PointerControls
         type="billboard"
-        visible={!paused}
-        enabled={!paused}
+        visible={phase !== 'ready' && phase !== 'paused'}
+        enabled={phase !== 'ready' && phase !== 'paused'}
         lockPositionYAt={1.5}
         positionOffset={isTouch ? [flip ? 1 : -1, 1, -0.5] : [flip ? 0.5 : -0.5, 0, -0.5]}
         rotationYOffset={flip ? -0.5 : 0.5}

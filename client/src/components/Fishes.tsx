@@ -24,7 +24,7 @@ export function Fish({ id }: FishProps) {
   const unhook = useGame(state => state.unhook)
   const lastHooked = useGame(state => state.lastHooked)
   const bucketPosition = useGame(state => state.bucketPosition)
-  const paused = useGame(state => state.paused)
+  const menu = useGame(state => state.menu)
 
   const bodyRadius = 0.25
   const targetRadius = 0.075
@@ -103,7 +103,7 @@ export function Fish({ id }: FishProps) {
       return
     }
 
-    if (paused) return
+    if (phase === 'paused') return
 
     // Move
     const impulse = new Vector3()
@@ -137,7 +137,7 @@ export function Fish({ id }: FishProps) {
         restitution={0.2}
         angularDamping={0.5}
       >
-        <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
+        <Center rotation-x={-Math.PI * 0.5} scale={1.5} visible={menu !== 'tutorial'}>
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
         </Center>
         {!hookBody && (

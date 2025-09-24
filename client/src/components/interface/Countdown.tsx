@@ -12,7 +12,6 @@ export default function Countdown({ seconds }: CountdownProps) {
   const hidden = useHideOnResize()
 
   const phase = useGame(state => state.phase)
-  const paused = useGame(state => state.paused)
   const end = useGame(state => state.end)
   const pause = useGame(state => state.pause)
 
@@ -22,7 +21,7 @@ export default function Countdown({ seconds }: CountdownProps) {
   const sounds = useSoundBoard(state => state.sounds)
 
   useEffect(() => {
-    if (!ref.current || paused) return
+    if (!ref.current || phase === 'paused') return
 
     // format mm:ss
     const m = Math.floor(timeLeft / 60).toString().padStart(2, '0') //prettier-ignore
@@ -39,13 +38,13 @@ export default function Countdown({ seconds }: CountdownProps) {
 
     const interval = setInterval(() => setTimeLeft(t => t - 1), 1000)
     return () => clearInterval(interval)
-  }, [timeLeft, paused, end])
+  }, [timeLeft, phase, end])
 
   useEffect(() => {
-    if (alarm && !paused) sounds?.tick.play()
+    if (alarm && phase !== 'paused') sounds?.tick.play()
     else sounds?.tick.stop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alarm, paused])
+  }, [alarm, phase])
 
   useEffect(() => {
     if (phase === 'started') setTimeLeft(seconds)
@@ -58,7 +57,7 @@ export default function Countdown({ seconds }: CountdownProps) {
 
   return (
     <Float
-      enabled={alarm && !paused}
+      enabled={alarm && phase !== 'paused'}
       speed={50}
       floatIntensity={1}
       rotationIntensity={0}
@@ -69,7 +68,7 @@ export default function Countdown({ seconds }: CountdownProps) {
         <Html scale={0.5} transform wrapperClass={`overlay ${hidden && 'hidden'}`}>
           <div
             style={{ transform: 'scale(2)' }}
-            className={`overlay-content w-22 py-2 text-2xl ${paused && 'opacity-45'}`}
+            className={`overlay-content w-22 py-2 text-2xl ${phase === 'paused' && 'opacity-45'}`}
           >
             <div ref={ref} className="h-6" />
           </div>

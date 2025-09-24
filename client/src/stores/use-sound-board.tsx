@@ -32,6 +32,8 @@ type SoundBoardStore = {
 
   muted: boolean
   toggleMuted: () => void
+
+  reset: () => void
 }
 
 const useSoundBoard = create<SoundBoardStore>()(set => ({
@@ -48,6 +50,15 @@ const useSoundBoard = create<SoundBoardStore>()(set => ({
       else state.context?.resume()
 
       return { muted }
+    })
+  },
+
+  reset: () => {
+    set(state => {
+      for (const sound in state.sounds) {
+        state.sounds[sound].stop()
+      }
+      return {}
     })
   },
 }))

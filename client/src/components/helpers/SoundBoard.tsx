@@ -37,9 +37,11 @@ export default function SoundBoard() {
 
     switch (phase) {
       case 'started':
-        sounds.loop.play()
-        sounds.fishes.play()
-        sounds.jump.play()
+        if (!sounds.loop.sound?.playing()) {
+          sounds.loop.play()
+          sounds.fishes.play()
+          sounds.jump.play()
+        }
         return
 
       case 'hooked':
