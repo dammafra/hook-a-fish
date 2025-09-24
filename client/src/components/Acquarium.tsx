@@ -1,7 +1,7 @@
 import { Center } from '@react-three/drei'
 import { random, randomColor } from '../utils/random'
 import Fish from './models/Fish'
-import { FishTank } from './models/FIshTank'
+import { FishTank } from './models/FishTank'
 
 export default function Acquarium() {
   return (
