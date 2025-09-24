@@ -1,8 +1,25 @@
-import { animated, useSpring, useTransition } from '@react-spring/web'
+import { animated, useSpring, useTransition, type UseSpringProps } from '@react-spring/web'
 import { Html } from '@react-three/drei'
 import { useMemo } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
+import { randomInt, randomOneOf } from '../../utils/random'
+import { LOST_MESSAGES, WIN_MESSAGES } from '../data/messages'
+
+const getButtonSpringConfig = () =>
+  ({
+    from: { x: 0, y: 0 },
+    to: async next => {
+      while (true) {
+        await next({
+          x: Math.random() * randomInt(5, 8),
+          y: Math.random() * randomInt(5, 8),
+          velocity: 0,
+        })
+      }
+    },
+    config: { damping: 0, frequency: 4 },
+  }) as UseSpringProps
 
 export default function Menu() {
   const menu = useGame(state => state.menu)
@@ -34,30 +51,56 @@ const MainMenu = animated(props => {
   const start = useGame(state => state.start)
   const setMenu = useGame(state => state.setMenu)
 
+  const logoSpring = useSpring({
+    from: { rotate: -5 },
+    to: { rotate: 5 },
+    loop: { reverse: true },
+    config: { damping: 0, frequency: 3, bounce: 1 },
+  })
+
+  const buttonStartSpring = useSpring(getButtonSpringConfig())
+  const buttonTutorialSpring = useSpring(getButtonSpringConfig())
+  const buttonCreditsSpring = useSpring(getButtonSpringConfig())
+
   return (
     <div {...props} className="menu-section">
-      <h1 className="font-title flex flex-col items-center gap-0">
+      <h1 className="font-title flex flex-col items-center gap-0 relative">
         <span className="text-7xl leading-8">Hook</span>
         <span className="text-2xl">-A-</span>
         <span className="text-7xl">Fish!</span>
+        <animated.div
+          style={logoSpring}
+          className="absolute size-100 -top-[191px] -left-22 rotate-15"
+        >
+          <span className="absolute left-14 top-33 icon-[mdi--hook] text-[250px] text-white/20" />
+        </animated.div>
       </h1>
-      <button onClick={start}>
+      <animated.button onClick={start} style={buttonStartSpring}>
         <span className="icon-[solar--play-bold]" />
         <span>Start</span>
-      </button>
-      <button onClick={() => setMenu('tutorial')}>
+      </animated.button>
+      <animated.button onClick={() => setMenu('tutorial')} style={buttonTutorialSpring}>
         <span className="icon-[solar--question-circle-bold]" />
         <span>How to Play</span>
-      </button>
-      <button onClick={() => setMenu('credits')}>
+      </animated.button>
+      <animated.button onClick={() => setMenu('credits')} style={buttonCreditsSpring}>
         <span className="icon-[solar--info-circle-bold]" />
         <span>Credits</span>
-      </button>
+      </animated.button>
 
-      <footer className="absolute bottom-10 inline-flex items-center justify-center gap-1 text-2xl">
-        Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
-        <a href="https://github.com/dammafra" target="_blank">
-          @dammafra
+      <footer className="absolute bottom-10 flex flex-col items-center gap-2">
+        <p className="inline-flex items-center gap-1 text-2xl">
+          Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
+          <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
+            @dammafra
+          </a>
+        </p>
+        <a href="https://www.buymeacoffee.com/dammafra" target="_blank">
+          <img
+            src="./bmc.png"
+            alt="Buy Me A Coffee"
+            className="h-10 hover:opacity-80 active:opacity-80"
+          />
         </a>
       </footer>
     </div>
@@ -67,6 +110,8 @@ const MainMenu = animated(props => {
 const Tutorial = animated(props => {
   const isTouch = useIsTouch()
   const setMenu = useGame(state => state.setMenu)
+
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
 
   return (
     <div {...props} className="menu-section text-2xl md:text-3xl text-center px-5 gap-2">
@@ -87,14 +132,14 @@ const Tutorial = animated(props => {
         Catch them as fast as you can! <br />
         Each fish gives you a <span className="font-extrabold">time bonus</span>
       </p>
-      <button onClick={() => setMenu('main')}>
+      <animated.button style={buttonBackSpring} onClick={() => setMenu('main')} className="sm">
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
-      </button>
-      <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
+      </animated.button>
+      {/* <p className="text-2xl mt-5 animate-pulse uppercase font-extrabold">
         Power-ups are coming soon!
         <br />
         Stay tuned!
-      </p>
+      </p> */}
     </div>
   )
 })
@@ -102,8 +147,13 @@ const Tutorial = animated(props => {
 const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
+
   return (
-    <div {...props} className="menu-section text-xs md:text-lg tracking-wide text-center">
+    <div
+      {...props}
+      className="menu-section text-xs sm:text-sm md:text-lg tracking-wide text-center"
+    >
       <div>
         <h2 className="font-title">Models</h2>
         {/* prettier-ignore */}
@@ -139,9 +189,13 @@ const Credits = animated(props => {
           <li><a href="https://kenney.nl/assets/cursor-pack" target="_blank" className="uppercase">Cursor Pack</a> by <span className="uppercase">Kenney</span></li>
         </ul>
       </div>
-      <button className="max-md:absolute max-md:bottom-10" onClick={() => setMenu('main')}>
+      <animated.button
+        style={buttonBackSpring}
+        className="max-md:absolute max-md:bottom-10 sm"
+        onClick={() => setMenu('main')}
+      >
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
-      </button>
+      </animated.button>
     </div>
   )
 })
@@ -151,7 +205,9 @@ const End = animated(props => {
   const lastScore = useGame(state => state.lastScore)
   const lastPhoto = useGame(state => state.lastPhoto)
 
-  const canShare = useMemo(() => !!lastScore && lastPhoto, [lastScore, lastPhoto])
+  const win = useMemo(() => !!lastScore, [lastScore])
+  const winMessage = useMemo(() => randomOneOf(WIN_MESSAGES), [])
+  const lostMessage = useMemo(() => randomOneOf(LOST_MESSAGES), [])
 
   const share = async () => {
     const filename = `${Date.now()}_hook-a-fish_${lastScore}.png`
@@ -161,11 +217,14 @@ const End = animated(props => {
 
     const toShare = {
       files: [file],
-      text: `I just caught ${lastScore} fish in Hook-A-Fish!
+      text: `${winMessage}
+      
+I just caught ${lastScore} fish in Hook-A-Fish!
 Can you beat my score?
-#hookafish #indiegame #indiedev #fishinggame #webgame #threejs
 
-🎣 https://hook-a-fish.vercel.app`,
+🎣 https://hook-a-fish.vercel.app
+
+#hookafish #indiegame #indiedev #fishinggame #webgame #threejs`,
     }
 
     if (navigator.canShare(toShare)) {
@@ -178,41 +237,46 @@ Can you beat my score?
     }
   }
 
-  const imgProps = useSpring({
+  const imgSprings = useSpring({
     from: { transform: 'scale(0) rotate(0deg)' },
     to: { transform: 'scale(1) rotate(355deg)' },
     config: { tension: 120, friction: 14 },
   })
 
+  const buttonBackSpring = useSpring(getButtonSpringConfig())
+  const buttonShareSpring = useSpring(getButtonSpringConfig())
+
   return (
     <div {...props} className="menu-section">
       <p className="font-title text-6xl">Game Over</p>
-      {canShare && <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>}
-      {canShare ? (
-        <animated.div className="relative" style={imgProps}>
-          <img
-            src={lastPhoto}
-            className="w-60 md:w-80 border-15 border-b-50 md:border-20 md:border-b-80 border-white"
-          />
-          <p className="absolute top-58 md:top-80 w-full text-center text-2xl md:text-3xl text-black">
-            Here's the last one you hooked!
-          </p>
-        </animated.div>
+      {win ? (
+        <>
+          <p className="text-4xl uppercase -mt-4">{lastScore} Fish Caught</p>
+          <animated.div className="relative" style={imgSprings}>
+            <img
+              src={lastPhoto}
+              className="w-64 md:w-80 border-15 border-b-80 md:border-20 md:border-b-110 border-white"
+            />
+            <p className="text-shadow-none absolute h-16 md:h-20 inline-flex items-center justify-center top-62 md:top-78 w-full text-2xl md:text-3xl text-black text-center">
+              {winMessage}
+            </p>
+          </animated.div>
+        </>
       ) : (
-        <p className="text-3xl text-center">Oops… the fishes are laughing at you!</p>
+        <p className="text-3xl md:text-5xl text-center">{lostMessage}</p>
       )}
 
       <div className="flex max-md:flex-col gap-4 mt-4">
-        <button onClick={start}>
+        <animated.button style={buttonBackSpring} onClick={start} className="backdrop-blur-sm">
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>
-        </button>
+        </animated.button>
 
-        {canShare && (
-          <button onClick={share}>
+        {win && (
+          <animated.button style={buttonShareSpring} onClick={share} className="backdrop-blur-sm">
             <span className="icon-[solar--share-bold]" />
             <span>Share</span>
-          </button>
+          </animated.button>
         )}
       </div>
     </div>

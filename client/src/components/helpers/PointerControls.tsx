@@ -1,14 +1,6 @@
 import { useThree } from '@react-three/fiber'
-import {
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useMemo,
-  useRef,
-  type JSX,
-  type PropsWithChildren,
-} from 'react'
-import { Object3D, Plane, Vector2, Vector3 } from 'three'
+import { useEffect, useMemo, useRef, type JSX, type PropsWithChildren } from 'react'
+import { Object3D, Plane, Quaternion, Vector2, Vector3 } from 'three'
 import { parsePosition, type Position } from '../../utils/position'
 
 type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
@@ -20,7 +12,7 @@ type PointerControlsProps = JSX.IntrinsicElements['object3D'] &
     hideCursor?: boolean
     type?: 'billboard' | 'target' | 'fixed'
     target?: Position
-    onMove?: (position: Vector3) => void
+    onMove?: (position: Vector3, quaternion: Quaternion) => void
   }
 
 export default function PointerControls({
@@ -66,7 +58,7 @@ export default function PointerControls({
         ref.current.rotation.y = rotationY + rotationYOffset
       }
 
-      onMove?.(position)
+      onMove?.(ref.current.position, ref.current.quaternion)
     }
 
     gl.domElement.addEventListener('pointermove', handleMove)
@@ -92,20 +84,9 @@ export default function PointerControls({
     type,
   ])
 
-  if (Array.isArray(children) && children.length > 1) {
-    return (
-      <group {...props} ref={ref}>
-        {children}
-      </group>
-    )
-  }
-
-  if (isValidElement(children)) {
-    return cloneElement(children as React.ReactElement<JSX.IntrinsicElements['object3D']>, {
-      ...props,
-      ref,
-    })
-  }
-
-  return <></>
+  return (
+    <group {...props} ref={ref}>
+      {children}
+    </group>
+  )
 }

@@ -1,7 +1,8 @@
-import { CameraControls, CameraControlsImpl } from '@react-three/drei'
+import { CameraControls } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { useDebug } from '../hooks/use-debug'
+import { useIsTouch } from '../hooks/use-is-touch'
 import Acquarium from './Acquarium'
 import Environment from './Environment'
 import CameraRig from './helpers/CameraRig'
@@ -10,6 +11,7 @@ import Helpers from './helpers/Helpers'
 import SoundBooard from './helpers/SoundBoard'
 
 export default function Experience() {
+  const isTouch = useIsTouch()
   const debug = useDebug()
 
   const physicsControls = useControls(
@@ -31,26 +33,7 @@ export default function Experience() {
     >
       <Environment />
 
-      <CameraControls
-        makeDefault
-        minDistance={1}
-        maxDistance={20}
-        mouseButtons={
-          debug
-            ? undefined
-            : {
-                left: CameraControlsImpl.ACTION.NONE,
-                right: CameraControlsImpl.ACTION.NONE,
-                middle: CameraControlsImpl.ACTION.NONE,
-                wheel: CameraControlsImpl.ACTION.NONE,
-              }
-        }
-        touches={{
-          one: CameraControlsImpl.ACTION.NONE,
-          two: CameraControlsImpl.ACTION.NONE,
-          three: CameraControlsImpl.ACTION.NONE,
-        }}
-      />
+      <CameraControls enabled={debug && !isTouch} makeDefault minDistance={1} maxDistance={20} />
 
       <Physics {...physicsControls}>
         {/* <World /> */}

@@ -8,7 +8,7 @@ export default function App() {
 
   return (
     <>
-      <Leva hidden={!debug} theme={{ sizes: { rootWidth: '350px' } }} />
+      <Leva hidden={!debug} collapsed theme={{ sizes: { rootWidth: '350px' } }} />
 
       {/* See https://github.com/pmndrs/leva/issues/552 */}
       <StrictMode>
