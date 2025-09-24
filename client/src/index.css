@@ -124,13 +124,3 @@ button * {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 }
-
-@media screen and (orientation: landscape) and (max-height: 600px) {
-  body::before {
-    content: 'Oops! This pond is too tiny…\AGive the fish some vertical space!';
-    @apply uppercase text-center font-body flex justify-center items-center fixed inset-0 text-white bg-black text-2xl z-1 whitespace-pre;
-  }
-  body * {
-    @apply pointer-events-none;
-  }
-}
