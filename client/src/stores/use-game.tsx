@@ -72,8 +72,8 @@ const useGame = create<GameStore>()(set => ({
   phase: 'ready',
 
   start: () => {
-    window.PokiSDK.commercialBreak().then(() => {
-      window.PokiSDK.gameplayStart()
+    const adCallback = () => {
+      window.CrazyGames.SDK.game.gameplayStart()
 
       set(state => {
         if (state.phase === 'ready' || state.phase === 'ended') {
@@ -90,6 +90,12 @@ const useGame = create<GameStore>()(set => ({
 
         return {}
       })
+    }
+
+    window.CrazyGames.SDK.ad.requestAd('midgame', {
+      adFinished: adCallback,
+      adError: adCallback,
+      adStarted: () => {},
     })
   },
 
@@ -133,7 +139,7 @@ const useGame = create<GameStore>()(set => ({
   },
 
   end: () => {
-    window.PokiSDK.gameplayStop()
+    window.CrazyGames.SDK.game.gameplayStop()
 
     set(state => {
       if (state.phase !== 'ended') {
@@ -151,12 +157,12 @@ const useGame = create<GameStore>()(set => ({
 
   paused: true,
   pause: () => {
-    window.PokiSDK.gameplayStop()
+    window.CrazyGames.SDK.game.gameplayStop()
 
     set(() => ({ paused: true }))
   },
   resume: () => {
-    window.PokiSDK.gameplayStart()
+    window.CrazyGames.SDK.game.gameplayStart()
 
     set(() => ({ paused: false }))
   },

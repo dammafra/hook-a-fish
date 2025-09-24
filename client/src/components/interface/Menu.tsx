@@ -63,7 +63,7 @@ const MainMenu = animated(props => {
   const buttonCreditsSpring = useSpring(getButtonSpringConfig())
 
   useEffect(() => {
-    window.PokiSDK.gameLoadingFinished()
+    window.CrazyGames.SDK.game.loadingStop()
   }, [])
 
   return (
