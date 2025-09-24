@@ -1,6 +1,6 @@
 import { animated, useSpring, useTransition, type UseSpringProps } from '@react-spring/web'
 import { Html } from '@react-three/drei'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
 import { randomInt, randomOneOf } from '../../utils/random'
@@ -61,6 +61,10 @@ const MainMenu = animated(props => {
   const buttonStartSpring = useSpring(getButtonSpringConfig())
   const buttonTutorialSpring = useSpring(getButtonSpringConfig())
   const buttonCreditsSpring = useSpring(getButtonSpringConfig())
+
+  useEffect(() => {
+    window.PokiSDK.gameLoadingFinished()
+  }, [])
 
   return (
     <div {...props} className="menu-section">

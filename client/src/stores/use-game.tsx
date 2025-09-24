@@ -72,20 +72,24 @@ const useGame = create<GameStore>()(set => ({
   phase: 'ready',
 
   start: () => {
-    set(state => {
-      if (state.phase === 'ready' || state.phase === 'ended') {
-        return {
-          startedAt: Date.now(),
-          photo: undefined,
-          score: 0,
-          fishes: Array.from({ length: state.total }, generateId),
-          phase: 'started',
-          paused: false,
-          menu: undefined,
-        }
-      }
+    window.PokiSDK.commercialBreak().then(() => {
+      window.PokiSDK.gameplayStart()
 
-      return {}
+      set(state => {
+        if (state.phase === 'ready' || state.phase === 'ended') {
+          return {
+            startedAt: Date.now(),
+            photo: undefined,
+            score: 0,
+            fishes: Array.from({ length: state.total }, generateId),
+            phase: 'started',
+            paused: false,
+            menu: undefined,
+          }
+        }
+
+        return {}
+      })
     })
   },
 
@@ -129,6 +133,8 @@ const useGame = create<GameStore>()(set => ({
   },
 
   end: () => {
+    window.PokiSDK.gameplayStop()
+
     set(state => {
       if (state.phase !== 'ended') {
         return {
@@ -144,8 +150,16 @@ const useGame = create<GameStore>()(set => ({
   },
 
   paused: true,
-  pause: () => set(() => ({ paused: true })),
-  resume: () => set(() => ({ paused: false })),
+  pause: () => {
+    window.PokiSDK.gameplayStop()
+
+    set(() => ({ paused: true }))
+  },
+  resume: () => {
+    window.PokiSDK.gameplayStart()
+
+    set(() => ({ paused: false }))
+  },
 
   menu: 'main',
   setMenu: menu => set(() => ({ menu })),
