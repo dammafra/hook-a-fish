@@ -47,12 +47,6 @@
       rel="stylesheet"
     />
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/add-to-homescreen.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/add-to-homescreen.min.js"></script>
-
     <style>
       @font-face {
         font-family: 'Pompiere';
@@ -431,24 +425,6 @@
         </svg>
       </div>
     </div>
-    <<<<<<< HEAD =======
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        if (!window.AddToHomeScreen) return
-
-        window.AddToHomeScreenInstance = window.AddToHomeScreen({
-          appName: 'Hook-A-Fish!',
-          appNameDisplay: 'standalone',
-          appIconUrl: 'favicon/apple-touch-icon.png',
-          assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@3.4/dist/assets/img/',
-          maxModalDisplayCount: 1,
-          displayOptions: { showMobile: true, showDesktop: false },
-        })
-
-        window.AddToHomeScreenInstance.show('en')
-      })
-    </script>
-    >>>>>>> main
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
