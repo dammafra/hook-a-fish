@@ -120,7 +120,7 @@ button * {
   }
 
   .menu-section {
-    @apply w-full h-full flex flex-col justify-center items-center gap-5 text-white text-shadow pointer-events-auto;
+    @apply w-full h-full flex flex-col justify-center items-center gap-5 text-white text-shadow pointer-events-auto scale-75;
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 }
