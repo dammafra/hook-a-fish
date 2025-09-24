@@ -1,5 +1,6 @@
 import { Billboard, Float, Html } from '@react-three/drei'
 import { useEffect, useRef, useState } from 'react'
+import { useHideOnResize } from '../../hooks/use-hide-on-resize'
 import useGame from '../../stores/use-game'
 import useSoundBoard from '../../stores/use-sound-board'
 
@@ -8,9 +9,12 @@ interface CountdownProps {
 }
 
 export default function Countdown({ seconds }: CountdownProps) {
+  const hidden = useHideOnResize()
+
   const phase = useGame(state => state.phase)
   const paused = useGame(state => state.paused)
   const end = useGame(state => state.end)
+  const pause = useGame(state => state.pause)
 
   const ref = useRef<HTMLDivElement>(null!)
   const [timeLeft, setTimeLeft] = useState(seconds)
@@ -48,6 +52,10 @@ export default function Countdown({ seconds }: CountdownProps) {
     if (phase === 'unhooked') setTimeLeft(t => t + 3)
   }, [seconds, phase])
 
+  useEffect(() => {
+    if (hidden) pause()
+  }, [hidden, pause])
+
   return (
     <Float
       enabled={alarm && !paused}
@@ -58,8 +66,11 @@ export default function Countdown({ seconds }: CountdownProps) {
     >
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
-        <Html scale={0.5} transform wrapperClass="overlay">
-          <div style={{ transform: 'scale(2)' }} className="overlay-content w-20 py-1 text-2xl">
+        <Html scale={0.5} transform wrapperClass={`overlay ${hidden && 'hidden'}`}>
+          <div
+            style={{ transform: 'scale(2)' }}
+            className={`overlay-content w-22 py-2 text-2xl ${paused && 'opacity-45'}`}
+          >
             <div ref={ref} className="h-6" />
           </div>
         </Html>

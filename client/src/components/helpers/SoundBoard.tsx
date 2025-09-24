@@ -9,9 +9,9 @@ const parse = ([play, data]: ReturnedValue) => ({ play, ...data })
 export default function SoundBoard() {
   const phase = useGame(state => state.phase)
 
-  // const context = useSoundBoard(state => state.context)
   const setContext = useSoundBoard(state => state.setContext)
   const setSounds = useSoundBoard(state => state.setSounds)
+  const muted = useSoundBoard(state => state.muted)
 
   const [loaded, setLoaded] = useState(0)
   const onload = () => setLoaded(loaded => loaded + 1)
@@ -62,6 +62,10 @@ export default function SoundBoard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, toLoad, phase])
+
+  useEffect(() => {
+    Howler.volume(muted ? 0 : 1)
+  }, [muted])
 
   /**
    * This helps resume AudioContext when the tab is suspended (e.g., when switching apps or locking the phone) and later resumed,

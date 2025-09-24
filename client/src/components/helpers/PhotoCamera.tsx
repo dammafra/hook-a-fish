@@ -1,15 +1,15 @@
 import { useThree } from '@react-three/fiber'
-import { useEffect, useImperativeHandle, useRef, useState, type JSX, type Ref } from 'react'
+import { useEffect, useImperativeHandle, useRef, useState, type JSX, type RefObject } from 'react'
 import { PerspectiveCamera, SRGBColorSpace, WebGLRenderTarget } from 'three'
 import { parsePosition, type Position } from '../../utils/position'
 
 export type PhotoCameraHandle = {
-  camera: PerspectiveCamera
+  camera: RefObject<PerspectiveCamera>
   takePhoto: (target?: Position) => string | undefined
 }
 
-type PhotoCameraProps = JSX.IntrinsicElements['perspectiveCamera'] & {
-  ref?: Ref<PhotoCameraHandle>
+type PhotoCameraProps = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'ref'> & {
+  ref?: RefObject<PhotoCameraHandle>
   target?: Position
   size?: number
 }
@@ -29,6 +29,7 @@ export default function PhotoCamera({
 }: PhotoCameraProps) {
   const { gl, scene } = useThree()
   const cameraRef = useRef<PerspectiveCamera>(null!)
+
   const [renderTarget] = useState(() => {
     const target = new WebGLRenderTarget(size, size)
     target.texture.colorSpace = SRGBColorSpace
@@ -78,7 +79,7 @@ export default function PhotoCamera({
     return canvas.toDataURL('image/png')
   }
 
-  useImperativeHandle(ref, () => ({ camera: cameraRef.current, takePhoto }))
+  useImperativeHandle(ref, () => ({ camera: cameraRef, takePhoto }))
 
   return (
     <perspectiveCamera ref={cameraRef} fov={fov} aspect={aspect} near={near} far={far} {...props} />

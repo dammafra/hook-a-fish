@@ -43,12 +43,12 @@ export default function Environment() {
       >
         <orthographicCamera
           attach="shadow-camera"
-          near={0.1}
+          near={-5}
           far={10}
-          top={6}
-          right={6}
-          bottom={-6}
-          left={-6}
+          top={10}
+          right={10}
+          bottom={-10}
+          left={-10}
         >
           {helpers && <Helper type={CameraHelper} />}
         </orthographicCamera>
@@ -56,7 +56,7 @@ export default function Environment() {
 
       <ambientLight intensity={ambientLightIntensity} />
 
-      <SoftShadows size={10} focus={0.05} />
+      <SoftShadows size={15} />
     </>
   )
 }

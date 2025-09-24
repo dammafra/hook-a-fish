@@ -1,8 +1,8 @@
 import { Center } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import { RapierRigidBody, RigidBody } from '@react-three/rapier'
-import { useMemo, useRef, type RefObject } from 'react'
-import { Object3D, Quaternion, Vector3, type ColorRepresentation } from 'three'
+import { CuboidCollider, RapierRigidBody, RigidBody, type CuboidArgs } from '@react-three/rapier'
+import { useEffect, useImperativeHandle, useMemo, useRef, useState, type RefObject } from 'react'
+import { Group, Quaternion, Vector3, type ColorRepresentation } from 'three'
+import useGame from '../stores/use-game'
 import { parsePosition, type Position } from '../utils/position'
 import { parseRotation, type Rotation } from '../utils/rotation'
 import FishingHook from './models/FishingHook'
@@ -10,8 +10,13 @@ import FishingPole from './models/FishingPole'
 import Rope from './Rope'
 import { BOUNDS_COLLISION_GROUP } from './Water'
 
+export type FishingRodHandle = {
+  mesh: RefObject<Group>
+  body: RefObject<RapierRigidBody>
+}
+
 interface FishingRodProps {
-  ref?: RefObject<Object3D>
+  ref?: RefObject<FishingRodHandle>
   visible?: boolean
   position?: Position
   rotation?: Rotation
@@ -35,45 +40,62 @@ export default function FishingRod({
   onHook,
   makeDefault = false,
 }: FishingRodProps) {
+  const phase = useGame(state => state.phase)
+
   const _position = useMemo(() => parsePosition(position), [position])
   const _rotation = useMemo(() => parseRotation(rotation), [rotation])
 
   const poleBody = useRef<RapierRigidBody>(null!)
   const hookBody = useRef<RapierRigidBody>(null!)
+  const poleColliderArgs: CuboidArgs = [0.3, 1, 0.1]
 
-  useFrame(() => {
-    if (!ref?.current) return
+  const group = useRef<Group>(null!)
 
-    const position = new Vector3()
-    ref.current.getWorldPosition(position)
-    poleBody.current.setTranslation(position, false)
+  useImperativeHandle(ref, () => ({ mesh: group, body: poleBody }), [group, poleBody])
 
-    const rotation = ref.current.rotation.clone()
-    poleBody.current.setRotation(new Quaternion().setFromEuler(rotation), false)
+  // Workaround: If only the world position changes (without a local position change),
+  // rigid bodies won't update. Forcing a re-render by changing their keys ensures they refresh.
+  const [key, setKey] = useState('')
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // TODO*: this causes issue where I rely on hookBody presence (fishes, target)
+    if (makeDefault) return
+
+    const _worldPposition = new Vector3()
+    group.current?.getWorldPosition(_worldPposition)
+
+    const _worldQuaternion = new Quaternion()
+    group.current?.getWorldQuaternion(_worldQuaternion)
+
+    const key = btoa(_worldPposition.toArray().concat(_worldQuaternion.toArray()).join())
+    setKey(key)
   })
 
   return (
-    <group visible={visible}>
-      <group ref={ref} position={_position} rotation={_rotation}>
-        <RigidBody ref={poleBody} type="kinematicPosition" />
-        <Center
-          scale={0.01}
-          position={[0, -0.06, -0.05]}
-          rotation={[-Math.PI * 0.5, Math.PI * 0.094, 0]}
-        >
+    <group ref={group} visible={visible} position={_position} rotation={_rotation}>
+      <RigidBody
+        key={`pole-${key}`}
+        ref={poleBody}
+        type="kinematicPosition"
+        colliders={false}
+        collisionGroups={BOUNDS_COLLISION_GROUP}
+      >
+        <CuboidCollider args={poleColliderArgs} />
+        <Center scale={0.01} rotation-x={-Math.PI * 0.5}>
           <FishingPole colorA={colorA} colorB={colorB} />
         </Center>
-      </group>
+      </RigidBody>
 
       <RigidBody
-        userData={makeDefault ? { name: 'hook' } : undefined}
+        key={`hook-${key}`}
         ref={hookBody}
-        colliders="ball"
-        position={_position}
-        gravityScale={5}
+        userData={makeDefault ? { name: 'hook' } : undefined}
+        canSleep={!makeDefault}
+        gravityScale={makeDefault && phase === 'hooked' ? 15 : 5}
         linearDamping={2}
         angularDamping={8}
-        canSleep={false}
+        colliders="ball"
         collisionGroups={BOUNDS_COLLISION_GROUP}
         onCollisionEnter={({ target }) => {
           if (!onHook) return
@@ -94,9 +116,10 @@ export default function FishingRod({
       </RigidBody>
 
       <Rope
+        key={`rope-${key}`}
         start={poleBody}
         end={hookBody}
-        startAnchor={[0, 1, 0]}
+        startAnchor={[-poleColliderArgs[0], poleColliderArgs[1], poleColliderArgs[2] * 0.5]}
         endAnchor={[0, 0.1, 0]}
         length={ropeLength}
         radius={ropeRadius}

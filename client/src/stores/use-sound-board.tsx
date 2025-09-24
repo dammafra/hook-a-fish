@@ -38,10 +38,11 @@ const useSoundBoard = create<SoundBoardStore>()(set => ({
   setContext: context => set(() => ({ context })),
   setSounds: sounds => set(() => ({ sounds })),
 
-  muted: false,
+  muted: JSON.parse(localStorage.getItem('hookafish-muted') || 'false'),
   toggleMuted: () => {
     set(state => {
       const muted = !state.muted
+      localStorage.setItem('hookafish-muted', JSON.stringify(muted))
 
       if (muted) state.context?.suspend()
       else state.context?.resume()

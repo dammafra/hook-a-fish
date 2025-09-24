@@ -28,6 +28,7 @@ export function Fish({ id }: FishProps) {
 
   const bodyRadius = 0.25
   const targetRadius = 0.075
+  const targetOffsetY = -0.2
   const targetOffsetZ = 0.1
   const colorA = useMemo(randomColor, [])
   const colorB = useMemo(randomColor, [])
@@ -63,7 +64,7 @@ export function Fish({ id }: FishProps) {
   }
 
   useFrame(({ clock }, delta) => {
-    if (paused || phase === 'ended') return
+    if (phase === 'ended' || !bucketPosition) return
 
     // Emerge on start
     if (bodyType === 'kinematicPosition') {
@@ -94,13 +95,15 @@ export function Fish({ id }: FishProps) {
       body.current.setAngvel(new Vector3(), false)
 
       const { x, y, z } = hookBody.translation()
-      const position = new Vector3(x, y - targetRadius, z - targetOffsetZ)
+      const position = new Vector3(x, y - targetRadius + targetOffsetY, z - targetOffsetZ)
       body.current.setTranslation(position, false)
-      body.current.setRotation(new Quaternion(), false)
+      body.current.setRotation(new Quaternion(), false) // this ensures accurate positioning of hook
 
       if (position.distanceTo(bucketPosition) < 0.8) unhook(id)
       return
     }
+
+    if (paused) return
 
     // Move
     const impulse = new Vector3()
@@ -134,11 +137,7 @@ export function Fish({ id }: FishProps) {
         restitution={0.2}
         angularDamping={0.5}
       >
-        <Center
-          visible={!(paused && hookBody && id !== lastHooked)}
-          rotation-x={-Math.PI * 0.5}
-          scale={1.5}
-        >
+        <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
           <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
         </Center>
         {!hookBody && (
@@ -158,6 +157,5 @@ export function Fish({ id }: FishProps) {
 
 export default function Fishes() {
   const fishes = useGame(state => state.fishes)
-
   return fishes.map(id => <Fish key={`fish-${id}`} id={id} />)
 }

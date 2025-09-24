@@ -1,37 +1,53 @@
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { Euler, Object3D, Vector3 } from 'three'
+import { Euler, Quaternion, Vector3 } from 'three'
 import { useIsTouch } from '../hooks/use-is-touch'
 import useGame from '../stores/use-game'
-import FishingRod from './FishingRod'
+import FishingRod, { type FishingRodHandle } from './FishingRod'
 import PhotoCamera, { type PhotoCameraHandle } from './helpers/PhotoCamera'
 import PointerControls from './helpers/PointerControls'
 import Target from './Target'
 
 export default function Controller() {
   const isTouch = useIsTouch()
-  const { viewport, gl } = useThree()
-  const paused = useGame(state => state.paused)
+  const { gl } = useThree()
 
+  const paused = useGame(state => state.paused)
   const phase = useGame(state => state.phase)
+  const flip = useGame(state => state.flip)
   const setPhoto = useGame(state => state.setPhoto)
 
-  const initialPosition = useMemo(() => new Vector3(0, 2, 3), [])
-  const initialRotation = useMemo(() => new Euler(0, Math.PI * 1.65, Math.PI * 0.35), [])
+  // TODO*:
+  // const initialPosition = useMemo(() => new Vector3(0, 3, viewport.aspect < 1 ? 5 : 3), [viewport.aspect]) //prettier-ignore
+  // const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25 * (flip ? Math.PI : 1), Math.PI * 0.35), [flip]) //prettier-ignore
+  const initialPosition = useMemo(() => new Vector3(0, 3, 5), [])
+  const initialRotation = useMemo(() => new Euler(0, -Math.PI * 0.25, Math.PI * 0.35), [])
 
-  const photoCameraRef = useRef<PhotoCameraHandle>(null)
+  const fishingRod = useRef<FishingRodHandle>(null!)
+  const photoCamera = useRef<PhotoCameraHandle>(null!)
+
+  const onMove = (position: Vector3, quaternion: Quaternion) => {
+    if (!fishingRod.current) return
+
+    fishingRod.current.body.current.setTranslation(position, false)
+    fishingRod.current.body.current.setRotation(quaternion, false)
+  }
 
   const takePhoto = (target: Vector3) => {
-    const dataUrl = photoCameraRef.current?.takePhoto(target)
+    const dataUrl = photoCamera.current?.takePhoto(target)
     setPhoto(dataUrl)
   }
 
-  const ref = useRef<Object3D>(null!)
+  useEffect(() => {
+    gl.domElement.classList.toggle('cursor-grab!', !paused)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paused])
 
   useEffect(() => {
-    gl.domElement.classList.add('cursor-grab!')
-    return () => gl.domElement.classList.remove('cursor-grab!')
-  }, [])
+    const rotation = initialRotation.clone()
+    rotation.y = rotation.y * (flip ? 3 : 1)
+    onMove(initialPosition, new Quaternion().setFromEuler(rotation))
+  }, [flip, initialPosition, initialRotation])
 
   if (phase === 'ended') return
 
@@ -41,17 +57,24 @@ export default function Controller() {
         type="billboard"
         visible={!paused}
         enabled={!paused}
-        lockPositionYAt={1.48}
-        positionOffset={isTouch && viewport.aspect < 1 ? [0, 0, -2] : 0}
-        rotationYOffset={0.5}
+        lockPositionYAt={1.5}
+        positionOffset={isTouch ? [flip ? 1 : -1, 1, -0.5] : [flip ? 0.5 : -0.5, 0, -0.5]}
+        rotationYOffset={flip ? -0.5 : 0.5}
         position={initialPosition}
         rotation={initialRotation}
-        onMove={p => photoCameraRef.current && photoCameraRef.current.camera.position.copy(p)}
+        onMove={onMove}
       >
-        <FishingRod ref={ref} onHook={takePhoto} makeDefault />
+        <PhotoCamera ref={photoCamera} fov={25} size={1024} />
       </PointerControls>
 
-      <PhotoCamera ref={photoCameraRef} fov={25} size={1024} />
+      <FishingRod
+        ref={fishingRod}
+        makeDefault
+        onHook={takePhoto}
+        ropeLength={isTouch ? 2.25 : 1.25} // make sure the distance to water is around 0.324
+        position={initialPosition}
+        rotation={initialRotation}
+      />
       <Target />
     </>
   )

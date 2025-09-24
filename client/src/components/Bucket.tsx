@@ -10,14 +10,15 @@ export default function Bucket() {
   const { viewport } = useThree()
   const phase = useGame(state => state.phase)
   const paused = useGame(state => state.paused)
+  const flip = useGame(state => state.flip)
   const [bonusTime, setBonusTime] = useState(0)
   const bucketPosition = useGame(state => state.bucketPosition)
   const setBucketPosition = useGame(state => state.setBucketPosition)
 
   useEffect(() => {
-    if (viewport.aspect < 1) setBucketPosition(-2, 0, 5)
-    else setBucketPosition(-3.5, 0, 3)
-  }, [setBucketPosition, viewport.aspect])
+    if (viewport.aspect < 1) setBucketPosition(-2 * (flip ? -1 : 1), 0, 5)
+    else setBucketPosition(-3.5 * (flip ? -1 : 1), 0, 3)
+  }, [setBucketPosition, viewport.aspect, flip])
 
   useEffect(() => {
     if (phase === 'unhooked') setBonusTime(bt => bt + 1)

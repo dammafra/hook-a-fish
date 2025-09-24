@@ -67,11 +67,15 @@ button * {
     @apply fixed inset-0 overflow-hidden bg-radial bg-menu;
   }
 
-  button:not(.overlay-content) {
-    @apply border border-white text-white rounded-full px-4 py-2 text-2xl md:text-3xl w-40 md:w-50 inline-flex items-center gap-2 font-bold hover:bg-white/20 active:bg-white/20 shadow-xs shadow-black text-shadow;
+  button:not(.overlay-button) {
+    @apply border border-white text-white rounded-full px-4 py-2 text-3xl w-50 inline-flex items-center gap-2 font-bold bg-white/20 hover:bg-white/50 active:bg-white/50 shadow-xs shadow-black text-shadow;
   }
 
-  button:not(.overlay-content):has(> span[class^='icon']:only-child) {
+  button.sm {
+    @apply text-2xl w-40 px-4;
+  }
+
+  button:has(> span[class^='icon']:only-child) {
     @apply p-2 w-fit;
   }
 
@@ -90,6 +94,9 @@ button * {
   .adhs-container {
     @apply bg-transparent! bg-gradient-to-t from-black from-50% to-transparent;
   }
+  .adhs-container::after {
+    @apply content-[''] fixed right-5 top-5 flex icon-[solar--close-circle-bold] bg-white text-5xl cursor-pointer;
+  }
 }
 
 @layer components {
@@ -100,12 +107,12 @@ button * {
   .overlay-content {
     /* border + border-radius causes glitch in firefox, so use shadow workaround */
     @apply shadow-white shadow-[0_0_0_1px_rgba(0,0,0,1)];
-    @apply font-title text-center text-white text-shadow-sm rounded-full;
-    @apply flex items-center justify-center bg-white/20 hover:bg-white/50 active:bg-white/50;
+    @apply font-title text-center text-white text-shadow-sm rounded-lg;
+    @apply flex items-center justify-center bg-white/20;
   }
 
   .overlay-button {
-    @apply size-10 md:size-8 flex items-center justify-center text-2xl md:text-xl;
+    @apply rounded-full flex items-center justify-center text-sm md:text-xs p-1 hover:bg-white/50 active:bg-white/50;
   }
 
   .menu {
@@ -115,5 +122,15 @@ button * {
   .menu-section {
     @apply w-full h-full flex flex-col justify-center items-center gap-5 text-white text-shadow pointer-events-auto;
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  body::before {
+    content: 'Oops! This pond is too tiny…\AGive the fish some vertical space!';
+    @apply uppercase text-center font-body flex justify-center items-center fixed inset-0 text-white bg-black text-2xl z-1 whitespace-pre;
+  }
+  body * {
+    @apply pointer-events-none;
   }
 }

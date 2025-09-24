@@ -6,19 +6,23 @@ interface RayToFloorProps {
   fromRef: RefObject<Object3D>
   floorRef: RefObject<Object3D>
   onHit?: (hit: Intersection) => void
+  onMiss?: () => void
 }
 
-export default function RayToFloor({ fromRef, floorRef, onHit }: RayToFloorProps) {
+export default function RayToFloor({ fromRef, floorRef, onHit, onMiss }: RayToFloorProps) {
   const raycaster = useMemo(() => new Raycaster(), [])
   const down = useMemo(() => new Vector3(0, -1, 0), [])
-  const tmp = useMemo(() => new Vector3(), [])
+  const fromWorldPosition = useMemo(() => new Vector3(), [])
 
   useFrame(() => {
     if (!fromRef.current || !floorRef.current) return
-    fromRef.current.getWorldPosition(tmp)
-    raycaster.set(tmp, down)
+
+    fromRef.current.getWorldPosition(fromWorldPosition)
+    raycaster.set(fromWorldPosition, down)
     const hits = raycaster.intersectObject(floorRef.current, true)
-    if (hits.length && onHit) onHit(hits[0])
+
+    if (hits.length) onHit?.(hits[0])
+    else onMiss?.()
   })
 
   return <></>
