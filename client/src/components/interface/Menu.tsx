@@ -99,13 +99,6 @@ const MainMenu = animated(props => {
             @dammafra
           </a>
         </p>
-        <a href="https://www.buymeacoffee.com/dammafra" target="_blank">
-          <img
-            src="./bmc.png"
-            alt="Buy Me A Coffee"
-            className="h-10 hover:opacity-80 active:opacity-80"
-          />
-        </a>
       </footer>
     </div>
   )
