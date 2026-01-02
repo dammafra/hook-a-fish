@@ -9,7 +9,7 @@
 
 > 🥇 1st place in the [Three.js Journey Challenge 019](https://threejs-journey.com/challenges/019-aquarium)
 
-> Try it live here 👉 [hook-a-fish.vercel.app](https://hook-a-fish.vercel.app)
+> Try it live here 👉 [hook-a-fish.dammafra.dev](https://hook-a-fish.dammafra.dev)
 
 Dive into _Hook-A-Fish!_ Inspired by childhood memories, you will face a fun, fast-paced fishing challenge against the clock.
 

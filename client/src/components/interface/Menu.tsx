@@ -222,7 +222,7 @@ const End = animated(props => {
 I just caught ${lastScore} fish in Hook-A-Fish!
 Can you beat my score?
 
-🎣 https://hook-a-fish.vercel.app
+🎣 https://hook-a-fish.dammafra.dev
 
 #hookafish #indiegame #indiedev #fishinggame #webgame #threejs`,
     }
