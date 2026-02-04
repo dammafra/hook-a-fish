@@ -29,7 +29,6 @@ The goal is simple: catch as many fish as you can. Each fish you catch gives you
 - [@react-spring/web](https://www.react-spring.dev/)
 - [zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
 - [use-sound](https://github.com/joshwcomeau/use-sound?tab=readme-ov-file)
-- [add-to-homescreen](https://github.com/philfung/add-to-homescreen)
 
 ## Setup
 
