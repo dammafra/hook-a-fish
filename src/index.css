@@ -3,7 +3,8 @@
 
 @theme {
   --color-primary: #7cad33;
-  --color-theme: #035ba2;
+  --color-theme: #79ab31;
+  --color-water: #035ba2;
 }
 
 @utility font-body {

@@ -3,7 +3,7 @@ import './Loader.css'
 export default function Loader() {
   return (
     // above drei <Html> elements, whose default zIndexRange starts at 16777271
-    <div className="fixed inset-0 z-2147483647 flex items-center justify-center bg-theme font-title text-[4rem] text-white text-shadow">
+    <div className="fixed inset-0 z-2147483647 flex items-center justify-center bg-water font-title text-[4rem] text-white text-shadow">
       Loading
       <div className="absolute top-0 left-1/2 w-full max-w-60 -translate-x-1/2 overflow-visible opacity-75">
         <svg
