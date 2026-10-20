@@ -1,9 +1,10 @@
 import { useThree } from '@react-three/fiber'
 import { useEffect, useRef, useState, type PropsWithChildren } from 'react'
 import { WebGLRenderTarget, type Group } from 'three'
+import { markWarmedUp } from '../../utils/warmup'
 
 /**
- * Precompiles every shader variant while the menu is shown, so objects that appear later
+ * Precompiles every shader variant while the loader is shown, so objects that appear later
  * (fishes, objects culled by the menu camera, the PhotoCamera render) don't stall the main thread.
  * Children are placed far below the scene (frustum culled) only to expose their materials.
  */
@@ -19,6 +20,7 @@ export default function ShaderWarmup({ children }: PropsWithChildren) {
     const warmup = async () => {
       // on-screen variants, non-blocking thanks to KHR_parallel_shader_compile
       await gl.compileAsync(scene, camera)
+      if (cancelled) return
 
       // render target variants (linear output, no tone mapping) used by the water pre-pass and PhotoCamera
       gl.setRenderTarget(target)
@@ -34,6 +36,7 @@ export default function ShaderWarmup({ children }: PropsWithChildren) {
       gl.setRenderTarget(null)
 
       setDone(true)
+      markWarmedUp()
     }
 
     warmup()

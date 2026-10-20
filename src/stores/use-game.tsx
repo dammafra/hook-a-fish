@@ -147,7 +147,6 @@ const useGame = create<GameStore>()(set => ({
   pause: () => set(() => ({ paused: true })),
   resume: () => set(() => ({ paused: false })),
 
-  menu: 'main',
   setMenu: menu => set(() => ({ menu })),
 }))
 
