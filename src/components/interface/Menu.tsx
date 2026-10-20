@@ -1,6 +1,6 @@
 import { animated, useSpring, useTransition, type UseSpringProps } from '@react-spring/web'
 import { Html } from '@react-three/drei'
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { useIsTouch } from '../../hooks/use-is-touch'
 import useGame from '../../stores/use-game'
 import { randomInt, randomOneOf } from '../../utils/random'
@@ -63,7 +63,7 @@ const MainMenu = animated(props => {
   const buttonCreditsSpring = useSpring(getButtonSpringConfig())
 
   return (
-    <div {...props} className="menu-section">
+    <div {...props} className="menu-section short:flex-row short:gap-16">
       <h1 className="relative flex flex-col items-center gap-0 font-title">
         <span className="text-7xl leading-8">Hook</span>
         <span className="text-2xl">-A-</span>
@@ -75,21 +75,23 @@ const MainMenu = animated(props => {
           <span className="absolute top-33 left-14 icon-[mdi--hook] text-[250px] text-white/20" />
         </animated.div>
       </h1>
-      <animated.button onClick={start} style={buttonStartSpring}>
-        <span className="icon-[solar--play-bold]" />
-        <span>Start</span>
-      </animated.button>
-      <animated.button onClick={() => setMenu('tutorial')} style={buttonTutorialSpring}>
-        <span className="icon-[solar--question-circle-bold]" />
-        <span>How to Play</span>
-      </animated.button>
-      <animated.button onClick={() => setMenu('credits')} style={buttonCreditsSpring}>
-        <span className="icon-[solar--info-circle-bold]" />
-        <span>Credits</span>
-      </animated.button>
+      <div className="contents short:flex short:flex-col short:gap-3">
+        <animated.button onClick={start} style={buttonStartSpring}>
+          <span className="icon-[solar--play-bold]" />
+          <span>Start</span>
+        </animated.button>
+        <animated.button onClick={() => setMenu('tutorial')} style={buttonTutorialSpring}>
+          <span className="icon-[solar--question-circle-bold]" />
+          <span>How to Play</span>
+        </animated.button>
+        <animated.button onClick={() => setMenu('credits')} style={buttonCreditsSpring}>
+          <span className="icon-[solar--info-circle-bold]" />
+          <span>Credits</span>
+        </animated.button>
+      </div>
 
-      <footer className="absolute bottom-10 flex flex-col items-center gap-2">
-        <p className="inline-flex items-center gap-1 text-2xl">
+      <footer className="absolute bottom-10 flex flex-col items-center gap-2 short:bottom-3 short:flex-row short:gap-4">
+        <p className="inline-flex items-center gap-1 text-2xl short:text-xl">
           Made with <span className="icon-[solar--heart-angle-bold]" /> by{' '}
           <a href="https://github.com/dammafra/hook-a-fish" target="_blank">
             @dammafra
@@ -99,7 +101,7 @@ const MainMenu = animated(props => {
           <img
             src="./bmc.png"
             alt="Buy Me A Coffee"
-            className="h-10 hover:opacity-80 active:opacity-80"
+            className="h-10 hover:opacity-80 active:opacity-80 short:h-8"
           />
         </a>
       </footer>
@@ -114,24 +116,26 @@ const Tutorial = animated(props => {
   const buttonBackSpring = useSpring(getButtonSpringConfig())
 
   return (
-    <div {...props} className="menu-section gap-2 px-5 text-center text-2xl md:text-3xl">
-      <span className="icon-[mdi--hook] text-4xl md:text-5xl" />
-      <p className="mb-5 md:mb-10">
-        Control the fishing rod{' '}
-        <span className="font-extrabold"> with your {isTouch ? 'finger' : 'mouse'}</span>,
-        <br className="max-md:hidden" />
-        aim for the fish’s mouth and catch them as they jump
-      </p>
-      <span className="icon-[mdi--bucket] text-4xl md:text-5xl" />
-      <p className="mb-5 md:mb-10">
-        After you <span className="font-extrabold">Hook-A-Fish</span>, <br />
-        put it inside your bucket
-      </p>
-      <span className="icon-[solar--clock-circle-bold] text-4xl md:text-5xl" />
-      <p className="mb-5 md:mb-10">
-        Catch them as fast as you can! <br />
-        Each fish gives you a <span className="font-extrabold">time bonus</span>
-      </p>
+    <div
+      {...props}
+      className="menu-section gap-2 px-5 text-center text-2xl md:text-3xl short:gap-8 short:text-xl"
+    >
+      <div className="contents short:grid short:grid-cols-3 short:gap-8">
+        <TutorialStep icon="icon-[mdi--hook]">
+          Control the fishing rod{' '}
+          <span className="font-extrabold"> with your {isTouch ? 'finger' : 'mouse'}</span>,
+          <br className="max-md:hidden" />
+          aim for the fish’s mouth and catch them as they jump
+        </TutorialStep>
+        <TutorialStep icon="icon-[mdi--bucket]">
+          After you <span className="font-extrabold">Hook-A-Fish</span>, <br />
+          put it inside your bucket
+        </TutorialStep>
+        <TutorialStep icon="icon-[solar--clock-circle-bold]">
+          Catch them as fast as you can! <br />
+          Each fish gives you a <span className="font-extrabold">time bonus</span>
+        </TutorialStep>
+      </div>
       <animated.button style={buttonBackSpring} onClick={() => setMenu('main')} className="sm">
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
       </animated.button>
@@ -144,6 +148,15 @@ const Tutorial = animated(props => {
   )
 })
 
+function TutorialStep({ icon, children }: { icon: string; children: ReactNode }) {
+  return (
+    <div className="contents short:flex short:flex-col short:items-center short:gap-2">
+      <span className={`${icon} text-4xl md:text-5xl`} />
+      <p className="mb-5 md:mb-10 short:mb-0">{children}</p>
+    </div>
+  )
+}
+
 const Credits = animated(props => {
   const setMenu = useGame(state => state.setMenu)
 
@@ -152,9 +165,9 @@ const Credits = animated(props => {
   return (
     <div
       {...props}
-      className="menu-section text-center text-xs tracking-wide sm:text-sm md:text-lg"
+      className="menu-section text-center text-xs tracking-wide sm:text-sm md:text-lg short:grid short:grid-cols-[auto_auto] short:content-center short:justify-center short:gap-x-10 short:gap-y-3"
     >
-      <div>
+      <div className="short:col-start-1">
         <h2 className="font-title">Models</h2>
         {/* prettier-ignore */}
         <ul>
@@ -167,7 +180,7 @@ const Credits = animated(props => {
           <li><a href="https://skfb.ly/6WVNM" target="_blank"className='uppercase'>Fish</a> by <span className="uppercase">Zainal Abd. Kahar</span> <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">[CC-BY]</a></li>
         </ul>
       </div>
-      <div>
+      <div className="short:col-start-2 short:row-span-2 short:row-start-1 short:self-center">
         <h2 className="font-title">Sound Effects</h2>
         {/* prettier-ignore */}
         <ul>
@@ -181,7 +194,7 @@ const Credits = animated(props => {
           <li><a href="https://pixabay.com/users/reddog0607-51038821/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=365218" target="_blank" className="uppercase">Clock Ticking</a> by <span className="uppercase">RedDog0607</span> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=365218" target="_blank">Pixabay</a></li>
       </ul>
       </div>
-      <div>
+      <div className="short:col-start-1">
         <h2 className="font-title">Others</h2>
         {/* prettier-ignore */}
         <ul>
@@ -191,7 +204,7 @@ const Credits = animated(props => {
       </div>
       <animated.button
         style={buttonBackSpring}
-        className="sm max-md:absolute max-md:bottom-10"
+        className="sm max-md:absolute max-md:bottom-10 short:static short:col-span-2 short:justify-self-center"
         onClick={() => setMenu('main')}
       >
         <span className="icon-[solar--alt-arrow-left-linear]" /> <span>Back</span>
@@ -247,17 +260,25 @@ Can you beat my score?
   const buttonShareSpring = useSpring(getButtonSpringConfig())
 
   return (
-    <div {...props} className="menu-section">
-      <p className="font-title text-6xl">Game Over</p>
+    <div
+      {...props}
+      className={`menu-section ${win ? 'short:grid short:grid-cols-[auto_auto] short:content-center short:justify-center short:justify-items-center short:gap-x-12 short:gap-y-4' : ''}`}
+    >
+      <p className="font-title text-6xl short:col-start-2 short:text-5xl">Game Over</p>
       {win ? (
         <>
-          <p className="-mt-4 text-4xl uppercase">{lastScore} Fish Caught</p>
-          <animated.div className="relative" style={imgSprings}>
+          <p className="-mt-4 text-4xl uppercase short:col-start-2 short:text-3xl">
+            {lastScore} Fish Caught
+          </p>
+          <animated.div
+            className="relative short:col-start-1 short:row-span-3 short:row-start-1"
+            style={imgSprings}
+          >
             <img
               src={lastPhoto}
-              className="w-64 border-15 border-b-80 border-white md:w-80 md:border-20 md:border-b-110"
+              className="w-64 border-15 border-b-80 border-white md:w-80 md:border-20 md:border-b-110 short:w-48! short:border-10! short:border-b-60!"
             />
-            <p className="absolute top-62 inline-flex h-16 w-full items-center justify-center text-center text-2xl text-black text-shadow-none md:top-78 md:h-20 md:text-3xl">
+            <p className="absolute top-62 inline-flex h-16 w-full items-center justify-center text-center text-2xl text-black text-shadow-none md:top-78 md:h-20 md:text-3xl short:top-45.5! short:h-15! short:text-xl!">
               {winMessage}
             </p>
           </animated.div>
@@ -266,7 +287,7 @@ Can you beat my score?
         <p className="text-center text-3xl md:text-5xl">{lostMessage}</p>
       )}
 
-      <div className="mt-4 flex gap-4 max-md:flex-col">
+      <div className="mt-4 flex gap-4 max-md:flex-col short:col-start-2 short:mt-0">
         <animated.button style={buttonBackSpring} onClick={start} className="backdrop-blur-sm">
           <span className="icon-[stash--arrow-retry] -scale-x-100" />
           <span>Retry</span>

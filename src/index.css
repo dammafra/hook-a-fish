@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @plugin "@iconify/tailwind4";
 
+/* Mobile landscape: wide but short viewport */
+@custom-variant short (@media screen and (orientation: landscape) and (max-height: 600px));
+
 @theme {
   --color-primary: #7cad33;
   --color-theme: #79ab31;
@@ -123,15 +126,5 @@ button * {
   .menu-section {
     @apply pointer-events-auto flex h-full w-full flex-col items-center justify-center gap-5 text-white text-shadow;
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-  }
-}
-
-@media screen and (orientation: landscape) and (max-height: 600px) {
-  body::before {
-    content: 'Oops! This pond is too tiny…\AGive the fish some vertical space!';
-    @apply fixed inset-0 z-1 flex items-center justify-center bg-black text-center font-body text-2xl whitespace-pre text-white uppercase;
-  }
-  body * {
-    @apply pointer-events-none;
   }
 }
