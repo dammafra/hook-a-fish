@@ -52,30 +52,52 @@ float noise(vec2 p) {
   );
 }
 
-// Distance to the closest border of animated voronoi cells (F2 - F1)
+vec2 cellPoint(vec2 cell, float t) {
+  return 0.5 + 0.5 * sin(t + 6.2831 * hash2(cell));
+}
+
+// Distance to the closest border of animated voronoi cells.
+// Exact distance rather than F2 - F1, which drops below the line width over whole cells
+// when two points get close and makes the lines merge into big blobs
 float cellEdge(vec2 p, float t) {
   vec2 n = floor(p);
   vec2 f = fract(p);
-  float f1 = 8.0;
-  float f2 = 8.0;
+
+  // Closest point
+  vec2 mg = vec2(0.0);
+  vec2 mr = vec2(0.0);
+  float md = 8.0;
 
   for (int j = -1; j <= 1; j++) {
     for (int i = -1; i <= 1; i++) {
       vec2 g = vec2(float(i), float(j));
-      vec2 o = 0.5 + 0.5 * sin(t + 6.2831 * hash2(n + g));
-      vec2 r = g + o - f;
+      vec2 r = g + cellPoint(n + g, t) - f;
       float d = dot(r, r);
 
-      if (d < f1) {
-        f2 = f1;
-        f1 = d;
-      } else if (d < f2) {
-        f2 = d;
+      if (d < md) {
+        md = d;
+        mr = r;
+        mg = g;
       }
     }
   }
 
-  return sqrt(f2) - sqrt(f1);
+  // Distance to the bisectors with its neighbours
+  md = 8.0;
+
+  for (int j = -2; j <= 2; j++) {
+    for (int i = -2; i <= 2; i++) {
+      vec2 g = mg + vec2(float(i), float(j));
+      vec2 r = g + cellPoint(n + g, t) - f;
+      vec2 delta = r - mr;
+
+      if (dot(delta, delta) > 0.00001) {
+        md = min(md, dot(0.5 * (mr + r), normalize(delta)));
+      }
+    }
+  }
+
+  return md;
 }
 
 // Crisp but anti-aliased "distance < width" mask
@@ -175,7 +197,7 @@ void main() {
     // Cartoon highlights
     float edge = cellEdge(p * 1.5 + wave * 0.8, uTime * 0.6);
     float highlightMask = smoothstep(0.55, 0.8, noise(p * 0.8 + uTime * 0.05));
-    float highlights = line(edge, 0.035, px * 1.5) * highlightMask;
+    float highlights = line(edge, 0.018, px * 0.75) * highlightMask;
     color = mix(color, uFoamColor, highlights * 0.25);
   #endif
 
