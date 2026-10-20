@@ -5,7 +5,7 @@ import { parsePosition, type Position } from '../../utils/position'
 
 export type PhotoCameraHandle = {
   camera: RefObject<PerspectiveCamera>
-  takePhoto: (target?: Position) => string | undefined
+  takePhoto: (target?: Position) => Promise<string | undefined>
 }
 
 type PhotoCameraProps = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'ref'> & {
@@ -36,6 +36,13 @@ export default function PhotoCamera({
     return target
   })
 
+  const [canvas] = useState(() => {
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    return canvas
+  })
+
   useEffect(() => {
     if (!cameraRef.current) return
     cameraRef.current.fov = fov
@@ -45,7 +52,7 @@ export default function PhotoCamera({
     cameraRef.current.updateProjectionMatrix()
   }, [fov, aspect, near, far])
 
-  const takePhoto = (_target?: Position) => {
+  const takePhoto = async (_target?: Position) => {
     const camera = cameraRef.current
     if (!camera) return
 
@@ -56,14 +63,11 @@ export default function PhotoCamera({
     gl.render(scene, camera)
     gl.setRenderTarget(null)
 
-    // read pixels
+    // read pixels without stalling the GPU pipeline
     const pixels = new Uint8Array(size * size * 4)
-    gl.readRenderTargetPixels(renderTarget, 0, 0, size, size, pixels)
+    await gl.readRenderTargetPixelsAsync(renderTarget, 0, 0, size, size, pixels)
 
-    // create canvas and flip pixels vertically
-    const canvas = document.createElement('canvas')
-    canvas.width = size
-    canvas.height = size
+    // flip pixels vertically
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
@@ -76,7 +80,15 @@ export default function PhotoCamera({
     }
     ctx.putImageData(imageData, 0, 0)
 
-    return canvas.toDataURL('image/png')
+    // encode off the main thread (toDataURL is synchronous)
+    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
+    if (!blob) return
+
+    return new Promise<string>(resolve => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.readAsDataURL(blob)
+    })
   }
 
   useImperativeHandle(ref, () => ({ camera: cameraRef, takePhoto }))

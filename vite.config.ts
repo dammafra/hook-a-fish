@@ -2,8 +2,8 @@ import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
 import fullReload from 'vite-plugin-full-reload'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -60,8 +60,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    host: true,
-    open: true,
+    // host: true,
   },
   build: {
     emptyOutDir: true, // Empty the folder first

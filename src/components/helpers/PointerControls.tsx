@@ -35,6 +35,8 @@ export default function PointerControls({
   const _positionOffset = useMemo(() => parsePosition(positionOffset), [positionOffset])
 
   const mouse = useMemo(() => new Vector2(), [])
+  const position = useMemo(() => new Vector3(), [])
+  const direction = useMemo(() => new Vector3(), [])
   const plane = useMemo(() => new Plane(new Vector3(0, 1, 0), -lockPositionYAt), [lockPositionYAt])
 
   useEffect(() => {
@@ -45,15 +47,14 @@ export default function PointerControls({
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
 
-      const position = new Vector3()
       raycaster.setFromCamera(mouse, camera)
-      raycaster.ray.intersectPlane(plane, position)
+      if (!raycaster.ray.intersectPlane(plane, position)) return
       ref.current.position.copy(position.add(_positionOffset))
 
       if (type !== 'fixed') {
         const target = type === 'billboard' ? camera.position : _target
-        const dir = new Vector3().subVectors(target, position).setY(0).normalize()
-        const angle = Math.atan2(dir.x, dir.z)
+        direction.subVectors(target, position).setY(0).normalize()
+        const angle = Math.atan2(direction.x, direction.z)
         const rotationY = angle + Math.PI * (type === 'billboard' ? 1.5 : 0.5)
         ref.current.rotation.y = rotationY + rotationYOffset
       }
@@ -72,6 +73,7 @@ export default function PointerControls({
     _positionOffset,
     _target,
     camera,
+    direction,
     enabled,
     gl,
     hideCursor,
@@ -79,6 +81,7 @@ export default function PointerControls({
     mouse,
     onMove,
     plane,
+    position,
     raycaster,
     rotationYOffset,
     type,

@@ -1,9 +1,17 @@
 import { QuadraticBezierLine, type QuadraticBezierLineRef } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { quat, RapierRigidBody, useRopeJoint, vec3 } from '@react-three/rapier'
+import { RapierRigidBody, useRopeJoint } from '@react-three/rapier'
 import { useRef, useState, type RefObject } from 'react'
-import { QuadraticBezierCurve3, Vector3 } from 'three'
+import { QuadraticBezierCurve3, Quaternion, Vector3 } from 'three'
 import { parsePosition, type Position } from '../utils/position'
+
+// Scratch objects reused every frame to avoid garbage collection hitches
+const _startPoint = new Vector3()
+const _endPoint = new Vector3()
+const _controlPoint = new Vector3()
+const _offset = new Vector3()
+const _quaternion = new Quaternion()
+const _down = new Vector3(0, -1, 0)
 
 interface RopeProps {
   start: RefObject<RapierRigidBody>
@@ -36,29 +44,31 @@ export default function Rope({
   useFrame(() => {
     if (!line.current || !start.current || !end.current) return
 
-    const startWorldPos = vec3(start.current.translation())
-    const startWorldQuat = quat(start.current.rotation())
-    const startOffset = _startAnchor.clone().applyQuaternion(startWorldQuat)
-    const startPoint = startWorldPos.add(startOffset)
+    _quaternion.copy(start.current.rotation())
+    _offset.copy(_startAnchor).applyQuaternion(_quaternion)
+    _startPoint.copy(start.current.translation()).add(_offset)
 
-    const endWorldPos = vec3(end.current.translation())
-    const endWorldQuat = quat(end.current.rotation())
-    const endOffset = _endAnchor.clone().applyQuaternion(endWorldQuat)
-    const endPoint = endWorldPos.add(endOffset)
+    _quaternion.copy(end.current.rotation())
+    _offset.copy(_endAnchor).applyQuaternion(_quaternion)
+    _endPoint.copy(end.current.translation()).add(_offset)
 
-    const controlPoint = new Vector3().addVectors(startWorldPos, endWorldPos).multiplyScalar(0.5)
-    const direction = new Vector3(0, -1, 0)
-    const length = startWorldPos.distanceTo(endWorldPos)
+    const length = _startPoint.distanceTo(_endPoint)
     const sagging = 0.3
-    controlPoint.addScaledVector(direction, sagging * length)
+    _controlPoint
+      .addVectors(_startPoint, _endPoint)
+      .multiplyScalar(0.5)
+      .addScaledVector(_down, sagging * length)
 
     const parent = line.current.parent!
-    parent.worldToLocal(startWorldPos)
-    parent.worldToLocal(endWorldPos)
-    parent.worldToLocal(controlPoint)
+    parent.worldToLocal(_startPoint)
+    parent.worldToLocal(_endPoint)
+    parent.worldToLocal(_controlPoint)
 
-    if (type === 'line') line.current.setPoints(startPoint, endPoint, controlPoint)
-    else setTubeCurve(new QuadraticBezierCurve3(startPoint, controlPoint, endPoint))
+    if (type === 'line') line.current.setPoints(_startPoint, _endPoint, _controlPoint)
+    else
+      setTubeCurve(
+        new QuadraticBezierCurve3(_startPoint.clone(), _controlPoint.clone(), _endPoint.clone()),
+      )
   })
 
   return type === 'line' ? (

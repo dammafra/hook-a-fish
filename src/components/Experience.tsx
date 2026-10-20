@@ -1,6 +1,7 @@
 import { CameraControls } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { useControls } from 'leva'
+import { PCFShadowMap } from 'three'
 import { useDebug } from '../hooks/use-debug'
 import { useIsTouch } from '../hooks/use-is-touch'
 import Environment from './Environment'
@@ -22,7 +23,7 @@ export default function Experience() {
 
   return (
     <Canvas
-      shadows
+      shadows={{ type: PCFShadowMap }}
       onCreated={({ gl }) => {
         gl.debug.checkShaderErrors = debug
         gl.debug.onShaderError = console.error

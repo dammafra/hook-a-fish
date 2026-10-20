@@ -18,6 +18,9 @@ export default function Tools() {
     else setToolsPosition(3.5 * (flip ? -1 : 1), 0, 3)
   }, [setToolsPosition, viewport.aspect, flip])
 
+  // Rigid bodies read their parent transform only on creation: remount rods when the stand moves
+  const rodsKey = `${flip}-${toolsPosition?.toArray().join()}`
+
   return (
     <group position={toolsPosition} rotation-y={flip ? Math.PI * 1.5 : 0}>
       <group position={[0.2, 0, 0.2]}>
@@ -29,6 +32,7 @@ export default function Tools() {
       <Stand scale={3} rotation-y={Math.PI * 0.2} />
 
       <FishingRod
+        key={`rod-a-${rodsKey}`}
         position={[0, 0.82, -0.4]}
         rotation={[0, -1, 0.8]}
         ropeLength={0.2}
@@ -36,6 +40,7 @@ export default function Tools() {
         colorB="silver"
       />
       <FishingRod
+        key={`rod-b-${rodsKey}`}
         position={[-0.3, 0.82, -0.2]}
         rotation={[0, -1, 0.8]}
         ropeLength={0.2}

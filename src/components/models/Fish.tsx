@@ -29,12 +29,14 @@ type FishProps = JSX.IntrinsicElements['group'] & {
   colorA?: ColorRepresentation
   colorB?: ColorRepresentation
   colorC?: ColorRepresentation
+  castShadow?: boolean
 }
 
 export default function Fish({
   colorA = 'white',
   colorB = 'white',
   colorC = 'white',
+  castShadow = false,
   ...props
 }: FishProps) {
   const { nodes, materials } = useGLTF('./models/fish.glb') as GLTFResult
@@ -61,7 +63,7 @@ export default function Fish({
       <group rotation={[-Math.PI / 2, 0, 0]} scale={0.001}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <mesh
-            castShadow
+            castShadow={castShadow}
             geometry={nodes.Sphere_Color_0.geometry}
             material={materialA}
             position={[0, 231.474, 6.24]}
@@ -69,7 +71,7 @@ export default function Fish({
             scale={140.754}
           />
           <mesh
-            castShadow
+            castShadow={castShadow}
             geometry={nodes.Tail_Color_0.geometry}
             material={materialB}
             position={[0, 238.314, -111.059]}

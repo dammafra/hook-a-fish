@@ -1,8 +1,10 @@
 import Controller from './Controller'
 import Fishes from './Fishes'
 import Grass from './Grass'
+import ShaderWarmup from './helpers/ShaderWarmup'
 import Countdown from './interface/Countdown'
 import Menu from './interface/Menu'
+import FishModel from './models/Fish'
 import Water from './Water'
 
 export default function World() {
@@ -15,6 +17,10 @@ export default function World() {
       <Fishes />
       <Water />
       <Grass />
+
+      <ShaderWarmup>
+        <FishModel castShadow />
+      </ShaderWarmup>
     </>
   )
 }

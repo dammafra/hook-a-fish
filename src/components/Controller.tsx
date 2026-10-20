@@ -33,10 +33,16 @@ export default function Controller() {
     fishingRod.current.body.current.setRotation(quaternion, false)
   }
 
-  const takePhoto = (target: Vector3) => {
-    const dataUrl = photoCamera.current?.takePhoto(target)
-    setPhoto(dataUrl)
-  }
+  // Take a photo only when a fish is actually hooked
+  useEffect(() => {
+    if (phase !== 'hooked') return
+
+    const hook = fishingRod.current?.hook.current
+    if (!hook) return
+
+    const { x, y, z } = hook.translation()
+    photoCamera.current?.takePhoto(new Vector3(x, y, z)).then(photo => photo && setPhoto(photo))
+  }, [phase, setPhoto])
 
   useEffect(() => {
     gl.domElement.classList.toggle('cursor-grab!', !paused)
@@ -64,13 +70,12 @@ export default function Controller() {
         rotation={initialRotation}
         onMove={onMove}
       >
-        <PhotoCamera ref={photoCamera} fov={25} size={1024} />
+        <PhotoCamera ref={photoCamera} fov={25} size={512} />
       </PointerControls>
 
       <FishingRod
         ref={fishingRod}
         makeDefault
-        onHook={takePhoto}
         ropeLength={isTouch ? 2.25 : 1.25} // make sure the distance to water is around 0.324
         position={initialPosition}
         rotation={initialRotation}

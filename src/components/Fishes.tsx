@@ -13,18 +13,21 @@ import useGame from '../stores/use-game'
 import { random, randomAngle, randomColor } from '../utils/random'
 import FishModel from './models/Fish'
 
+// Scratch objects reused every frame to avoid garbage collection hitches
+const _position = new Vector3()
+const _impulse = new Vector3()
+const _zero = new Vector3()
+const _identity = new Quaternion()
+
 interface FishProps {
   id: string
 }
 
 export function Fish({ id }: FishProps) {
+  // Frame-dependent state is read via `useGame.getState()` to avoid re-rendering every fish on each change
   const radius = useGame(state => state.radius)
-  const phase = useGame(state => state.phase)
   const hook = useGame(state => state.hook)
   const unhook = useGame(state => state.unhook)
-  const lastHooked = useGame(state => state.lastHooked)
-  const bucketPosition = useGame(state => state.bucketPosition)
-  const paused = useGame(state => state.paused)
 
   const bodyRadius = 0.25
   const targetRadius = 0.075
@@ -57,13 +60,14 @@ export function Fish({ id }: FishProps) {
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
     // @ts-expect-error `userData` is of type `Record<string, any>`
-    if (phase !== 'hooked' && other.rigidBody?.userData.name === 'hook') {
+    if (useGame.getState().phase !== 'hooked' && other.rigidBody?.userData.name === 'hook') {
       setHookBody(other.rigidBody)
       hook(id)
     }
   }
 
   useFrame(({ clock }, delta) => {
+    const { phase, paused, lastHooked, bucketPosition } = useGame.getState()
     if (phase === 'ended' || !bucketPosition) return
 
     // Emerge on start
@@ -80,33 +84,33 @@ export function Fish({ id }: FishProps) {
     }
 
     // Stay in bucket
+    // Teleports must wake the body: react-three-rapier stops syncing meshes of sleeping bodies
     if (id === lastHooked) {
-      const position = bucketPosition.clone()
-      position.y = 0.5
-      body.current.setTranslation(position, false)
-      body.current.setRotation(new Quaternion(), false)
+      _position.copy(bucketPosition).setY(0.5)
+      body.current.setTranslation(_position, true)
+      body.current.setRotation(_identity, true)
       return
     }
 
     // Follow hook
     if (hookBody) {
       body.current.setBodyType(2, false)
-      body.current.setLinvel(new Vector3(), false)
-      body.current.setAngvel(new Vector3(), false)
+      body.current.setLinvel(_zero, false)
+      body.current.setAngvel(_zero, false)
 
       const { x, y, z } = hookBody.translation()
-      const position = new Vector3(x, y - targetRadius + targetOffsetY, z - targetOffsetZ)
-      body.current.setTranslation(position, false)
-      body.current.setRotation(new Quaternion(), false) // this ensures accurate positioning of hook
+      _position.set(x, y - targetRadius + targetOffsetY, z - targetOffsetZ)
+      body.current.setTranslation(_position, true)
+      body.current.setRotation(_identity, true) // this ensures accurate positioning of hook
 
-      if (position.distanceTo(bucketPosition) < 0.8) unhook(id)
+      if (_position.distanceTo(bucketPosition) < 0.8) unhook(id)
       return
     }
 
     if (paused) return
 
     // Move
-    const impulse = new Vector3()
+    const impulse = _impulse.set(0, 0, 0)
     const now = clock.elapsedTime
 
     if (now - lastFloat.current >= floatFrequency) {
@@ -138,7 +142,12 @@ export function Fish({ id }: FishProps) {
         angularDamping={0.5}
       >
         <Center rotation-x={-Math.PI * 0.5} scale={1.5}>
-          <FishModel colorA={colorA} colorB={colorB} colorC={colorC} />
+          <FishModel
+            colorA={colorA}
+            colorB={colorB}
+            colorC={colorC}
+            castShadow={!!hookBody}
+          />
         </Center>
         {!hookBody && (
           <>
