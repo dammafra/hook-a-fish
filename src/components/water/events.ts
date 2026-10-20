@@ -26,6 +26,10 @@ type SplashOptions = {
   strength?: number
   /** Droplets size multiplier */
   size?: number
+  /** Number of droplets */
+  count?: number
+  /** Whether the splash and its droplets landing back leave ripples */
+  ripples?: boolean
   /** Height of the water surface the splash comes from */
   y?: number
   /** Size of the water around the splash: droplets landing farther fall to the ground (y = 0) */
@@ -40,8 +44,15 @@ export const pendingSplashes: Splash[] = []
 export function emitSplash(
   x: number,
   z: number,
-  { strength = 1, size = 1, y = 0, radius = Infinity }: SplashOptions = {},
+  {
+    strength = 1,
+    size = 1,
+    count = 24,
+    ripples = true,
+    y = 0,
+    radius = Infinity,
+  }: SplashOptions = {},
 ) {
-  pendingSplashes.push({ x, z, strength, size, y, radius })
-  emitRipple(x, z, 2.5 * strength)
+  pendingSplashes.push({ x, z, strength, size, count, ripples, y, radius })
+  if (ripples) emitRipple(x, z, 2.5 * strength)
 }

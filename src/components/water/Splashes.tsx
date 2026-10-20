@@ -5,7 +5,6 @@ import { random, randomAngle } from '../../utils/random'
 import { emitRipple, pendingSplashes } from './events'
 
 const COUNT = 96
-const DROPLETS_PER_SPLASH = 24
 const GRAVITY = -9.8
 
 // Scratch objects reused every frame to avoid garbage collection hitches
@@ -23,6 +22,7 @@ type Droplet = {
   origin: Vector3
   surfaceY: number
   radius: number
+  ripples: boolean
   alive: boolean
 }
 
@@ -34,6 +34,7 @@ const droplets: Droplet[] = Array.from({ length: COUNT }, () => ({
   origin: new Vector3(),
   surfaceY: 0,
   radius: 0,
+  ripples: false,
   alive: false,
 }))
 
@@ -50,8 +51,8 @@ export default function Splashes() {
   useFrame((_, delta) => {
     const dt = Math.min(delta, 1 / 30)
 
-    for (const { x, y, z, strength, size, radius } of pendingSplashes) {
-      for (let i = 0; i < DROPLETS_PER_SPLASH; i++) {
+    for (const { x, y, z, strength, size, count, ripples, radius } of pendingSplashes) {
+      for (let i = 0; i < count; i++) {
         const droplet = droplets[cursor.current]
         cursor.current = (cursor.current + 1) % COUNT
 
@@ -66,6 +67,7 @@ export default function Splashes() {
         droplet.origin.set(x, y, z)
         droplet.surfaceY = y
         droplet.radius = radius
+        droplet.ripples = ripples
         droplet.alive = true
       }
       active.current = true
@@ -89,7 +91,7 @@ export default function Splashes() {
           // Back into the water
           if (inWater && y < droplet.surfaceY) {
             droplet.alive = false
-            if (Math.random() < 0.35) emitRipple(x, z, 0.3)
+            if (droplet.ripples && Math.random() < 0.35) emitRipple(x, z, 0.3)
           }
 
           // Out of it, onto the ground

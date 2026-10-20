@@ -14,6 +14,7 @@ uniform float uDepthMax;
 uniform float uRefraction;
 uniform float uFoamWidth;
 uniform float uShoreWaves;
+uniform float uAgitation;
 
 uniform vec4 uRipples[RIPPLES_COUNT]; // (x, z, start time, strength)
 uniform float uRippleRadius;
@@ -165,6 +166,9 @@ void main() {
     noise(p * 3.0 + vec2(5.2, 1.3) - uTime * 0.3)
   ) - 0.5;
   vec2 distortion = (wave + rippleOffset * 0.5) * uRefraction;
+  #ifndef SHORE
+    distortion *= 1.0 + uAgitation * 3.0; // shaken water wobbles more
+  #endif
 
   float shore = 1.0 - smoothstep(0.0, 1.3, shoreDistance);
 

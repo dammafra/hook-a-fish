@@ -1,13 +1,14 @@
 import { Float } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
+import { MathUtils, type Group } from 'three'
 import useGame from '../stores/use-game'
 import { random, randomAngle } from '../utils/random'
 import BonusTime from './interface/BonusTime'
 import Score from './interface/Score'
 import BucketModel from './models/Bucket'
-import { emitRipple } from './water/events'
-import { containedWaterMaterial, waterSurfaceRef } from './water/material'
+import { emitSplash } from './water/events'
+import { containedWaterMaterial, waterSurfaceRef, waterUniforms } from './water/material'
 
 const BUCKET_SCALE = 2
 const WATER_Y = 0.25
@@ -32,18 +33,36 @@ export default function Bucket() {
     else setBucketPosition(-3.5 * (flip ? -1 : 1), 0, 3)
   }, [setBucketPosition, viewport.aspect, flip])
 
-  // Shaking bucket: small ripples all over the water
-  const lastRipple = useRef(0)
-  useFrame(({ clock }) => {
-    if (paused || phase !== 'hooked' || !bucketPosition) return
-    if (clock.elapsedTime - lastRipple.current < 0.15) return
+  // Shaking bucket: the water sloshes, gets choppy and splashes around
+  const water = useRef<Group>(null!)
+  const agitation = useRef(0)
+  const lastSplash = useRef(0)
+  useFrame(({ clock }, delta) => {
+    const shaking = !paused && phase === 'hooked'
+    agitation.current = MathUtils.damp(agitation.current, shaking ? 1 : 0, 4, delta)
+    waterUniforms.uAgitation.value = agitation.current
+
+    const t = clock.elapsedTime
+    water.current.rotation.x = Math.sin(t * 11) * 0.12 * agitation.current
+    water.current.rotation.z = Math.cos(t * 9) * 0.12 * agitation.current
+
+    if (!shaking || !bucketPosition || t - lastSplash.current < 0.2) return
 
     const angle = randomAngle()
-    const distance = random(0, BUCKET_WATER_RADIUS * 0.6)
-    const x = bucketPosition.x + Math.cos(angle) * distance
-    const z = bucketPosition.z + Math.sin(angle) * distance
-    emitRipple(x, z, 0.25)
-    lastRipple.current = clock.elapsedTime
+    const distance = random(0, BUCKET_WATER_RADIUS * 0.7)
+    emitSplash(
+      bucketPosition.x + Math.cos(angle) * distance,
+      bucketPosition.z + Math.sin(angle) * distance,
+      {
+        strength: random(0.3, 0.5),
+        size: 0.35,
+        count: 5,
+        ripples: false,
+        y: bucketPosition.y + BUCKET_WATER_HEIGHT,
+        radius: BUCKET_WATER_RADIUS,
+      },
+    )
+    lastSplash.current = t
   })
 
   if (phase !== prevPhase) {
@@ -65,15 +84,16 @@ export default function Bucket() {
         scale={BUCKET_SCALE}
       >
         <BucketModel />
-        <mesh
-          ref={waterSurfaceRef}
-          scale={WATER_RADIUS}
-          position-y={WATER_Y}
-          rotation={[-Math.PI * 0.5, 0, Math.PI * 0.14]}
-          material={containedWaterMaterial}
-        >
-          <circleGeometry args={[1, 8]} />
-        </mesh>
+        <group ref={water} position-y={WATER_Y}>
+          <mesh
+            ref={waterSurfaceRef}
+            scale={WATER_RADIUS}
+            rotation={[-Math.PI * 0.5, 0, Math.PI * 0.14]}
+            material={containedWaterMaterial}
+          >
+            <circleGeometry args={[1, 8]} />
+          </mesh>
+        </group>
       </Float>
     </group>
   )

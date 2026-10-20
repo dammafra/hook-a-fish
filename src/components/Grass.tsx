@@ -4,20 +4,23 @@ import { useMemo } from 'react'
 import { Euler, Vector3 } from 'three'
 import useGame from '../stores/use-game'
 import { random, randomAngle } from '../utils/random'
-import Bucket from './Bucket'
-import type { GrassInstanceProps } from './models/InstancedGrass'
+import Bucket, { BUCKET_WATER_RADIUS } from './Bucket'
 import InstancedGrass from './models/InstancedGrass'
 import Tree from './models/Tree'
 import Tools from './Tools'
 import { createShoreGeometry } from './water/shore'
 
+// Bucket footprint plus the size of a tuft
+const BUCKET_CLEARANCE = BUCKET_WATER_RADIUS + 0.35
+
 export default function Grass() {
   const radius = useGame(state => state.radius)
+  const bucketPosition = useGame(state => state.bucketPosition)
 
   const shoreGeometry = useMemo(() => createShoreGeometry(radius - 0.5), [radius])
 
   const grassInstancesCount = 150
-  const grassInstances: GrassInstanceProps[] = useMemo(
+  const grassInstances = useMemo(
     () =>
       Array.from({ length: grassInstancesCount }).map(() => {
         const r = random(radius + 0.75, radius + 4)
@@ -29,6 +32,18 @@ export default function Grass() {
         return { position, rotation, scale }
       }),
     [radius],
+  )
+
+  // Filtered rather than regenerated, so the rest of the grass stays put when the bucket moves (flip, resize)
+  const visibleGrassInstances = useMemo(
+    () =>
+      grassInstances.filter(
+        ({ position }) =>
+          !bucketPosition ||
+          Math.hypot(position.x - bucketPosition.x, position.z - bucketPosition.z) >
+            BUCKET_CLEARANCE,
+      ),
+    [grassInstances, bucketPosition],
   )
 
   return (
@@ -53,7 +68,7 @@ export default function Grass() {
         </Geometry>
       </mesh>
 
-      <InstancedGrass count={grassInstancesCount} instances={grassInstances} />
+      <InstancedGrass count={grassInstancesCount} instances={visibleGrassInstances} />
 
       <Tree scale={0.45} position={[1.5, 0, -4.5]} rotation-y={-Math.PI * 0.15} />
       <Tree scale={0.5} position={[3, 0, -5]} rotation-y={-Math.PI * 0.2} />

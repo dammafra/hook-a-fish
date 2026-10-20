@@ -32,6 +32,7 @@ export const waterUniforms = {
   uRefraction: { value: 0 },
   uFoamWidth: { value: 0 },
   uShoreWaves: { value: 0 },
+  uAgitation: { value: 0 }, // contained water only, 0 calm to 1 shaken
   uShoreRadius: { value: 0 },
   uRipples: { value: ripples },
   uRippleRadius: { value: 0 },
