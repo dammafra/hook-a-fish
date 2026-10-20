@@ -39,8 +39,8 @@ export default defineConfig({
         short_name: 'Hook-A-Fish!',
         description:
           'Dive into Hook-A-Fish! Inspired by childhood memories, you will face a fun, fast-paced fishing challenge against the clock',
-        theme_color: '#FF4500',
-        background_color: '#FF4500',
+        theme_color: '#035BA2',
+        background_color: '#035BA2',
         display: 'standalone',
         icons: [
           {

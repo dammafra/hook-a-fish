@@ -1,6 +1,7 @@
 import { Leva } from 'leva'
 import { StrictMode, Suspense } from 'react'
 import Experience from './components/Experience'
+import ThemeColor from './components/helpers/ThemeColor'
 import WaitForWarmup from './components/helpers/WaitForWarmup'
 import Loader from './components/interface/Loader'
 import { useDebug } from './hooks/use-debug'
@@ -22,6 +23,8 @@ export default function App() {
         <Suspense fallback={<Loader />}>
           <WaitForWarmup />
         </Suspense>
+
+        <ThemeColor />
       </StrictMode>
     </>
   )

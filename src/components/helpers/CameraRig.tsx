@@ -24,12 +24,7 @@ export default function CameraRig() {
     if (phase === 'ready' || phase === 'ended') {
       cameraControls.rotatePolarTo(0.5, phase === 'ended')
       cameraControls.dollyTo(3, phase === 'ended')
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0094a5')
       return
-    }
-
-    if (phase === 'started') {
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#7cad33')
     }
 
     // TODO why do I need to call them multiple times?

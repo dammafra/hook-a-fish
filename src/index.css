@@ -3,7 +3,7 @@
 
 @theme {
   --color-primary: #7cad33;
-  --color-menu: #0094a5;
+  --color-theme: #035ba2;
 }
 
 @utility font-body {
@@ -64,7 +64,7 @@ button * {
   html,
   body,
   #root {
-    @apply fixed inset-0 overflow-hidden bg-menu bg-radial;
+    @apply fixed inset-0 overflow-hidden bg-theme bg-radial;
   }
 
   button:not(.overlay-button) {
