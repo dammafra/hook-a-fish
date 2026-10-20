@@ -15,7 +15,7 @@ Dive into _Hook-A-Fish!_ Inspired by childhood memories, you will face a fun, fa
 
 The goal is simple: catch as many fish as you can. Each fish you catch gives you extra time, and you can share your results with friends to challenge them.
 
-<img src="./client/public/cover.png" alt="Cover"  >
+<img src="./public/cover.png" alt="Cover"  >
 
 ## Technologies Used
 
@@ -32,24 +32,14 @@ The goal is simple: catch as many fish as you can. Each fish you catch gives you
 
 ## Setup
 
-The repository contains two separate projects:
-
-- **client** - React application in Typescript
-- **server** - Colyseus application in Node
-
-Currently, the server has not been developed yet and only the initial boilerplate is available.
-
 ```bash
-# Create client and server .env files
-cp client/.env.example client/.env && cp server/.env.example server/.env
-
 # Install dependencies (only the first time)
 npm install
 
-# Run the local server at localhost:5173 and localhost:2567 for client and server respectively
+# Run the local server at localhost:5173
 npm run dev
 
-# Build for production in the client/dist and server/dist directories
+# Build for production in the dist/ directory
 npm run build
 ```
 
@@ -79,6 +69,6 @@ If you have any suggestions, feel free to reach out!
 
 ## License
 
-© 2025 Francesco Dammacco  
-This project is licensed under the GNU Affero General Public License v3.0.  
+© 2025 Francesco Dammacco
+This project is licensed under the GNU Affero General Public License v3.0.
 See the [LICENSE](./LICENSE) file for details.

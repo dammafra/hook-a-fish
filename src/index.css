@@ -1,0 +1,136 @@
+@import 'tailwindcss';
+@plugin "@iconify/tailwind4";
+
+@theme {
+  --color-primary: #7cad33;
+  --color-menu: #0094a5;
+}
+
+@utility font-body {
+  font-family: 'Pompiere', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@utility font-title {
+  font-family: 'Luckiest Guy', cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@utility text-shadow {
+  text-shadow: 2px 2px 2px black;
+}
+
+@utility text-shadow-sm {
+  text-shadow: 1px 1px 1px black;
+}
+
+@utility cursor-auto {
+  cursor: url('/cursors/auto.png'), auto;
+}
+
+@utility cursor-pointer {
+  cursor: url('/cursors/pointer.png'), pointer;
+}
+
+@utility cursor-grab {
+  cursor: url('/cursors/grab.png'), grab;
+}
+
+@utility cursor-grabbing {
+  cursor: url('/cursors/grabbing.png'), grabbing;
+}
+
+/* Prevent iOS text selection */
+body,
+* {
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  @apply cursor-auto;
+}
+
+a,
+button,
+a *,
+button * {
+  @apply cursor-pointer;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply fixed inset-0 overflow-hidden bg-menu bg-radial;
+  }
+
+  button:not(.overlay-button) {
+    @apply inline-flex w-50 items-center gap-2 rounded-full border border-white bg-white/20 px-4 py-2 text-3xl font-bold text-white shadow-xs shadow-black text-shadow hover:bg-white/50 active:bg-white/50;
+  }
+
+  button.sm {
+    @apply w-40 px-4 text-2xl;
+  }
+
+  button:has(> span[class^='icon']:only-child) {
+    @apply w-fit p-2;
+  }
+
+  button span:nth-child(2) {
+    @apply mx-auto;
+  }
+
+  button:disabled {
+    @apply pointer-events-none opacity-20;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  .adhs-container {
+    @apply bg-transparent! bg-gradient-to-t from-black from-50% to-transparent;
+  }
+  .adhs-container::after {
+    @apply fixed top-5 right-5 icon-[solar--close-circle-bold] flex cursor-pointer bg-white text-5xl content-[''];
+  }
+}
+
+@layer components {
+  .overlay div {
+    @apply pointer-events-none! cursor-none!;
+  }
+
+  .overlay-content {
+    /* border + border-radius causes glitch in firefox, so use shadow workaround */
+    @apply shadow-[0_0_0_1px_rgba(0,0,0,1)] shadow-white;
+    @apply rounded-lg text-center font-title text-white text-shadow-sm;
+    @apply flex items-center justify-center bg-white/20;
+  }
+
+  .overlay-button {
+    @apply flex items-center justify-center rounded-full p-1 text-sm hover:bg-white/50 active:bg-white/50 md:text-xs;
+  }
+
+  .menu {
+    @apply pointer-events-none absolute inset-0 h-[100dvh] w-screen font-body;
+  }
+
+  .menu-section {
+    @apply pointer-events-auto flex h-full w-full flex-col items-center justify-center gap-5 text-white text-shadow;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  body::before {
+    content: 'Oops! This pond is too tiny…\AGive the fish some vertical space!';
+    @apply fixed inset-0 z-1 flex items-center justify-center bg-black text-center font-body text-2xl whitespace-pre text-white uppercase;
+  }
+  body * {
+    @apply pointer-events-none;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "printWidth": 100,
+  "sortTailwindcss": {
+    "stylesheet": "./src/index.css",
+    "functions": ["clsx"]
+  },
+  "ignorePatterns": ["node_modules", "dist", "public", "package-lock.json"]
+}
