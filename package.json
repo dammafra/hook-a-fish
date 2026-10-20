@@ -19,6 +19,7 @@
     "@react-three/rapier": "^2.2.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/three": "^0.186.0",
+    "howler": "^2.2.4",
     "leva": "^0.10.1",
     "r3f-monitor": "^3.1.0",
     "react": "^19.3.1",

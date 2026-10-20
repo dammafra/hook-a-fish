@@ -198,7 +198,7 @@ const Credits = animated(props => {
         <h2 className="font-title">Others</h2>
         {/* prettier-ignore */}
         <ul>
-          <li><a href="https://codepen.io/matchboxhero/pen/LzdgOv" target="_blank" className="uppercase">Animated SVG Bubbles</a> by <span className="uppercase">Steven Roberts</span> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=302355" target="_blank">CodePen</a></li>
+          <li><a href="https://codepen.io/matchboxhero/pen/LzdgOv" target="_blank" className="uppercase">Animated SVG Bubbles</a> by <span className="uppercase">Steven Roberts</span> from <a href="https://codepen.io" target="_blank">CodePen</a></li>
           <li><a href="https://kenney.nl/assets/cursor-pack" target="_blank" className="uppercase">Cursor Pack</a> by <span className="uppercase">Kenney</span></li>
         </ul>
       </div>
@@ -240,13 +240,21 @@ Can you beat my score?
 #hookafish #indiegame #indiedev #fishinggame #webgame #threejs`,
     }
 
-    if (navigator.canShare(toShare)) {
-      await navigator.share(toShare)
-    } else {
+    const download = () => {
       const link = document.createElement('a')
       link.href = lastPhoto!
       link.download = filename
       link.click()
+    }
+
+    // `canShare` is missing on some browsers (e.g. Firefox desktop)
+    if (!navigator.canShare?.(toShare)) return download()
+
+    try {
+      await navigator.share(toShare)
+    } catch (error) {
+      // Dismissed by the user, otherwise fall back to the download
+      if ((error as DOMException).name !== 'AbortError') download()
     }
   }
 
@@ -293,7 +301,7 @@ Can you beat my score?
           <span>Retry</span>
         </animated.button>
 
-        {win && (
+        {win && lastPhoto && (
           <animated.button style={buttonShareSpring} onClick={share} className="backdrop-blur-sm">
             <span className="icon-[solar--share-bold]" />
             <span>Share</span>

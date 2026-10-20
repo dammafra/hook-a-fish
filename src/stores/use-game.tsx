@@ -1,6 +1,9 @@
 import { Vector3 } from 'three'
 import { create } from 'zustand'
 import { randomInt } from '../utils/random'
+import { load, save } from '../utils/storage'
+
+const FLIP_KEY = 'hookafish-flip'
 
 type MenuSection = 'main' | 'tutorial' | 'credits' | 'game-over' | 'pause'
 type GamePhase = 'ready' | 'started' | 'hooked' | 'unhooked' | 'ended'
@@ -11,6 +14,8 @@ type GameStore = {
 
   flip: boolean
   toggleFlip: () => void
+  /** Flip is only available in portrait: landscape turns it off without forgetting the saved preference */
+  syncFlip: (available: boolean) => void
 
   photo?: string
   lastPhoto?: string
@@ -50,13 +55,14 @@ const useGame = create<GameStore>()(set => ({
   startedAt: 0,
   radius: 3.5,
 
-  flip: JSON.parse(localStorage.getItem('hookafish-flip') || 'false'),
+  flip: load(FLIP_KEY, false),
   toggleFlip: () =>
     set(state => {
       const flip = !state.flip
-      localStorage.setItem('hookafish-flip', JSON.stringify(flip))
+      save(FLIP_KEY, flip)
       return { flip }
     }),
+  syncFlip: available => set(() => ({ flip: available && load(FLIP_KEY, false) })),
 
   setPhoto: photo => set(() => ({ photo })),
 

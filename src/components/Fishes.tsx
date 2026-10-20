@@ -92,8 +92,10 @@ export function Fish({ id, leaving = false, onLeft }: FishProps) {
   const [hookBody, setHookBody] = useState<RapierRigidBody>()
 
   const onCollisionEnter = ({ other }: CollisionEnterPayload) => {
+    // Physics keeps running while paused: the still hook must not catch a fish drifting by
+    const { phase, paused } = useGame.getState()
     // @ts-expect-error `userData` is of type `Record<string, any>`
-    if (useGame.getState().phase !== 'hooked' && other.rigidBody?.userData.name === 'hook') {
+    if (!paused && phase !== 'hooked' && other.rigidBody?.userData.name === 'hook') {
       setHookBody(other.rigidBody)
       hook(id)
 

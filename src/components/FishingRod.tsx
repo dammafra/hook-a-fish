@@ -50,7 +50,11 @@ export default function FishingRod({
 
   const group = useRef<Group>(null!)
 
-  useImperativeHandle(ref, () => ({ mesh: group, body: poleBody, hook: hookBody }), [group, poleBody, hookBody])
+  useImperativeHandle(ref, () => ({ mesh: group, body: poleBody, hook: hookBody }), [
+    group,
+    poleBody,
+    hookBody,
+  ])
 
   return (
     <group ref={group} visible={visible} position={_position} rotation={_rotation}>

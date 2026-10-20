@@ -21,6 +21,15 @@ export default function Countdown({ seconds }: CountdownProps) {
   const [alarm, setAlarm] = useState(false)
   const sounds = useSoundBoard(state => state.sounds)
 
+  // Adjusted while rendering rather than in an effect: on retry the tick effect below
+  // must not see the 0 left from the previous game, or it would end the new one right away
+  const [prevPhase, setPrevPhase] = useState(phase)
+  if (phase !== prevPhase) {
+    setPrevPhase(phase)
+    if (phase === 'started') setTimeLeft(seconds)
+    if (phase === 'unhooked') setTimeLeft(t => t + 3)
+  }
+
   useEffect(() => {
     if (!ref.current || paused) return
 
@@ -48,11 +57,6 @@ export default function Countdown({ seconds }: CountdownProps) {
   }, [alarm, paused])
 
   useEffect(() => {
-    if (phase === 'started') setTimeLeft(seconds)
-    if (phase === 'unhooked') setTimeLeft(t => t + 3)
-  }, [seconds, phase])
-
-  useEffect(() => {
     if (hidden) pause()
   }, [hidden, pause])
 
@@ -66,10 +70,10 @@ export default function Countdown({ seconds }: CountdownProps) {
     >
       <Billboard>
         {/* see https://github.com/pmndrs/drei/issues/859#issuecomment-1536513800 */}
-        <Html scale={0.5} transform wrapperClass={`overlay ${hidden && 'hidden'}`}>
+        <Html scale={0.5} transform wrapperClass={`overlay ${hidden ? 'hidden' : ''}`}>
           <div
             style={{ transform: 'scale(2)' }}
-            className={`overlay-content w-22 py-2 text-2xl ${paused && 'opacity-45'}`}
+            className={`overlay-content w-22 py-2 text-2xl ${paused ? 'opacity-45' : ''}`}
           >
             <div ref={ref} className="h-6" />
           </div>

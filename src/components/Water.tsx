@@ -16,7 +16,7 @@ export default function Water() {
     () =>
       new CylinderGeometry(
         radius - 0.5, // radius top
-        radius - 0.5, // radius top
+        radius - 0.5, // radius bottom
         20, // height
         16, // radial segments
         1, // heightsegments
@@ -28,7 +28,7 @@ export default function Water() {
     <>
       <WaterSurface radius={radius * 1.05} shoreRadius={radius - 0.5} />
 
-      <mesh scale={radius} position={-0.1} rotation-x={Math.PI * 0.5}>
+      <mesh scale={radius} position-y={-0.1} rotation-x={Math.PI * 0.5}>
         <sphereGeometry args={[1, 32, 16, 0, Math.PI]} />
         <meshStandardMaterial side={BackSide}>
           <GradientTexture

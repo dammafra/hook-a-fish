@@ -39,15 +39,26 @@ export default function Controller() {
   useEffect(() => {
     if (phase !== 'hooked') return
 
-    const timeout = setTimeout(() => {
+    let taken = false
+    const takePhoto = () => {
+      taken = true
       const hook = fishingRod.current?.hook.current
       if (!hook) return
 
       const { x, y, z } = hook.translation()
       photoCamera.current?.takePhoto(new Vector3(x, y, z)).then(photo => photo && setPhoto(photo))
-    }, PHOTO_DELAY)
+    }
 
-    return () => clearTimeout(timeout)
+    const timeout = setTimeout(takePhoto, PHOTO_DELAY)
+
+    return () => {
+      clearTimeout(timeout)
+
+      // Put in the bucket before the delay: take it right away if the game has no photo yet,
+      // the game over screen needs one
+      const { phase, photo } = useGame.getState()
+      if (!taken && !photo && phase === 'unhooked') takePhoto()
+    }
   }, [phase, setPhoto])
 
   useEffect(() => {

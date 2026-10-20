@@ -16,7 +16,7 @@ export default function CameraRig() {
   }, [scene])
 
   useEffect(() => {
-    if (!target || !controls) return
+    if (!target.current || !controls) return
     const cameraControls = controls as CameraControls
 
     cameraControls.setTarget(0, 0, 0, true)

@@ -1,4 +1,7 @@
 import { create } from 'zustand'
+import { load, save } from '../utils/storage'
+
+const MUTED_KEY = 'hookafish-muted'
 
 interface PlayOptions {
   id?: string
@@ -38,11 +41,11 @@ const useSoundBoard = create<SoundBoardStore>()(set => ({
   setContext: context => set(() => ({ context })),
   setSounds: sounds => set(() => ({ sounds })),
 
-  muted: JSON.parse(localStorage.getItem('hookafish-muted') || 'false'),
+  muted: load(MUTED_KEY, false),
   toggleMuted: () => {
     set(state => {
       const muted = !state.muted
-      localStorage.setItem('hookafish-muted', JSON.stringify(muted))
+      save(MUTED_KEY, muted)
 
       if (muted) state.context?.suspend()
       else state.context?.resume()

@@ -11,12 +11,11 @@ export default function FlipButton() {
 
   const flip = useGame(state => state.flip)
   const toggleFlip = useGame(state => state.toggleFlip)
+  const syncFlip = useGame(state => state.syncFlip)
 
   const position = useMemo(() => getPositionOnCirlce(1, flip ? 180 : 270, 1), [flip])
 
-  useEffect(() => {
-    if (viewport.aspect > 1 && flip) toggleFlip()
-  }, [viewport.aspect, flip, toggleFlip])
+  useEffect(() => syncFlip(viewport.aspect < 1), [viewport.aspect, syncFlip])
 
   return (
     viewport.aspect < 1 && (
