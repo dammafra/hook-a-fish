@@ -8,6 +8,8 @@ import PhotoCamera, { type PhotoCameraHandle } from './helpers/PhotoCamera'
 import PointerControls from './helpers/PointerControls'
 import Target from './Target'
 
+const PHOTO_DELAY = 500 // ms after hooking
+
 export default function Controller() {
   const isTouch = useIsTouch()
   const { gl } = useThree()
@@ -33,15 +35,19 @@ export default function Controller() {
     fishingRod.current.body.current.setRotation(quaternion, false)
   }
 
-  // Take a photo only when a fish is actually hooked
+  // Take a photo only when a fish is actually hooked, a bit later so it is out of the water hanging on the hook
   useEffect(() => {
     if (phase !== 'hooked') return
 
-    const hook = fishingRod.current?.hook.current
-    if (!hook) return
+    const timeout = setTimeout(() => {
+      const hook = fishingRod.current?.hook.current
+      if (!hook) return
 
-    const { x, y, z } = hook.translation()
-    photoCamera.current?.takePhoto(new Vector3(x, y, z)).then(photo => photo && setPhoto(photo))
+      const { x, y, z } = hook.translation()
+      photoCamera.current?.takePhoto(new Vector3(x, y, z)).then(photo => photo && setPhoto(photo))
+    }, PHOTO_DELAY)
+
+    return () => clearTimeout(timeout)
   }, [phase, setPhoto])
 
   useEffect(() => {

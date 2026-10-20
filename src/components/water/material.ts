@@ -1,4 +1,14 @@
-import { Color, Matrix4, ShaderMaterial, type Camera, type Object3D, type Texture } from 'three'
+import {
+  Color,
+  Matrix4,
+  ShaderMaterial,
+  type Camera,
+  type Object3D,
+  type Scene,
+  type Texture,
+  type WebGLRenderer,
+  type WebGLRenderTarget,
+} from 'three'
 import { RIPPLES_COUNT, ripples } from './events'
 import fragmentShader from './shaders/surface.frag.glsl?raw'
 import vertexShader from './shaders/surface.vert.glsl?raw'
@@ -43,16 +53,45 @@ export const pondWaterMaterial = createWaterMaterial(true)
 /** Water held by its geometry (bucket): contact foam only */
 export const containedWaterMaterial = createWaterMaterial(false)
 
-/** Camera the scene pre-pass was rendered with, set by WaterSurface every frame */
-export const waterPass = { camera: null as Camera | null }
+/** Camera the scene pre-pass was rendered with, set by renderWithWater */
+const waterPass = { camera: null as Camera | null }
 
 /** Objects hidden during the pre-pass: water surfaces and anything floating on them */
-export const waterObjects = new Set<Object3D>()
+const waterObjects = new Set<Object3D>()
+
+/**
+ * Renders the scene into `target` (null for the canvas) with refracting water:
+ * first the scene without the water into `prePass` (which needs a depth texture), then the full scene.
+ * WaterSurface runs it every frame for the main camera, other cameras (e.g. PhotoCamera) run it on demand.
+ */
+export function renderWithWater(
+  gl: WebGLRenderer,
+  scene: Scene,
+  camera: Camera,
+  prePass: WebGLRenderTarget,
+  target: WebGLRenderTarget | null = null,
+) {
+  waterPass.camera = camera
+  waterUniforms.uSceneColor.value = prePass.texture
+  waterUniforms.uSceneDepth.value = prePass.depthTexture
+
+  for (const object of waterObjects) object.visible = false
+  gl.setRenderTarget(prePass)
+  gl.render(scene, camera)
+  for (const object of waterObjects) object.visible = true
+
+  // Shadow maps were just computed by the pre-pass
+  gl.shadowMap.autoUpdate = false
+  gl.setRenderTarget(target)
+  gl.render(scene, camera)
+  gl.setRenderTarget(null)
+  gl.shadowMap.autoUpdate = true
+}
 
 /**
  * Ref callback registering an object to be hidden during the pre-pass, for as long as it is mounted.
  * Water surfaces also get their camera uniforms right before being drawn:
- * the pre-pass only matches the main camera, other cameras get the plain (non refracted) look.
+ * cameras without a pre-pass (see renderWithWater) get the plain (non refracted) look.
  */
 function waterObjectRef(surface = true) {
   return (object: Object3D | null) => {

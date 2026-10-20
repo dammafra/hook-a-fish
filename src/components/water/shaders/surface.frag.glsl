@@ -3,7 +3,7 @@ uniform float uTime;
 // Scene rendered without the water (see WaterSurface pre-pass)
 uniform sampler2D uSceneColor;
 uniform sampler2D uSceneDepth;
-uniform bool uHasScene; // false when rendered by another camera (e.g. PhotoCamera)
+uniform bool uHasScene; // false when rendered by a camera without a pre-pass
 uniform mat4 uProjectionMatrixInverse;
 uniform mat4 uCameraMatrixWorld;
 

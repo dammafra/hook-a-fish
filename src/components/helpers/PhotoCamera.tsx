@@ -1,7 +1,9 @@
+import { useFBO } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useImperativeHandle, useRef, useState, type JSX, type RefObject } from 'react'
-import { PerspectiveCamera, SRGBColorSpace, WebGLRenderTarget } from 'three'
+import { DepthTexture, PerspectiveCamera, SRGBColorSpace, UnsignedByteType } from 'three'
 import { parsePosition, type Position } from '../../utils/position'
+import { renderWithWater } from '../water/material'
 
 export type PhotoCameraHandle = {
   camera: RefObject<PerspectiveCamera>
@@ -30,11 +32,12 @@ export default function PhotoCamera({
   const { gl, scene } = useThree()
   const cameraRef = useRef<PerspectiveCamera>(null!)
 
-  const [renderTarget] = useState(() => {
-    const target = new WebGLRenderTarget(size, size)
-    target.texture.colorSpace = SRGBColorSpace
-    return target
-  })
+  // 8 bit sRGB, to read pixels straight into the canvas
+  const renderTarget = useFBO(size, size, { type: UnsignedByteType, colorSpace: SRGBColorSpace })
+
+  // Scene without the water, see renderWithWater
+  const [depthTexture] = useState(() => new DepthTexture(1, 1))
+  const prePassTarget = useFBO(size, size, { depthTexture })
 
   const [canvas] = useState(() => {
     const canvas = document.createElement('canvas')
@@ -58,10 +61,8 @@ export default function PhotoCamera({
 
     camera.lookAt(parsePosition(_target || target))
 
-    // render scene to render target
-    gl.setRenderTarget(renderTarget)
-    gl.render(scene, camera)
-    gl.setRenderTarget(null)
+    // render scene to render target, water needs its own pre-pass from this camera
+    renderWithWater(gl, scene, camera, prePassTarget, renderTarget)
 
     // read pixels without stalling the GPU pipeline
     const pixels = new Uint8Array(size * size * 4)

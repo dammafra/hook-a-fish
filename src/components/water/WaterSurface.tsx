@@ -7,8 +7,7 @@ import { waterTime } from './events'
 import {
   floatingObjectRef,
   pondWaterMaterial,
-  waterObjects,
-  waterPass,
+  renderWithWater,
   waterSurfaceRef,
   waterUniforms,
 } from './material'
@@ -47,8 +46,6 @@ export default function WaterSurface({ radius, shoreRadius }: WaterSurfaceProps)
 
   useEffect(() => {
     const uniforms = waterUniforms
-    uniforms.uSceneColor.value = target.texture
-    uniforms.uSceneDepth.value = target.depthTexture
     uniforms.uShallowColor.value.set(controls.shallowColor)
     uniforms.uDeepColor.value.set(controls.deepColor)
     uniforms.uFoamColor.value.set(controls.foamColor)
@@ -59,24 +56,13 @@ export default function WaterSurface({ radius, shoreRadius }: WaterSurfaceProps)
     uniforms.uRippleRadius.value = controls.rippleRadius
     uniforms.uRippleLife.value = controls.rippleLife
     uniforms.uShoreRadius.value = shoreRadius
-  }, [target, controls, shoreRadius])
+  }, [controls, shoreRadius])
 
   // Takes over rendering (priority > 0) so the pre-pass runs after physics and controls updates,
   // keeping the refracted fish aligned with the parts sticking out of the water
   useFrame(({ gl, scene, camera }) => {
     waterUniforms.uTime.value = waterTime()
-    waterPass.camera = camera
-
-    for (const object of waterObjects) object.visible = false
-    gl.setRenderTarget(target)
-    gl.render(scene, camera)
-    gl.setRenderTarget(null)
-    for (const object of waterObjects) object.visible = true
-
-    // Shadow maps were just computed by the pre-pass
-    gl.shadowMap.autoUpdate = false
-    gl.render(scene, camera)
-    gl.shadowMap.autoUpdate = true
+    renderWithWater(gl, scene, camera, target)
   }, 1)
 
   return (
