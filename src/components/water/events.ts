@@ -22,6 +22,19 @@ export function emitRipple(x: number, z: number, strength = 1) {
   rippleIndex = (rippleIndex + 1) % RIPPLES_COUNT
 }
 
+/** Buffer actually uploaded to the shader: ripples still alive packed at its start */
+export const liveRipples = Array.from({ length: RIPPLES_COUNT }, () => new Vector4())
+
+/** Packs the ripples alive at `time` and returns how many, so the shader only loops over those */
+export function packRipples(time: number, life: number) {
+  let count = 0
+  for (const ripple of ripples) {
+    const age = time - ripple.z
+    if (age >= 0 && age <= life) liveRipples[count++].copy(ripple)
+  }
+  return count
+}
+
 type SplashOptions = {
   strength?: number
   /** Droplets size multiplier */

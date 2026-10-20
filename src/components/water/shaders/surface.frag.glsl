@@ -16,7 +16,8 @@ uniform float uFoamWidth;
 uniform float uShoreWaves;
 uniform float uAgitation;
 
-uniform vec4 uRipples[RIPPLES_COUNT]; // (x, z, start time, strength)
+uniform vec4 uRipples[RIPPLES_COUNT]; // (x, z, start time, strength), alive ones first
+uniform int uRippleCount;
 uniform float uRippleRadius;
 uniform float uRippleLife;
 
@@ -139,9 +140,10 @@ void main() {
   vec2 rippleOffset = vec2(0.0);
 
   for (int i = 0; i < RIPPLES_COUNT; i++) {
+    if (i >= uRippleCount) break;
+
     vec4 ripple = uRipples[i];
     float age = uTime - ripple.z;
-    if (age < 0.0 || age > uRippleLife) continue;
 
     float k = age / uRippleLife;
     float fade = 1.0 - k;
@@ -198,11 +200,13 @@ void main() {
   color = mix(color, uShallowColor, VEIL + 0.75 * shore * shore);
 
   #ifdef SHORE
-    // Cartoon highlights
-    float edge = cellEdge(p * 1.5 + wave * 0.8, uTime * 0.6);
+    // Cartoon highlights, in patches: the voronoi is only computed inside them
     float highlightMask = smoothstep(0.55, 0.8, noise(p * 0.8 + uTime * 0.05));
-    float highlights = line(edge, 0.018, px * 0.75) * highlightMask;
-    color = mix(color, uFoamColor, highlights * 0.25);
+    if (highlightMask > 0.0) {
+      float edge = cellEdge(p * 1.5 + wave * 0.8, uTime * 0.6);
+      float highlights = line(edge, 0.018, px * 0.75) * highlightMask;
+      color = mix(color, uFoamColor, highlights * 0.25);
+    }
   #endif
 
   color = mix(color, uFoamColor, rippleLines * 0.8);

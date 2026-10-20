@@ -18,6 +18,7 @@ import {
   type MeshStandardMaterial,
 } from 'three'
 import type { GLTF } from 'three-stdlib'
+import { createBodyMaterial, getBody } from '../../utils/fish-body'
 import { getFace } from '../../utils/fish-face'
 import { random } from '../../utils/random'
 
@@ -57,23 +58,12 @@ export default function Fish({
 }: FishProps) {
   const { nodes, materials } = useGLTF('./models/fish.glb') as GLTFResult
   const face = useMemo(() => getFace(nodes.Iris_Color_0.geometry), [nodes])
+  const body = useMemo(() => getBody(nodes), [nodes])
 
-  const [materialA, materialB, materialC] = useMemo(() => {
-    const baseMaterial = materials.Color.clone()
-    baseMaterial.map = null
-    baseMaterial.metalness = 0.5
-    baseMaterial.roughness = 0.8
-
-    const materialA = baseMaterial.clone()
-    const materialB = baseMaterial.clone()
-    const materialC = baseMaterial.clone()
-
-    materialA.color.set(colorA)
-    materialB.color.set(colorB)
-    materialC.color.set(colorC)
-
-    return [materialA, materialB, materialC]
-  }, [materials, colorA, colorB, colorC])
+  const bodyMaterial = useMemo(
+    () => createBodyMaterial(materials.Color, [colorA, colorB, colorC]),
+    [materials, colorA, colorB, colorC],
+  )
 
   const eyes = [useRef<Group>(null!), useRef<Group>(null!)]
   const pupils = [useRef<Mesh>(null!), useRef<Mesh>(null!)]
@@ -149,29 +139,7 @@ export default function Fish({
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={0.001}>
         <group rotation={[Math.PI / 2, 0, 0]}>
-          <mesh
-            castShadow={castShadow}
-            geometry={nodes.Sphere_Color_0.geometry}
-            material={materialA}
-            position={[0, 231.474, 6.24]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={140.754}
-          />
-          <mesh
-            castShadow={castShadow}
-            geometry={nodes.Tail_Color_0.geometry}
-            material={materialB}
-            position={[0, 238.314, -111.059]}
-            rotation={[-Math.PI / 2, 1.571, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Sphere002_Color_0.geometry}
-            material={materialC}
-            position={[0, 231.474, 6.24]}
-            rotation={[-0.478, -0.674, 1.824]}
-            scale={140.754}
-          />
+          <mesh castShadow={castShadow} geometry={body} material={bodyMaterial} />
           <group
             position={[0, 240.885, 158.506]}
             rotation={[-1.679, 0, 0]}

@@ -9,7 +9,7 @@ import {
   type WebGLRenderer,
   type WebGLRenderTarget,
 } from 'three'
-import { RIPPLES_COUNT, ripples } from './events'
+import { liveRipples, RIPPLES_COUNT } from './events'
 import fragmentShader from './shaders/surface.frag.glsl?raw'
 import vertexShader from './shaders/surface.vert.glsl?raw'
 import { shoreChunk } from './shore'
@@ -34,7 +34,8 @@ export const waterUniforms = {
   uShoreWaves: { value: 0 },
   uAgitation: { value: 0 }, // contained water only, 0 calm to 1 shaken
   uShoreRadius: { value: 0 },
-  uRipples: { value: ripples },
+  uRipples: { value: liveRipples },
+  uRippleCount: { value: 0 },
   uRippleRadius: { value: 0 },
   uRippleLife: { value: 0 },
 }
@@ -57,7 +58,10 @@ export const containedWaterMaterial = createWaterMaterial(false)
 /** Camera the scene pre-pass was rendered with, set by renderWithWater */
 const waterPass = { camera: null as Camera | null }
 
-/** Objects hidden during the pre-pass: water surfaces and anything floating on them */
+/**
+ * Objects hidden during the pre-pass: water surfaces, anything floating on them
+ * and anything never seen through the water (see dryObjectRef)
+ */
 const waterObjects = new Set<Object3D>()
 
 /**
@@ -76,17 +80,19 @@ export function renderWithWater(
   waterUniforms.uSceneColor.value = prePass.texture
   waterUniforms.uSceneDepth.value = prePass.depthTexture
 
+  // Shadow maps are computed by the full render, so that objects hidden here still cast shadows:
+  // the pre-pass reuses the previous ones, a frame late only under the water
+  const autoUpdate = gl.shadowMap.autoUpdate
+  gl.shadowMap.autoUpdate = false
   for (const object of waterObjects) object.visible = false
   gl.setRenderTarget(prePass)
   gl.render(scene, camera)
   for (const object of waterObjects) object.visible = true
+  gl.shadowMap.autoUpdate = autoUpdate
 
-  // Shadow maps were just computed by the pre-pass
-  gl.shadowMap.autoUpdate = false
   gl.setRenderTarget(target)
   gl.render(scene, camera)
   gl.setRenderTarget(null)
-  gl.shadowMap.autoUpdate = true
 }
 
 /**
@@ -116,3 +122,9 @@ function waterObjectRef(surface = true) {
 
 export const waterSurfaceRef = waterObjectRef()
 export const floatingObjectRef = waterObjectRef(false)
+
+/**
+ * For objects never seen through the water (e.g. outside the pond, or above it like the fishing pole):
+ * skipping them in the pre-pass saves draw calls. The ground stays, the water spills over it
+ */
+export const dryObjectRef = waterObjectRef(false)

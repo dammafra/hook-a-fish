@@ -1,9 +1,9 @@
 import { useFBO } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useControls } from 'leva'
 import { useEffect, useState } from 'react'
 import { DepthTexture } from 'three'
-import { waterTime } from './events'
+import { useControls } from '../../hooks/use-controls'
+import { packRipples, waterTime } from './events'
 import {
   floatingObjectRef,
   pondWaterMaterial,
@@ -61,7 +61,9 @@ export default function WaterSurface({ radius, shoreRadius }: WaterSurfaceProps)
   // Takes over rendering (priority > 0) so the pre-pass runs after physics and controls updates,
   // keeping the refracted fish aligned with the parts sticking out of the water
   useFrame(({ gl, scene, camera }) => {
-    waterUniforms.uTime.value = waterTime()
+    const time = waterTime()
+    waterUniforms.uTime.value = time
+    waterUniforms.uRippleCount.value = packRipples(time, waterUniforms.uRippleLife.value)
     renderWithWater(gl, scene, camera, target)
   }, 1)
 

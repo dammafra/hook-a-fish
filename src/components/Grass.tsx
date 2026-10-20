@@ -8,6 +8,7 @@ import Bucket, { BUCKET_WATER_RADIUS } from './Bucket'
 import InstancedGrass from './models/InstancedGrass'
 import Tree from './models/Tree'
 import Tools from './Tools'
+import { dryObjectRef } from './water/material'
 import { createShoreGeometry } from './water/shore'
 
 // Bucket footprint plus the size of a tuft
@@ -68,16 +69,26 @@ export default function Grass() {
         </Geometry>
       </mesh>
 
-      <InstancedGrass count={grassInstancesCount} instances={visibleGrassInstances} />
-
-      <Tree scale={0.45} position={[1.5, 0, -4.5]} rotation-y={-Math.PI * 0.15} />
-      <Tree scale={0.5} position={[3, 0, -5]} rotation-y={-Math.PI * 0.2} />
-      <Tree scale={0.48} position={[3.5, 0, -3.5]} rotation-y={-Math.PI * 0.25} />
-
       <Bucket />
-      <Tools />
 
-      <Sparkles size={5} scale={[10, 2, 10]} position-y={1} speed={0.5} count={20} color="white" />
+      <group ref={dryObjectRef}>
+        <InstancedGrass count={grassInstancesCount} instances={visibleGrassInstances} />
+
+        <Tree scale={0.45} position={[1.5, 0, -4.5]} rotation-y={-Math.PI * 0.15} />
+        <Tree scale={0.5} position={[3, 0, -5]} rotation-y={-Math.PI * 0.2} />
+        <Tree scale={0.48} position={[3.5, 0, -3.5]} rotation-y={-Math.PI * 0.25} />
+
+        <Tools />
+
+        <Sparkles
+          size={5}
+          scale={[10, 2, 10]}
+          position-y={1}
+          speed={0.5}
+          count={20}
+          color="white"
+        />
+      </group>
     </>
   )
 }

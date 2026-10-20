@@ -1,6 +1,6 @@
 import { Helper } from '@react-three/drei'
-import { useControls } from 'leva'
 import { CameraHelper } from 'three'
+import { useControls } from '../hooks/use-controls'
 
 export default function Environment() {
   const { helpers, ambientLightIntensity, directionalLightIntensity, directionalLightPosition } =

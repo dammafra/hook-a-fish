@@ -8,6 +8,7 @@ import { parseRotation, type Rotation } from '../utils/rotation'
 import FishingHook from './models/FishingHook'
 import FishingPole from './models/FishingPole'
 import Rope from './Rope'
+import { dryObjectRef } from './water/material'
 import { BOUNDS_COLLISION_GROUP } from './Water'
 
 export type FishingRodHandle = {
@@ -65,9 +66,11 @@ export default function FishingRod({
         collisionGroups={BOUNDS_COLLISION_GROUP}
       >
         <CuboidCollider args={poleColliderArgs} />
-        <Center scale={0.01} rotation-x={-Math.PI * 0.5}>
-          <FishingPole colorA={colorA} colorB={colorB} />
-        </Center>
+        <group ref={dryObjectRef}>
+          <Center scale={0.01} rotation-x={-Math.PI * 0.5}>
+            <FishingPole colorA={colorA} colorB={colorB} />
+          </Center>
+        </group>
       </RigidBody>
 
       <RigidBody
