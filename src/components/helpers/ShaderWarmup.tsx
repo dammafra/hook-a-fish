@@ -20,7 +20,7 @@ export default function ShaderWarmup({ children }: PropsWithChildren) {
       // on-screen variants, non-blocking thanks to KHR_parallel_shader_compile
       await gl.compileAsync(scene, camera)
 
-      // render target variants (linear output, no tone mapping) used by transmission and PhotoCamera
+      // render target variants (linear output, no tone mapping) used by the water pre-pass and PhotoCamera
       gl.setRenderTarget(target)
       const compiling = gl.compileAsync(scene, camera)
       gl.setRenderTarget(null)

@@ -1,8 +1,9 @@
-import { GradientTexture, GradientType, MeshDistortMaterial } from '@react-three/drei'
+import { GradientTexture, GradientType } from '@react-three/drei'
 import { CuboidCollider, TrimeshCollider } from '@react-three/rapier'
 import { useState } from 'react'
 import { BackSide, CylinderGeometry } from 'three'
 import useGame from '../stores/use-game'
+import WaterSurface from './water/WaterSurface'
 
 const GROUP = 0x0001 // category bit 1
 const MASK = 0xffff ^ GROUP // collide with everything except itself
@@ -25,25 +26,7 @@ export default function Water() {
 
   return (
     <>
-      <mesh
-        position-y={0.01}
-        rotation-x={-Math.PI * 0.5}
-        scale={radius * 1.05}
-        userData={{ name: 'water' }}
-      >
-        <circleGeometry />
-        <MeshDistortMaterial transmission={0.8} roughness={0.3} thickness={0.02} ior={2}>
-          <GradientTexture
-            stops={[0, 1]}
-            colors={['dodgerblue', 'aquamarine']}
-            size={512}
-            width={512}
-            type={GradientType.Radial}
-            innerCircleRadius={200}
-            outerCircleRadius={250}
-          />
-        </MeshDistortMaterial>
-      </mesh>
+      <WaterSurface radius={radius * 1.05} shoreRadius={radius - 0.5} />
 
       <mesh scale={radius} position={-0.1} rotation-x={Math.PI * 0.5}>
         <sphereGeometry args={[1, 32, 16, 0, Math.PI]} />

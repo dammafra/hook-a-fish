@@ -9,9 +9,12 @@ import type { GrassInstanceProps } from './models/InstancedGrass'
 import InstancedGrass from './models/InstancedGrass'
 import Tree from './models/Tree'
 import Tools from './Tools'
+import { createShoreGeometry } from './water/shore'
 
 export default function Grass() {
   const radius = useGame(state => state.radius)
+
+  const shoreGeometry = useMemo(() => createShoreGeometry(radius - 0.5), [radius])
 
   const grassInstancesCount = 150
   const grassInstances: GrassInstanceProps[] = useMemo(
@@ -46,9 +49,7 @@ export default function Grass() {
           <Base rotation-x={-Math.PI * 0.5}>
             <planeGeometry args={[50, 50]} />
           </Base>
-          <Subtraction scale={radius - 0.5}>
-            <icosahedronGeometry args={[1, 4]} />
-          </Subtraction>
+          <Subtraction geometry={shoreGeometry} />
         </Geometry>
       </mesh>
 

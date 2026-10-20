@@ -27,7 +27,6 @@ export default function Experience() {
       onCreated={({ gl }) => {
         gl.debug.checkShaderErrors = debug
         gl.debug.onShaderError = console.error
-        gl.transmissionResolutionScale = 0.6
       }}
       camera={{
         fov: 45,
