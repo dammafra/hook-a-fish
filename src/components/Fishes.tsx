@@ -228,6 +228,7 @@ export function Fish({ id, leaving = false, onLeft }: FishProps) {
               colorB={colorB}
               colorC={colorC}
               castShadow={!!hookBody}
+              hooked={!!hookBody && !inBucket}
             />
           </Center>
         </animated.group>
